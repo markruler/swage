@@ -1,17 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"os"
 
-	"github.com/markruler/swage/pkg/cmd"
+	"github.com/markruler/swage/cmd"
 )
 
-var tmp string
-
-func init() {
-	tmp = "swage"
-}
-
 func main() {
-	fmt.Printf("%s\n", cmd.Print(tmp))
+	if err := cmd.Execute(); err != nil {
+		os.Exit(1)
+	}
 }
