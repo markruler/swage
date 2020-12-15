@@ -1,0 +1,93 @@
+{
+  "schemes": ["http"],
+  "swagger": "2.0",
+  "info": {
+    "description": "This is example file.",
+    "title": "Swagger API",
+    "contact": {
+      "name": "API Support",
+      "url": "http://markruler.github.io/",
+      "email": "csu0414@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0"
+  },
+  "host": "127.0.0.1:3000",
+  "basePath": "/api/v1",
+  "paths": {
+    "/_hello/_world": {
+      "get": {
+        "description": "world description!",
+        "consumes": ["*/*"],
+        "produces": ["application/json"],
+        "tags": ["world"],
+        "summary": "world summary!",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "/hello/swage": {
+      "get": {
+        "description": "swage description!",
+        "consumes": ["*/*"],
+        "produces": ["application/json"],
+        "tags": ["swage"],
+        "summary": "swage summary!",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ApiResponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "enum": ["00", "11", "22"]
+        },
+        "type": {
+          "type": "string",
+          "example": "test type"
+        },
+        "message": {
+          "type": "string",
+          "example": "test-msg"
+        }
+      }
+    }
+  }
+}
