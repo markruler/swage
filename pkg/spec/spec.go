@@ -1,4 +1,4 @@
-package cmd
+package spec
 
 // SwaggerAPI ...
 type SwaggerAPI struct {
@@ -50,55 +50,14 @@ type ExternalDocs struct {
 
 // Path ...
 type Path struct {
-	Get    Get    `json:"get"`
-	Post   Post   `json:"post"`
-	Put    Put    `json:"put"`
-	Delete Delete `json:"delete"`
+	Get    Operation `json:"get"`
+	Post   Operation `json:"post"`
+	Put    Operation `json:"put"`
+	Delete Operation `json:"delete"`
 }
 
-// Get ...
-type Get struct {
-	Tags        []string            `json:"tags"`
-	Summary     string              `json:"summary"`
-	Description string              `json:"description"`
-	OperationID string              `json:"operation_id"`
-	Produces    string              `json:"produces"`
-	Parameters  []Parameters        `json:"parameters"`
-	Responses   map[string]Response `json:"responses"`
-	Security    []Security          `json:"security"`
-	Deprecated  string              `json:"deprecated"`
-}
-
-// Post ...
-type Post struct {
-	Tags        []string            `json:"tags"`
-	Summary     string              `json:"summary"`
-	Description string              `json:"description"`
-	OperationID string              `json:"operation_id"`
-	Consumes    string              `json:"consumes"`
-	Produces    string              `json:"produces"`
-	Parameters  []Parameters        `json:"parameters"`
-	Responses   map[string]Response `json:"responses"`
-	Security    []Security          `json:"security"`
-	Deprecated  string              `json:"deprecated"`
-}
-
-// Put ...
-type Put struct {
-	Tags        []string            `json:"tags"`
-	Summary     string              `json:"summary"`
-	Description string              `json:"description"`
-	OperationID string              `json:"operation_id"`
-	Consumes    string              `json:"consumes"`
-	Produces    string              `json:"produces"`
-	Parameters  []Parameters        `json:"parameters"`
-	Responses   map[string]Response `json:"responses"`
-	Security    []Security          `json:"security"`
-	Deprecated  string              `json:"deprecated"`
-}
-
-// Delete ...
-type Delete struct {
+// Operation ...
+type Operation struct {
 	Tags        []string            `json:"tags"`
 	Summary     string              `json:"summary"`
 	Description string              `json:"description"`

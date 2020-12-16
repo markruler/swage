@@ -1,13 +1,14 @@
 package main
 
 import (
-	"os"
+	"log"
 
-	"github.com/markruler/swage/cmd"
+	"github.com/markruler/swage/pkg/cmd"
 )
 
 func main() {
 	if err := cmd.Execute(); err != nil {
-		os.Exit(1)
+		log.Println(err)
+		return
 	}
 }

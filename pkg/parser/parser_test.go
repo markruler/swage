@@ -1,22 +1,24 @@
-package cmd
+package parser
 
 import (
 	"reflect"
 	"testing"
+
+	"github.com/markruler/swage/pkg/spec"
 )
 
 // TODO: Compare two arrays
 // TODO: Compare two objects
 func TestParsePetStoreAPI(t *testing.T) {
-	path := "../aio/example/example.json"
-	api, err := parse(path)
+	path := "../../aio/example/example.json"
+	api, err := Parse(path)
 	t.Logf("%v\n", api)
 	t.Logf("%v\n", api.Schemes)
-	for path, spec := range api.Paths {
-		if !reflect.DeepEqual(spec.Put, Put{}) {
+	for path, desc := range api.Paths {
+		if !reflect.DeepEqual(desc.Put, spec.Operation{}) {
 			t.Logf("spec.Paths: %v\n", path)
 			// t.Logf("%v\n", spec.Put.Parameters)
-			for _, param := range spec.Put.Parameters {
+			for _, param := range desc.Put.Parameters {
 				t.Logf("param.Put.Parameters.Name: %v\n", param.Name)
 			}
 		}

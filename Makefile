@@ -3,7 +3,7 @@ BINARY := swage
 .PHONY: test
 test:
 	@# go test ./... -v
-	go test ./cmd/ -v
+	go test ./pkg/... -v
 
 .PHONY: fmt
 fmt:
@@ -34,4 +34,4 @@ build:
 
 .PHONY: run
 run:
-	go run main.go aio/example/short.json
+	go run main.go gen aio/example/short.json

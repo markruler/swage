@@ -1,19 +1,21 @@
-package cmd
+package parser
 
 import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/markruler/swage/pkg/spec"
 )
 
-func parse(jsonPath string) (*SwaggerAPI, error) {
+// Parse ...
+func Parse(jsonPath string) (*spec.SwaggerAPI, error) {
 	jsonFile, err := os.Open(jsonPath)
 	if err != nil {
 		log.Fatalf("%s\n", err)
 		return nil, err
 	}
-	log.Printf("%s\n", "Successfully Opened users.json")
 	defer jsonFile.Close()
 
 	byteValue, err := ioutil.ReadAll(jsonFile)
@@ -22,7 +24,7 @@ func parse(jsonPath string) (*SwaggerAPI, error) {
 		return nil, err
 	}
 
-	var swaggerAPI SwaggerAPI
+	var swaggerAPI spec.SwaggerAPI
 	json.Unmarshal(byteValue, &swaggerAPI)
 
 	return &swaggerAPI, err

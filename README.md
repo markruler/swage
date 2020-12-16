@@ -19,5 +19,5 @@ make build
 - [encoding/json](https://golang.org/pkg/encoding/json/)
 - [spf13/cobra](https://github.com/spf13/cobra)
 - [swaggo/swag](https://github.com/swaggo/swag)
-- [tealeg/xlsx](https://github.com/tealeg/xlsx)
+- ~~[tealeg/xlsx](https://github.com/tealeg/xlsx)~~
 - [360EntSecGroup-Skylar/excelize](https://github.com/360EntSecGroup-Skylar/excelize)
