@@ -41,8 +41,8 @@ func Title(xl *excelize.File) int {
 		},
 		Fill: excelize.Fill{
 			Type:    "gradient",
-			Color:   []string{"#FFFFFF", "#E0EBF5"},
-			Shading: 1,
+			Color:   []string{"#ffffff", "#38b832"},
+			Shading: 5,
 		},
 	})
 	if err != nil {
@@ -54,6 +54,10 @@ func Title(xl *excelize.File) int {
 // Button ...
 func Button(xl *excelize.File) int {
 	styleID, err := xl.NewStyle(&excelize.Style{
+		Font: &excelize.Font{
+			Size: 14,
+			Bold: true,
+		},
 		Alignment: &excelize.Alignment{
 			Horizontal: "center",
 			Vertical:   "center",
@@ -61,8 +65,7 @@ func Button(xl *excelize.File) int {
 		Fill: excelize.Fill{
 			Type:    "pattern", // gradient, pattern
 			Pattern: 8,
-			Color:   []string{"#ed2939"},
-			// Shading: 1,
+			Color:   []string{"#c0c0c0"},
 		},
 	})
 	if err != nil {

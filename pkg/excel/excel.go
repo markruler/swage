@@ -99,30 +99,38 @@ func createIndexSheet(swaggerAPI *spec.SwaggerAPI) *excelize.File {
 func createAPISheet(xl *excelize.File, path, operation string, detail spec.Operation, sheetName int) {
 	worksheetName := strconv.Itoa(sheetName)
 	xl.NewSheet(worksheetName)
-	xl.SetColWidth(worksheetName, "A", "A", 10)
-	// xl.SetColWidth(worksheetName, "B", "B", 45.0)
-
-	// xl.MergeCell(worksheetName, "G1", "H2")
-	xl.SetCellStr(worksheetName, "G1", "INDEX")
-	xl.SetCellHyperLink(worksheetName, "G1", "INDEX!A1", "Location")
-	xl.SetCellStyle(worksheetName, "G1", "G1", style.Button(xl))
-
+	xl.SetColWidth(worksheetName, "A", "A", 12.0)
+	xl.SetColWidth(worksheetName, "B", "B", 12.0)
+	xl.SetColWidth(worksheetName, "F", "F", 40.0)
+	
 	row := 1
+	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row))
+	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Back to Index")
+	xl.SetCellHyperLink(worksheetName, fmt.Sprintf("%s%d", "A", row), "INDEX!A1", "Location")
+	xl.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "A", row), style.Button(xl))
+
+	row++
 	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Tag")
+	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
 	if len(detail.Tags) > 0 {
 		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), detail.Tags[0])
 	}
-	row++
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Method")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), operation)
+
 	row++
 	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Path")
+	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
 	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), path)
 	row++
+	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Method")
+	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
+	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), operation)
+	row++
 	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Summary")
+	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
 	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), detail.Summary)
 	row++
 	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Description")
+	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
 	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), detail.Description)
 	row++
 
@@ -141,7 +149,7 @@ func createAPISheet(xl *excelize.File, path, operation string, detail spec.Opera
 	row++
 
 	for _, param := range detail.Parameters {
-		fmt.Println("param:", param)
+		// fmt.Println("param:", param)
 		if param.Required {
 			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "O")
 		} else {
@@ -150,6 +158,12 @@ func createAPISheet(xl *excelize.File, path, operation string, detail spec.Opera
 		// TODO: Set definitions
 		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), param.Name)
 		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), param.In)
+		fmt.Println("param.in:", param.In)
+		fmt.Println("param.Schema:", param.Schema)
+		if param.Schema.Ref != "" {
+			fmt.Println("param.Schema.Ref != string{}:", param.Schema.Ref != "")
+			fmt.Println("param.Schema.Ref:", param.Schema.Ref)
+		}
 		// xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "D", row), param.Level)
 		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), param.Type)
 		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), param.Description)
