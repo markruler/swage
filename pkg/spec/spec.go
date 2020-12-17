@@ -2,16 +2,16 @@ package spec
 
 // SwaggerAPI ...
 type SwaggerAPI struct {
-	Swagger             string                        `json:"swagger"`
-	Info                Info                          `json:"info"`
-	Host                string                        `json:"host"`
-	BasePath            string                        `json:"basePath"`
-	Tags                []Tag                         `json:"tags"`
-	Schemes             []string                      `json:"schemes"`
-	Paths               map[string]Path               `json:"paths"`
-	SecurityDefinitions map[string]SecurityDefinition `json:"securityDefinitions"`
-	Definitions         map[string]Definition         `json:"definitions"`
-	ExternalDocs        ExternalDocs                  `json:"externalDocs"`
+	Swagger             string                          `json:"swagger"`
+	Info                Info                            `json:"info"`
+	Host                string                          `json:"host"`
+	BasePath            string                          `json:"basePath"`
+	Tags                []Tag                           `json:"tags"`
+	Schemes             []string                        `json:"schemes"`
+	Paths               map[string]map[string]Operation `json:"paths"`
+	SecurityDefinitions map[string]SecurityDefinition   `json:"securityDefinitions"`
+	Definitions         map[string]Definition           `json:"definitions"`
+	ExternalDocs        ExternalDocs                    `json:"externalDocs"`
 }
 
 // Info ...
@@ -46,14 +46,6 @@ type Tag struct {
 type ExternalDocs struct {
 	Description string `json:"description"`
 	URL         string `json:"url"`
-}
-
-// Path ...
-type Path struct {
-	Get    Operation `json:"get"`
-	Post   Operation `json:"post"`
-	Put    Operation `json:"put"`
-	Delete Operation `json:"delete"`
 }
 
 // Operation ...
