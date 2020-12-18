@@ -1,21 +1,21 @@
 package spec
 
-// SwaggerAPI ...
+// SwaggerAPI 2.0
 type SwaggerAPI struct {
 	Swagger             string                          `json:"swagger"`
-	Info                Info                            `json:"info"`
+	Info                V2Info                          `json:"info"`
 	Host                string                          `json:"host"`
 	BasePath            string                          `json:"basePath"`
 	Tags                []Tag                           `json:"tags"`
 	Schemes             []string                        `json:"schemes"`
 	Paths               map[string]map[string]Operation `json:"paths"`
-	SecurityDefinitions map[string]SecurityDefinition   `json:"securityDefinitions"`
 	Definitions         map[string]Definition           `json:"definitions"`
+	SecurityDefinitions map[string]SecurityDefinition   `json:"securityDefinitions"`
 	ExternalDocs        ExternalDocs                    `json:"externalDocs"`
 }
 
-// Info ...
-type Info struct {
+// V2Info ...
+type V2Info struct {
 	Description    string  `json:"description"`
 	Version        string  `json:"version"`
 	Title          string  `json:"title"`

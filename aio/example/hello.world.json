@@ -1,5 +1,4 @@
 {
-  "schemes": ["http"],
   "swagger": "2.0",
   "info": {
     "description": "This is example file.",
@@ -17,6 +16,7 @@
   },
   "host": "127.0.0.1:3000",
   "basePath": "/api/v1",
+  "schemes": ["http"],
   "paths": {
     "/_hello/_world": {
       "get": {
