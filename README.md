@@ -4,8 +4,10 @@
 
 ## Prerequisite
 
-> [OAS](https://swagger.io/docs/specification/about/)
+> OAS
 >
+> - [Swagger - SmartBear Software](https://swagger.io/docs/specification/about)
+> - [OpenAPI - The Linux Foundation](https://www.openapis.org/about)
 > - OpenAPI Specification (formerly Swagger Specification) is an API description format for REST APIs. An OpenAPI file allows you to describe your entire API.
 
 > [XLSX extension](https://docs.microsoft.com/en-us/openspecs/office_standards/ms-xlsx/)
@@ -63,7 +65,17 @@ make run
 
 ## Roadmap
 
-- [ ] Support OAS [v2.0](https://swagger.io/specification/v2)
+<figure>
+  <img src="./oas-version.jpg" alt="OAS Version">
+  <figcaption>
+    <i>
+A Guide to What’s New in OpenAPI 3.0 - Ryan Pinkham<br>
+(https://swagger.io/blog/news/whats-new-in-openapi-3-0/))
+    </i>
+  </figcaption>
+<figure>
+
+- [x] Support OAS [v2.0](http://spec.openapis.org/oas/v2.0)
 - [ ] Release Swage v1.0.0
-- [ ] Support OAS [v3.0 (latest)](https://swagger.io/specification)
+- [ ] Support OAS [v3.0 (latest)](http://spec.openapis.org/oas/v3.0.3)
 - [ ] Support OAS YAML format
