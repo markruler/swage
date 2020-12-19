@@ -23,8 +23,19 @@
 make deps
 ```
 
+### Runnig on Local Machine
+
 ```bash
 make run
+```
+
+### Running on Docker
+
+```bash
+# Linux, Darwin
+make docker
+# Windows
+aio/scripts/docker.ps1
 ```
 
 ## Dependencies
@@ -70,6 +81,7 @@ A Guide to What’s New in OpenAPI 3.0 - Ryan Pinkham<br>
     </i>
   </figcaption>
 <figure>
+<br>
 
 - [x] Support OAS [v2.0](http://spec.openapis.org/oas/v2.0)
 - [ ] Improve code coverage

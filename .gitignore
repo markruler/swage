@@ -2,3 +2,9 @@ vendor/
 .DS_Store
 .vscode/
 *.xlsx
+
+### bin ###
+*-linux-amd64
+*-darwin-amd64
+*-darwin-arm64
+*-windows-amd64

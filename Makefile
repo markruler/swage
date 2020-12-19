@@ -1,4 +1,9 @@
-BINARY := swage
+BINARY = swage
+VERSION = $(file < ./VERSION)
+
+.PHONY: echo
+echo:
+	echo ${BINARY}.${VERSION}
 
 .PHONY: test
 test:
@@ -16,21 +21,23 @@ deps:
 	@go mod tidy
 	@go mod vendor
 
-# .PHONY: docker
-# docker:
-# 	./aio/scripts/docker.sh
+.PHONY: docker
+docker:
+	@aio/scripts/docker.sh
 
 .PHONY: clean
 clean:
-	@rm -f ${BINARY}-linux-amd64
-	@rm -f ${BINARY}-darwin-amd64
-	@rm -f ${BINARY}-windows-amd64
+	@rm -f *.xlsx
+	@rm -f ${BINARY}.${VERSION}-linux-amd64
+	@rm -f ${BINARY}.${VERSION}-darwin-amd64
+	@rm -f ${BINARY}.${VERSION}-windows-amd64
 
 .PHONY: build
 build:
-	@GOOS=linux GOARCH=amd64 go build -o ${BINARY}-linux-amd64 main.go
-	@#GOOS=darwin GOARCH=amd64 go build -o ${BINARY}-darwin-amd64 main.go
-	@#GOOS=windows GOARCH=amd64 go build -o ${BINARY}-windows-amd64 main.go
+	@# VERSION := $(cat ./VERSION)
+	@GOOS=linux GOARCH=amd64 go build -o ${BINARY}.${VERSION}-linux-amd64 main.go
+	@#GOOS=darwin GOARCH=amd64 go build -o ${BINARY}.${VERSION}-darwin-amd64 main.go
+	@#GOOS=windows GOARCH=amd64 go build -o ${BINARY}.${VERSION}-windows-amd64 main.go
 
 .PHONY: run
 run:

@@ -4,8 +4,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const swageVersion = "0.1.0"
-
 var swageCmd = &cobra.Command{
 	Use:   "swage",
 	Short: "Swage is a swagger.json converter to excel format",
