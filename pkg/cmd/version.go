@@ -6,7 +6,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var swageVersion string
+var (
+	// Update this whenever making a new release.
+	// (with VERSION file)
+	swageVersion = "0.1.0"
+)
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
@@ -15,10 +19,4 @@ var versionCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("Swage v%s", swageVersion)
 	},
-}
-
-func init() {
-	// Update this whenever making a new release.
-	// (with VERSION file)
-	swageVersion = "0.1.0"
 }
