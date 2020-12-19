@@ -10,6 +10,7 @@
 #     --coveralls Push coverage statistics to coveralls.io
 #
 # Source: https://github.com/mlafeldt/chef-runner/blob/v0.7.0/script/coverage
+# https://github.com/codecov/example-go
 # GO111MODULE=off go get github.com/mattn/goveralls
 
 set -e

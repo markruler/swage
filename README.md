@@ -2,6 +2,12 @@
 
 > Command line tool to convert OAS JSON data to Excel (.xlsx) format
 
+## Usage
+
+```bash
+swage gen <json-path>
+```
+
 ## Prerequisite
 
 > OAS
@@ -23,6 +29,12 @@
 make deps
 ```
 
+### Build
+
+```bash
+go build -o swage main.go
+```
+
 ### Runnig on Local Machine
 
 ```bash
@@ -34,6 +46,7 @@ make run
 ```bash
 # Linux, Darwin
 make docker
+
 # Windows
 aio/scripts/docker.ps1
 ```
@@ -48,6 +61,8 @@ aio/scripts/docker.ps1
 - [SmartBear Documentations](https://swagger.io/docs/specification)
 - [OAI/OpenAPI-Specification](https://github.com/OAI/OpenAPI-Specification)
 - [go-openapi/spec](https://github.com/go-openapi/spec)
+- [APIs.guru - json, yaml](https://apis.guru/browse-apis/)
+  - [GitHub - yaml](https://github.com/APIs-guru/openapi-directory)
 - [swaggo/swag - testdata](https://github.com/swaggo/swag/tree/v1.7.0/testdata)
 
 ## Open API Specification (OAS) Revision History
@@ -80,4 +95,4 @@ aio/scripts/docker.ps1
 - [x] Improve code coverage
 - [ ] Effectively organize all data in Excel
 - [ ] Support OAS YAML format
-- [ ] Release Swage v1.0.0
+- [ ] Release Swage with GoReleaser

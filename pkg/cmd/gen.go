@@ -42,6 +42,8 @@ func genRun(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("OUTPUT >>> %s\n", path)
+	if verbose {
+		fmt.Printf("OUTPUT >>> %s\n", path)
+	}
 	return nil
 }
