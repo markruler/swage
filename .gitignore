@@ -1,7 +1,9 @@
+### etc ###
 vendor/
 .DS_Store
 .vscode/
 *.xlsx
+.cover/
 
 ### bin ###
 *-linux-amd64

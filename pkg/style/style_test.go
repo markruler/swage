@@ -7,15 +7,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var xl = excelize.NewFile()
+
 func TestStyleLeft(t *testing.T) {
-	xl := excelize.NewFile()
-	var styleID int
-	styleID = Left(xl)
+	styleID := Left(xl)
 	assert.Equal(t, 1, styleID)
-	styleID = Center(xl)
+}
+func TestStyleCenter(t *testing.T) {
+	styleID := Center(xl)
 	assert.Equal(t, 2, styleID)
-	styleID = Title(xl)
+}
+
+func TestStyleTitle(t *testing.T) {
+	styleID := Title(xl)
 	assert.Equal(t, 3, styleID)
-	styleID = Button(xl)
+}
+
+func TestStyleButton(t *testing.T) {
+	styleID := Button(xl)
 	assert.Equal(t, 4, styleID)
 }

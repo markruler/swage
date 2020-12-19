@@ -1,29 +1,41 @@
 BINARY = swage
 VERSION = $(file < ./VERSION)
 
+.PHONY: all
+all: echo deps test cover run
+
 .PHONY: echo
 echo:
-	echo ${BINARY}.${VERSION}
+	@echo ${BINARY}.${VERSION}
 
-.PHONY: test
-test:
-	@# go test ./... -v
-	go test ./pkg/... -v
+.PHONY: deps
+deps:
+	@rm -rf vendor/
+	@# go get -u
+	@go get -t -u -d -v ./...
+	@go mod tidy
+	@go mod vendor
 
 .PHONY: fmt
 fmt:
 	go fmt ./...
 
-.PHONY: deps
-deps:
-	@# go get -u
-	@go get -t -d -v ./...
-	@go mod tidy
-	@go mod vendor
+.PHONY: test
+test: fmt
+	@go test ./...
 
-.PHONY: docker
-docker:
-	@aio/scripts/docker.sh
+.PHONY: testv
+testv: fmt
+	@ go test ./... -v
+
+.PHONY: cover
+cover:
+	@aio/scripts/cover --html
+	@aio/scripts/cover
+
+.PHONY: run
+run:
+	go run main.go gen aio/example/short.json
 
 .PHONY: clean
 clean:
@@ -39,6 +51,6 @@ build:
 	@#GOOS=darwin GOARCH=amd64 go build -o ${BINARY}.${VERSION}-darwin-amd64 main.go
 	@#GOOS=windows GOARCH=amd64 go build -o ${BINARY}.${VERSION}-windows-amd64 main.go
 
-.PHONY: run
-run:
-	go run main.go gen aio/example/short.json
+.PHONY: docker
+docker:
+	@aio/scripts/docker.sh

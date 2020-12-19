@@ -21,6 +21,6 @@ func init() {
 }
 
 // Execute swage
-func Execute() {
-	swageCmd.Execute()
+func Execute() error {
+	return swageCmd.Execute()
 }

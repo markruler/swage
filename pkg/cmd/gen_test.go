@@ -9,8 +9,31 @@ import (
 )
 
 func TestCommandGen(t *testing.T) {
-	_, err := executeCommand(genCmd, "--output", "--verbose")
-	assert.Nil(t, err)
+	var output string
+	var err error
+	output, err = executeCommand(genCmd, "../../aio/testdata/v2.0.json", "--output", "swage.xlsx")
+	assert.NoError(t, err)
+	assert.Empty(t, output)
+	output, err = executeCommand(genCmd, "../../aio/testdata/v2.0.json")
+	assert.NoError(t, err)
+	assert.Empty(t, output)
+	output, err = executeCommand(genCmd, "--help")
+	assert.NoError(t, err)
+	assert.Empty(t, output)
+}
+
+func TestGenRun(t *testing.T) {
+	var err error
+	err = genRun(genCmd, []string{})
+	assert.Error(t, err)
+	err = genRun(genCmd, []string{"../../aio/testdata/v2.0.js"})
+	assert.Error(t, err)
+	err = genRun(genCmd, []string{"../../aio/testdata/v2.0.json"})
+	if err := genCmd.Flags().Set("verbose", "true"); err != nil {
+		t.Error(err)
+	}
+	err = genRun(genCmd, []string{"../../aio/testdata/v2.0.json"})
+	assert.NoError(t, err)
 }
 
 // https://github.com/spf13/cobra/blob/v1.1.1/command_test.go

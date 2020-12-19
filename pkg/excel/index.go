@@ -17,14 +17,17 @@ var (
 )
 
 func createIndexSheet(swaggerAPI *spec.SwaggerAPI) *excelize.File {
+	if len(swaggerAPI.Paths) == 0 {
+		return nil
+	}
 	xl := excelize.NewFile()
 	err := xl.SetDocProps(&excelize.DocProperties{
-		Category: "OpenAPI",
-		Created: time.Now().String(),
-		Modified: time.Now().String(),
-		Creator: "Swage",
+		Category:    "OpenAPI",
+		Created:     time.Now().String(),
+		Modified:    time.Now().String(),
+		Creator:     "Swage",
 		Description: "Open API Specification",
-		Identifier: "xlsx",
+		Identifier:  "xlsx",
 	})
 	if err != nil {
 		log.Fatalln(err)
@@ -67,7 +70,7 @@ func createIndexSheet(swaggerAPI *spec.SwaggerAPI) *excelize.File {
 		paths = append(paths, path)
 	}
 	sort.Strings(paths)
-	
+
 	// Set Data
 	row := 0
 	for _, path := range paths {

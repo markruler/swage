@@ -8,9 +8,16 @@ import (
 )
 
 func TestParseSpecV2(t *testing.T) {
-	path := "../../aio/testdata/v2.0.json"
-	t.Logf("Swage parse... %s\n", path)
-	api, err := Parse(path)
+	fakePath := "../../aio/testdata/fake.js"
+	api, err := Parse(fakePath)
+	assert.Error(t, err)
+
+	fakeJSON := "../../aio/testdata/fake.json"
+	api, err = Parse(fakeJSON)
+	assert.Error(t, err)
+
+	realJSONPath := "../../aio/testdata/v2.0.json"
+	api, err = Parse(realJSONPath)
 
 	assert.Equal(t, nil, err, "Error should be nil")
 	assert.Equal(t, "2.0", api.Swagger)
@@ -181,24 +188,24 @@ func TestParseSpecV2(t *testing.T) {
 	assert.Equal(t, categoryDefinition, api.Definitions["Category"])
 
 	petDefinition := spec.Definition{
-		Type: "object",
+		Type:     "object",
 		Required: []string{"name", "photoUrls"},
 		Properties: map[string]spec.Property{
 			"id": {
-				Type: "integer",
+				Type:   "integer",
 				Format: "int64",
 			},
 			"category": {
 				Ref: "#/definitions/Category",
 			},
 			"name": {
-				Type: "string",
+				Type:    "string",
 				Example: "doggie",
 			},
 			"photoUrls": {
 				Type: "array",
 				XML: spec.XML{
-					Name: "photoUrl",
+					Name:    "photoUrl",
 					Wrapped: true,
 				},
 				Items: spec.Items{
@@ -206,14 +213,14 @@ func TestParseSpecV2(t *testing.T) {
 				},
 			},
 			"age": {
-				Type: "integer",
-				Format: "int32",
+				Type:    "integer",
+				Format:  "int32",
 				Minimum: 1,
 			},
 			"tags": {
 				Type: "array",
 				XML: spec.XML{
-					Name: "tag",
+					Name:    "tag",
 					Wrapped: true,
 				},
 				Items: spec.Items{
@@ -221,9 +228,9 @@ func TestParseSpecV2(t *testing.T) {
 				},
 			},
 			"status": {
-				Type: "string",
+				Type:        "string",
 				Description: "pet status in the store",
-				Enum: []string{"available", "pending", "sold"},
+				Enum:        []string{"available", "pending", "sold"},
 			},
 		},
 		XML: spec.XML{
@@ -231,21 +238,21 @@ func TestParseSpecV2(t *testing.T) {
 		},
 	}
 	assert.Equal(t, petDefinition, api.Definitions["Pet"])
-	
+
 	apiResponseDefinition := spec.Definition{
 		Type: "object",
 		Properties: map[string]spec.Property{
 			"code": {
-				Type: "integer",
+				Type:   "integer",
 				Format: "int32",
-				Enum: []string{"00", "11", "22"},
+				Enum:   []string{"00", "11", "22"},
 			},
 			"type": {
-				Type: "string",
+				Type:    "string",
 				Example: "test type",
 			},
 			"message": {
-				Type: "string",
+				Type:    "string",
 				Example: "test-msg",
 			},
 		},
@@ -255,24 +262,24 @@ func TestParseSpecV2(t *testing.T) {
 	apiKey := spec.SecurityDefinition{
 		Type: "apiKey",
 		Name: "api_key",
-		In: "header",
+		In:   "header",
 	}
 	assert.Equal(t, apiKey, api.SecurityDefinitions["api_key"])
 
 	petstoreAuth := spec.SecurityDefinition{
-		Type: "oauth2",
+		Type:             "oauth2",
 		AuthorizationURL: "http://petstore.swagger.io/oauth/dialog",
-		Flow: "implicit",
+		Flow:             "implicit",
 		Scopes: map[string]string{
 			"write:pets": "modify pets in your account",
-			"read:pets": "read your pets",
+			"read:pets":  "read your pets",
 		},
 	}
 	assert.Equal(t, petstoreAuth, api.SecurityDefinitions["petstore_auth"])
 
 	externalDocs := spec.ExternalDocs{
 		Description: "Find out more about Swagger",
-		URL: "http://swagger.io",
+		URL:         "http://swagger.io",
 	}
 	assert.Equal(t, externalDocs, api.ExternalDocs)
 }

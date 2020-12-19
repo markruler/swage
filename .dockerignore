@@ -1,5 +1,11 @@
-scripts/
+.cover/
+.vscode/
+aio/
+pkg/
+vendor/
+.gitignore
 go.mod
 go.sum
 main.go
 Makefile
+oas-version.jpg

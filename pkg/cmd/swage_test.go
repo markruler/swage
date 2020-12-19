@@ -8,5 +8,10 @@ import (
 
 func TestCommandSwage(t *testing.T) {
 	_, err := executeCommand(swageCmd, "--help")
-	assert.Nil(t, err)
+	assert.NoError(t, err)
+}
+
+func TestExecuteCommand(t *testing.T) {
+	err := Execute()
+	assert.NoError(t, err)
 }

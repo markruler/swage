@@ -1,6 +1,7 @@
 package excel
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -11,7 +12,7 @@ import (
 	"github.com/markruler/swage/pkg/style"
 )
 
-func createAPISheet(xl *excelize.File, path, operation string, detail spec.Operation, definitions map[string]spec.Definition, sheetName int) {
+func createAPISheet(xl *excelize.File, path, operation string, detail spec.Operation, definitions map[string]spec.Definition, sheetName int) error {
 	worksheetName := strconv.Itoa(sheetName)
 	xl.NewSheet(worksheetName)
 	xl.SetColWidth(worksheetName, "A", "A", 12.0)
@@ -120,7 +121,7 @@ func createAPISheet(xl *excelize.File, path, operation string, detail spec.Opera
 
 	response := detail.Responses["200"]
 	if reflect.DeepEqual(spec.Response{}, response) {
-		return
+		return errors.New("Response is empty")
 	}
 
 	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "body")
@@ -139,4 +140,6 @@ func createAPISheet(xl *excelize.File, path, operation string, detail spec.Opera
 	// xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), response.Description)
 	xl.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "E", row), style.Center(xl))
 	row++
+
+	return nil
 }

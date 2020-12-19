@@ -2,7 +2,6 @@ package excel
 
 import (
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/markruler/swage/pkg/spec"
@@ -13,12 +12,12 @@ const (
 )
 
 // Save ...
-func Save(swaggerAPI *spec.SwaggerAPI, outputFilePath string, verbose bool) error {
+func Save(swaggerAPI *spec.SwaggerAPI, outputFilePath string, verbose bool) (string, error) {
 	if swaggerAPI == nil {
-		return errors.New("OpenAPI should not be nil")
+		return "", errors.New("OpenAPI should not be nil")
 	}
 	if swaggerAPI.Swagger == "" {
-		return errors.New("OpenAPI version should not be nil")
+		return "", errors.New("OpenAPI version should not be nil")
 	}
 	xl := createIndexSheet(swaggerAPI)
 	var path string
@@ -32,7 +31,7 @@ func Save(swaggerAPI *spec.SwaggerAPI, outputFilePath string, verbose bool) erro
 		log.Fatalln(err)
 	}
 	if verbose {
-		fmt.Printf("OUTPUT >>> %s\n", path)
+		return path, nil
 	}
-	return nil
+	return "", nil
 }

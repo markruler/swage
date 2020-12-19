@@ -9,11 +9,48 @@ import (
 
 func TestSave(t *testing.T) {
 	var err error
-	err = Save(&spec.SwaggerAPI{}, "", false)
+	_, err = Save(nil, "", false)
 	assert.Error(t, err)
 
-	err = Save(&spec.SwaggerAPI{
+	_, err = Save(&spec.SwaggerAPI{}, "", false)
+	assert.Error(t, err)
+
+	path, err := Save(&spec.SwaggerAPI{
 		Swagger: "2.0",
-	}, "", false)
+		Paths: map[string]map[string]spec.Operation{
+			"/test": {
+				"get": {
+					Summary: "test",
+				},
+			},
+		},
+	}, "", true)
 	assert.NoError(t, err)
+	assert.Equal(t, "swage.xlsx", path)
+
+	path, err = Save(&spec.SwaggerAPI{
+		Swagger: "2.0",
+		Paths: map[string]map[string]spec.Operation{
+			"/test": {
+				"get": {
+					Summary: "test",
+				},
+			},
+		},
+	}, "excel_test.xlsx", true)
+	assert.NoError(t, err)
+	assert.Equal(t, "excel_test.xlsx", path)
+
+	path, err = Save(&spec.SwaggerAPI{
+		Swagger: "2.0",
+		Paths: map[string]map[string]spec.Operation{
+			"/test": {
+				"get": {
+					Summary: "test",
+				},
+			},
+		},
+	}, "excel_test.xlsx", false)
+	assert.NoError(t, err)
+	assert.Equal(t, "", path)
 }
