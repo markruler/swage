@@ -55,18 +55,18 @@ type ExternalDocs struct {
 
 // Operation ...
 type Operation struct {
-	Tags         []string            `json:"tags"`
-	Summary      string              `json:"summary"`
-	Description  string              `json:"description"`
-	ExternalDocs ExternalDocs        `json:"externalDocs"`
-	OperationID  string              `json:"operationId"`
-	Consumes     []string            `json:"consumes"`
-	Produces     []string            `json:"produces"`
-	Parameters   []Parameters        `json:"parameters"`
-	Responses    map[string]Response `json:"responses"`
-	Schemes      []string            `json:"schemes"`
-	Deprecated   string              `json:"deprecated"`
-	Security     map[string][]string `json:"security"`
+	Tags         []string              `json:"tags"`
+	Summary      string                `json:"summary"`
+	Description  string                `json:"description"`
+	ExternalDocs ExternalDocs          `json:"externalDocs"`
+	OperationID  string                `json:"operationId"`
+	Consumes     []string              `json:"consumes"`
+	Produces     []string              `json:"produces"`
+	Parameters   []Parameters          `json:"parameters"`
+	Responses    map[string]Response   `json:"responses"`
+	Schemes      []string              `json:"schemes"`
+	Deprecated   string                `json:"deprecated"`
+	Security     []map[string][]string `json:"security"`
 }
 
 // Parameters ...
@@ -80,7 +80,7 @@ type Parameters struct {
 	Schema           Schema        `json:"schema"`
 	Format           string        `json:"format"`
 	AllowEmptyValue  bool          `json:"allowEmptyValue"`
-	Items            []Items       `json:"items"`            // Required if type is “array”.
+	Items            Items         `json:"items"`            // Required if type is “array”.
 	CollectionFormat string        `json:"collectionFormat"` // ["csv", "ssv", "tsv", "pipes", "multi"]
 	Default          interface{}   `json:"default"`
 	Maximum          float32       `json:"maximum"`
@@ -118,7 +118,7 @@ type Schema struct {
 	Ref                  string              `json:"$ref"`
 	Items                Items               `json:"items"`
 	Properties           map[string]Property `json:"properties"`
-	AdditionalProperties map[string]Property `json:"additionalProperties"`
+	AdditionalProperties Property            `json:"additionalProperties"`
 	AllOf                []interface{}       `json:"allOf"` // TODO: any
 }
 
@@ -155,7 +155,7 @@ type Definition struct {
 	Type       string              `json:"type"`
 	Required   []string            `json:"required"`
 	Properties map[string]Property `json:"properties"`
-	XML        map[string]XML      `json:"xml"`
+	XML        XML                 `json:"xml"`
 }
 
 // Property ...

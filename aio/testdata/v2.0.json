@@ -47,7 +47,7 @@
     "application/vnd.github.v3+json"
   ],
   "produces": [
-    "text/plain; charset=utf-8",
+    "text/plain",
     "application/json",
     "application/vnd.github+json",
     "application/vnd.github.v3+json"
@@ -93,7 +93,10 @@
             "description": "Internal Server Error",
             "schema": {
               "type": "object",
-              "additionalProperties": true
+              "additionalProperties": {
+                "type": "integer",
+                "format": "int32"
+              }
             }
           }
         },
@@ -107,7 +110,7 @@
     "/hello/swage": {
       "get": {
         "description": "swage description!",
-        "consumes": ["*/*"],
+        "consumes": ["application/vnd.github.v3+json"],
         "produces": ["application/json"],
         "tags": ["swage"],
         "summary": "swage summary!",
@@ -125,7 +128,10 @@
             "description": "Internal Server Error",
             "schema": {
               "type": "object",
-              "additionalProperties": true
+              "additionalProperties": {
+                "type": "integer",
+                "format": "int32"
+              }
             }
           }
         },
