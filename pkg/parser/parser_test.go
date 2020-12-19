@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestParseSwaggerApiV2(t *testing.T) {
+func TestParseSpecV2(t *testing.T) {
 	path := "../../aio/testdata/v2.0.json"
 	t.Logf("Swage parse... %s\n", path)
 	api, err := Parse(path)
@@ -277,6 +277,6 @@ func TestParseSwaggerApiV2(t *testing.T) {
 	assert.Equal(t, externalDocs, api.ExternalDocs)
 }
 
-// func TestParseOASApiV3(t *testing.T) {
+// func TestParseSpecV3(t *testing.T) {
 // 	path := "../../aio/testdata/v3.0.json"
 // }

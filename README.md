@@ -17,10 +17,6 @@
 >   The extensions are specified using conventions provided by the Office Open XML file formats
 >   described in [ISO/IEC29500-3:2015](https://www.iso.org/standard/65533.html).
 
-## If you are familiar with Node.js
-
-- [Swage in Node.js](https://github.com/markruler/swage-js)
-
 ## Development
 
 ```bash
@@ -76,6 +72,7 @@ A Guide to What’s New in OpenAPI 3.0 - Ryan Pinkham<br>
 <figure>
 
 - [x] Support OAS [v2.0](http://spec.openapis.org/oas/v2.0)
-- [ ] Release Swage v1.0.0
+- [ ] Improve code coverage
 - [ ] Support OAS [v3.0 (latest)](http://spec.openapis.org/oas/v3.0.3)
 - [ ] Support OAS YAML format
+- [ ] Release Swage v1.0.0
