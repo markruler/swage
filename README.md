@@ -70,21 +70,14 @@ aio/scripts/docker.ps1
 | 1.1       | 2012-08-22 | Release of Swagger 1.1                            |
 | 1.0       | 2011-08-10 | First release of the Swagger Specification        |
 
+![OAS Version](./oas-version.jpg)
+*[A Guide to What’s New in OpenAPI 3.0](https://swagger.io/blog/news/whats-new-in-openapi-3-0/) - Ryan Pinkham*
+
 ## Roadmap
 
-<figure>
-  <img src="./oas-version.jpg" alt="OAS Version">
-  <figcaption>
-    <i>
-A Guide to What’s New in OpenAPI 3.0 - Ryan Pinkham<br>
-(https://swagger.io/blog/news/whats-new-in-openapi-3-0/))
-    </i>
-  </figcaption>
-<figure>
-<br>
-
 - [x] Support OAS [v2.0](http://spec.openapis.org/oas/v2.0)
+- [ ] Support OAS [v3.0 (latest)](http://spec.openapis.org/oas/v3.0.3): Create a new tag
 - [ ] Improve code coverage
-- [ ] Support OAS [v3.0 (latest)](http://spec.openapis.org/oas/v3.0.3)
+- [ ] Effectively organize all data in Excel
 - [ ] Support OAS YAML format
 - [ ] Release Swage v1.0.0

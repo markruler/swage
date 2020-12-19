@@ -5,6 +5,7 @@ import (
 	"log"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/markruler/swage/pkg/spec"
@@ -17,6 +18,17 @@ var (
 
 func createIndexSheet(swaggerAPI *spec.SwaggerAPI) *excelize.File {
 	xl := excelize.NewFile()
+	err := xl.SetDocProps(&excelize.DocProperties{
+		Category: "OpenAPI",
+		Created: time.Now().String(),
+		Modified: time.Now().String(),
+		Creator: "Swage",
+		Description: "Open API Specification",
+		Identifier: "xlsx",
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
 	xl.SetSheetName("Sheet1", indexSheetName)
 	xl.SetPanes(indexSheetName, `{
     "freeze": true,
@@ -72,7 +84,7 @@ func createIndexSheet(swaggerAPI *spec.SwaggerAPI) *excelize.File {
 		}
 	}
 
-	err := xl.AddTable(indexSheetName, "A1", fmt.Sprintf("%s%d", "E", row+1), `{
+	err = xl.AddTable(indexSheetName, "A1", fmt.Sprintf("%s%d", "E", row+1), `{
     "table_name": "table",
     "table_style": "TableStyleMedium21",
     "show_first_column": false,

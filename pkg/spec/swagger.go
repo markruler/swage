@@ -4,7 +4,7 @@ package spec
 // http://spec.openapis.org/oas/v2.0
 type SwaggerAPI struct {
 	Swagger             string                          `json:"swagger"`
-	Info                V2Info                          `json:"info"`
+	Info                Info                            `json:"info"`
 	Host                string                          `json:"host"`
 	BasePath            string                          `json:"basePath"`
 	Tags                []Tag                           `json:"tags"`
@@ -17,8 +17,8 @@ type SwaggerAPI struct {
 	ExternalDocs        ExternalDocs                    `json:"externalDocs"`
 }
 
-// V2Info ...
-type V2Info struct {
+// Info ...
+type Info struct {
 	Description    string  `json:"description"`
 	Version        string  `json:"version"`
 	Title          string  `json:"title"`

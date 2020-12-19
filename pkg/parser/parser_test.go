@@ -276,7 +276,3 @@ func TestParseSpecV2(t *testing.T) {
 	}
 	assert.Equal(t, externalDocs, api.ExternalDocs)
 }
-
-// func TestParseSpecV3(t *testing.T) {
-// 	path := "../../aio/testdata/v3.0.json"
-// }

@@ -9,9 +9,7 @@ import (
 )
 
 func TestCommandGen(t *testing.T) {
-	_, err := executeCommand(swageCmd, "--help")
-	assert.Nil(t, err)
-	_, err = executeCommand(genCmd, "--output", "--verbose")
+	_, err := executeCommand(genCmd, "--output", "--verbose")
 	assert.Nil(t, err)
 }
 

@@ -30,7 +30,10 @@ ex) swage gen aio/example/example.json -o $HOME/swage.xlsx
 		if err != nil {
 			log.Fatalf("%v\n", err)
 		}
-		excel.Save(swaggerAPI, outputPath, verbose)
+		err = excel.Save(swaggerAPI, outputPath, verbose)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 

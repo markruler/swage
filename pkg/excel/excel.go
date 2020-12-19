@@ -1,6 +1,7 @@
 package excel
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -12,13 +13,14 @@ const (
 )
 
 // Save ...
-func Save(swaggerAPI *spec.SwaggerAPI, outputFilePath string, verbose bool) {
+func Save(swaggerAPI *spec.SwaggerAPI, outputFilePath string, verbose bool) error {
 	if swaggerAPI == nil {
-		return
+		return errors.New("OpenAPI should not be nil")
+	}
+	if swaggerAPI.Swagger == "" {
+		return errors.New("OpenAPI version should not be nil")
 	}
 	xl := createIndexSheet(swaggerAPI)
-	// fmt.Println(xl)
-	// fmt.Println(xl.GetDocProps())
 	var path string
 	if outputFilePath != "" {
 		path = outputFilePath
@@ -32,4 +34,5 @@ func Save(swaggerAPI *spec.SwaggerAPI, outputFilePath string, verbose bool) {
 	if verbose {
 		fmt.Printf("OUTPUT >>> %s\n", path)
 	}
+	return nil
 }
