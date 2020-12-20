@@ -4,6 +4,21 @@ import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 )
 
+var (
+	IDLeft   int
+	IDCenter int
+	IDTitle  int
+	IDButton int
+)
+
+func init() {
+	xl := excelize.NewFile()
+	IDLeft = Left(xl)     // 1
+	IDCenter = Center(xl) // 2
+	IDTitle = Title(xl)   // 3
+	IDButton = Button(xl) // 4
+}
+
 // Left ...
 func Left(xl *excelize.File) int {
 	styleID, err := xl.NewStyle(&excelize.Style{

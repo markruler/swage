@@ -22,11 +22,11 @@ fmt:
 
 .PHONY: test
 test: fmt
-	@go test ./...
+	go test ./... --cover
 
 .PHONY: testv
 testv: fmt
-	@ go test ./... -v
+	go test ./... -v --cover
 
 .PHONY: cover
 cover:

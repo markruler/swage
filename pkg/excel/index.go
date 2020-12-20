@@ -55,7 +55,8 @@ func createIndexSheet(swaggerAPI *spec.SwaggerAPI) *excelize.File {
 	xl.SetColStyle(indexSheetName, "C", style.Center(xl))
 	xl.SetColStyle(indexSheetName, "D", style.Left(xl))
 	xl.SetColStyle(indexSheetName, "E", style.Left(xl))
-	xl.SetColWidth(indexSheetName, "D", "E", 45.0)
+	xl.SetColWidth(indexSheetName, "B", "B", 16.4)
+	xl.SetColWidth(indexSheetName, "D", "E", 60.0)
 
 	// Set Header
 	xl.SetCellStr(indexSheetName, "A1", "#")
