@@ -12,26 +12,21 @@ func TestParseSpecV2(t *testing.T) {
 	var parser Parser
 
 	fakePath := "../../aio/testdata/json/fake.js"
-	parser = Parser{
-		JsonPath: fakePath,
-	}
+	parser = *New(fakePath)
 	api, err := parser.Parse()
 	assert.Error(t, err)
 
 	fakeJSON := "../../aio/testdata/json/fake.json"
-	parser = Parser{
-		JsonPath: fakeJSON,
-	}
+	parser = *New(fakeJSON)
 	api, err = parser.Parse()
 	assert.Error(t, err)
 
 	realJSONPath := "../../aio/testdata/json/dev.json"
-	parser = Parser{
-		JsonPath: realJSONPath,
-	}
+	parser = *New(realJSONPath)
 	api, err = parser.Parse()
-	assert.Equal(t, "Swagger Sample App", api.Info.InfoProps.Title)
 	assert.NoError(t, err)
+
+	assert.Equal(t, "Swagger Sample App", api.Info.InfoProps.Title)
 	assert.Equal(t, "2.0", api.Swagger)
 	assert.Equal(t, "Swagger Sample App", api.Info.Title)
 	assert.Equal(t, "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md", api.Info.Description)

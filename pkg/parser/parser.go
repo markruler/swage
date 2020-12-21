@@ -5,24 +5,23 @@ import (
 	"github.com/go-openapi/spec"
 )
 
+// Parser ...
 type Parser struct {
-	JsonPath string
+	sourcePath string
+}
+
+// New returns a Parser instance with a resource path
+func New(path string) *Parser {
+	return &Parser{
+		sourcePath: path,
+	}
 }
 
 // Parse ...
 func (p *Parser) Parse() (*spec.Swagger, error) {
-	doc, err := loads.Spec(p.JsonPath)
+	doc, err := loads.Spec(p.sourcePath)
 	if err != nil {
 		return nil, err
 	}
-	// an := analysis.New(doc.Spec())
-	// opt := analysis.FlattenOpts{
-	// 	Spec: an, BasePath: p.JsonPath,
-	// 	Expand: true,
-	// }
-	// erf := analysis.Flatten(opt)
-	// if erf != nil {
-	// 	return nil, erf
-	// }
 	return doc.Spec(), nil
 }

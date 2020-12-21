@@ -34,21 +34,27 @@ func genRun(cmd *cobra.Command, args []string) error {
 	if verbose {
 		fmt.Printf(">>> INPUT %s\n", args[0])
 	}
-	parser := parser.Parser{
-		JsonPath: args[0],
-	}
-	swaggerAPI, err := parser.Parse()
+
+	p := parser.New(args[0])
+	var err error
+
+	swaggerAPI, err := p.Parse()
 	if err != nil {
 		return err
 	}
-	e := excel.New(outputPath)
-	e.Verbose = verbose
-	path, err := e.Save(swaggerAPI)
-	if err != nil {
+
+	xl := excel.New(outputPath)
+
+	if err = xl.Generate(swaggerAPI); err != nil {
 		return err
 	}
+
+	if err := xl.File.SaveAs(xl.OutputFilePath); err != nil {
+		return err
+	}
+
 	if verbose {
-		fmt.Printf("OUTPUT >>> %s\n", path)
+		fmt.Printf("OUTPUT >>> %s\n", xl.OutputFilePath)
 	}
 	return nil
 }

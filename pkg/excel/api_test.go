@@ -48,7 +48,7 @@ func TestCreateAPISheet(t *testing.T) {
 											Schemas: []spec.Schema{
 												{
 													SchemaProps: spec.SchemaProps{
-														Ref: spec.Ref{},
+														Ref: spec.MustCreateRef("#/definitions/Test"),
 													},
 												},
 											},
@@ -89,8 +89,7 @@ func TestCreateAPISheet(t *testing.T) {
 	}, nil, 1)
 	assert.NoError(t, err)
 
-	p := &parser.Parser{}
-	p.JsonPath = "../../aio/testdata/json/dev.json"
+	p := parser.New("../../aio/testdata/json/dev.json")
 	xl.SwaggerSpec, _ = p.Parse()
 	xl.createAPISheet("", "", nil, nil, 1)
 }

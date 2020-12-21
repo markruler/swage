@@ -7,18 +7,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSave(t *testing.T) {
+func TestGenerate(t *testing.T) {
 	xl := New("")
 	var err error
 
-	_, err = xl.Save(nil)
+	err = xl.Generate(nil)
 	assert.Error(t, err)
 
-	_, err = xl.Save(&spec.Swagger{})
+	err = xl.Generate(&spec.Swagger{})
 	assert.Error(t, err)
 
-	xl.Verbose = true
-	path, err := xl.Save(&spec.Swagger{
+	err = xl.Generate(&spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Swagger: "2.0",
 			Paths: &spec.Paths{
@@ -37,11 +36,10 @@ func TestSave(t *testing.T) {
 		},
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, "swage.xlsx", path)
+	assert.Equal(t, "swage.xlsx", xl.OutputFilePath)
 
 	xl.OutputFilePath = "excel_test.xlsx"
-	// xl = New("excel_test.xlsx")
-	path, err = xl.Save(&spec.Swagger{
+	err = xl.Generate(&spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Swagger: "2.0",
 			Paths: &spec.Paths{
@@ -60,5 +58,4 @@ func TestSave(t *testing.T) {
 		},
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, "excel_test.xlsx", path)
 }

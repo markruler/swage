@@ -26,7 +26,7 @@ func (xl *Excel) createAPISheet(path, method string, operation *spec.Operation, 
 	if rowHeader == rowReuqest {
 		return errors.New("Something wrong happened")
 	}
-	rowResponse := xl.setAPISheetResponse(rowReuqest, worksheetName)
+	rowResponse := xl.setAPISheetResponse(rowReuqest, worksheetName, operation)
 	if rowReuqest == rowResponse {
 		return errors.New("Something wrong happened")
 	}
@@ -100,8 +100,9 @@ func (xl *Excel) setAPISheetRequest(row int, worksheetName string, operation *sp
 			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), param.Type)
 		}
 
+		// TODO:
 		if param.Schema != nil {
-			if !reflect.DeepEqual(param.Schema.Ref, spec.Ref{}) {
+			if !reflect.DeepEqual(spec.Ref{}, param.Schema.Ref) {
 				// lastIndex := strings.LastIndex(param.Schema.Ref, "/")
 				// xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), param.Schema.Ref[lastIndex+1:])
 				definitionName := strings.TrimLeft(param.Schema.Ref.GetPointer().String(), "/")
@@ -109,8 +110,7 @@ func (xl *Excel) setAPISheetRequest(row int, worksheetName string, operation *sp
 				definition := xl.SwaggerSpec.Definitions[definitionName]
 				xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), strings.Join(definition.Type, ";"))
 			}
-			if !reflect.DeepEqual(param.Schema.Items, spec.Items{}) {
-				// TODO: array definition
+			if !reflect.DeepEqual(spec.Items{}, param.Schema.Items) {
 				// definitionName := strings.TrimLeft(param.Schema.Ref.GetPointer().String(), "/")
 				// xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), definitionName)
 				// definition := xl.SwaggerSpec.Definitions[definitionName]
@@ -131,11 +131,10 @@ func (xl *Excel) setAPISheetRequest(row int, worksheetName string, operation *sp
 		xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "E", row), xl.Style.Center)
 		row++
 	}
-	row++
-	return row
+	return row + 1
 }
 
-func (xl *Excel) setAPISheetResponse(row int, worksheetName string) int {
+func (xl *Excel) setAPISheetResponse(row int, worksheetName string, operation *spec.Operation) int {
 	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "RESPONSE")
 	xl.File.MergeCell(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row))
 	xl.File.SetRowHeight(worksheetName, row, 15)
@@ -151,27 +150,85 @@ func (xl *Excel) setAPISheetResponse(row int, worksheetName string) int {
 	xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row), xl.Style.Center)
 	row++
 
-	// response := detail.Responses["200"]
-	// if reflect.DeepEqual(spec.Response{}, response) {
-	// 	return errors.New("Response is empty")
-	// }
-
-	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "body")
-	xl.File.SetCellInt(worksheetName, fmt.Sprintf("%s%d", "D", row), 1)
-	// TODO: Set definitions
-	// if response.Schema.Type == "array" {
-	// 	lastIndex := strings.LastIndex(response.Schema.Items.Ref, "/")
-	// 	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), response.Schema.Items.Ref[lastIndex+1:])
-	// 	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), response.Schema.Type)
-	// } else {
-	// 	lastIndex := strings.LastIndex(response.Schema.Ref, "/")
-	// 	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), response.Schema.Ref[lastIndex+1:])
-	// 	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), "object")
-	// }
-	// TODO: Set description
-	// xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), response.Description)
+	// TODO:
+	response := operation.Responses
 	xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "E", row), xl.Style.Center)
-	row++
+	// fmt.Println(response == nil)
+	// fmt.Println(reflect.DeepEqual(spec.Response{}, response))
+	if response == nil {
+		return row
+	}
+
+	// fmt.Println(response.StatusCodeResponses)
+	var success spec.Response
+	if _, ok := response.StatusCodeResponses[200]; !ok {
+		return row
+	}
+	success = response.StatusCodeResponses[200]
+	// fmt.Println(success.Ref)
+	// fmt.Println(success.Schema)
+	if success.Schema == nil || &success.Ref == nil {
+		return row
+	}
+
+	// Items.Schemas
+	if success.Schema.Type.Contains("array") {
+		// lastIndex := strings.LastIndex(response.Schema.Items.Ref, "/")
+		// xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), response.Schema.Items.Ref[lastIndex+1:])
+		items := success.Schema.Items
+		// fmt.Println(items)
+		// fmt.Println(items.Schema) // nil
+		if items.Schemas != nil {
+			// fmt.Println("items.Schemas[0]:", items.Schemas[0])
+			// fmt.Println("items.Schemas[0].Ref:", items.Schemas[0].Ref)
+			definitionName := strings.TrimLeft(items.Schemas[0].Ref.GetPointer().String(), "/")
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), definitionName)
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "body")
+			xl.File.SetCellInt(worksheetName, fmt.Sprintf("%s%d", "D", row), 1)
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), "array")
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), success.Description)
+		}
+		return row
+	}
+
+	// Items.Schema
+	// fmt.Println("success.Schema.Properties:", success.Schema.Properties)
+	if success.Schema.Properties != nil {
+		for propertyName, propertySchema := range success.Schema.Properties {
+			// definitionName := strings.TrimLeft(propertySchema.Ref.GetPointer().String(), "/")
+			lastIndex := strings.LastIndex(propertySchema.Ref.GetPointer().String(), "/")
+			definitionName := propertySchema.Ref.GetPointer().String()[lastIndex+1:]
+			if propertySchema.Items != nil {
+				// lastIndex = strings.LastIndex(propertySchema.Items.Schema.Ref.GetPointer().String(), "/")
+				lastIndex = strings.LastIndex(propertySchema.Items.Schema.Ref.GetPointer().String(), "/")
+				definitionName = propertySchema.Items.Schema.Ref.GetPointer().String()[lastIndex+1:]
+			}
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), definitionName)
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "body")
+			xl.File.SetCellInt(worksheetName, fmt.Sprintf("%s%d", "D", row), 1)
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), propertyName)
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), propertySchema.Description)
+		}
+		return row
+	}
+
+	// fmt.Println("success.Schema.Items:", success.Schema.Items)
+	if success.Schema.Items != nil {
+		items := success.Schema.Items
+		// fmt.Println("items.Schema.Type:", items.Schema.Type)
+		if items.Schema.Type != nil {
+			itemType := strings.Join(items.Schema.Type, ";")
+			if success.Schema.Type != nil {
+				schemaType := strings.Join(success.Schema.Type, ";")
+				xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), schemaType)
+			}
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "body")
+			xl.File.SetCellInt(worksheetName, fmt.Sprintf("%s%d", "D", row), 1)
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), itemType)
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), items.Schema.Description)
+		}
+	}
+
 	return row
 }
 
