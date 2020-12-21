@@ -3,47 +3,27 @@ package excel
 import (
 	"testing"
 
-	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/markruler/swage/pkg/spec"
+	"github.com/go-openapi/spec"
+	"github.com/markruler/swage/pkg/parser"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateAPISheet(t *testing.T) {
-	tmp := excelize.NewFile()
+	xl := New("")
 	var err error
 
-	// param.Required
-	err = createAPISheet(tmp, "", "", spec.Operation{
-		Parameters: []spec.Parameters{
-			{
-				Required: true,
-			},
-		},
-	}, nil, 1)
+	err = xl.createAPISheet("", "", &spec.Operation{}, nil, 1)
+	assert.NoError(t, err)
+
+	err = xl.createAPISheet("", "", nil, nil, 1)
 	assert.Error(t, err)
 
-	err = createAPISheet(tmp, "", "", spec.Operation{
-		Parameters: []spec.Parameters{
-			{
-				Required: false,
-			},
-		},
-	}, nil, 1)
-	assert.Error(t, err)
-
-	// reflect.DeepEqual(spec.Response{}, response)
-	err = createAPISheet(tmp, "", "", spec.Operation{}, nil, 1)
-	assert.Error(t, err)
-
-	// response.Schema.Type == "array"
-	err = createAPISheet(tmp, "", "", spec.Operation{
-		Responses: map[string]spec.Response{
-			"200": {
-				Description: "OK",
-				Schema: spec.Schema{
-					Type: "array",
-					Items: spec.Items{
-						Ref: "#/definitions/Test",
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Parameters: []spec.Parameter{
+				{
+					ParamProps: spec.ParamProps{
+						Required: true,
 					},
 				},
 			},
@@ -51,16 +31,66 @@ func TestCreateAPISheet(t *testing.T) {
 	}, nil, 1)
 	assert.NoError(t, err)
 
-	// response.Schema.Type != "array"
-	err = createAPISheet(tmp, "", "", spec.Operation{
-		Responses: map[string]spec.Response{
-			"200": {
-				Description: "OK",
-				Schema: spec.Schema{
-					Type: "integer",
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						200: {
+							ResponseProps: spec.ResponseProps{
+								Description: "OK",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type: spec.StringOrArray{
+											"array",
+										},
+										Items: &spec.SchemaOrArray{
+											Schemas: []spec.Schema{
+												{
+													SchemaProps: spec.SchemaProps{
+														Ref: spec.Ref{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
 	}, nil, 1)
 	assert.NoError(t, err)
+
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						200: {
+							ResponseProps: spec.ResponseProps{
+								Description: "OK",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type: spec.StringOrArray{
+											"integer",
+											"object",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+
+	p := &parser.Parser{}
+	p.JsonPath = "../../aio/testdata/json/dev.json"
+	xl.SwaggerSpec, _ = p.Parse()
+	xl.createAPISheet("", "", nil, nil, 1)
 }

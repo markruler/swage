@@ -1,11 +1,29 @@
 # Swage
 
-> Command line tool to convert OAS JSON data to Excel (.xlsx) format
+> Command line tool to convert OpenAPI specification data (`json`, `yaml`) to Excel (`xlsx`) format
 
 ## Usage
 
 ```bash
-swage gen <json-path>
+swage gen <path>
+```
+
+### Example
+
+- File Path
+
+```bash
+swage gen aio/testdata/composition.swaggo.json
+```
+
+- URL Path
+
+```bash
+swage gen https://api.apis.guru/v2/specs/wikimedia.org/1.0.0/swagger.json
+```
+
+```bash
+swage gen https://github.com/APIs-guru/openapi-directory/raw/master/APIs/wikimedia.org/1.0.0/swagger.yaml
 ```
 
 ## Prerequisite
@@ -54,16 +72,27 @@ aio/scripts/docker.ps1
 ## Dependencies
 
 - [spf13/cobra](https://github.com/spf13/cobra)
+- [go-openapi/spec](https://github.com/go-openapi/spec)
+- [go-openapi/loads](https://github.com/go-openapi/loads)
 - [360EntSecGroup-Skylar/excelize](https://github.com/360EntSecGroup-Skylar/excelize)
 
 ## References
 
 - [SmartBear Documentations](https://swagger.io/docs/specification)
 - [OAI/OpenAPI-Specification](https://github.com/OAI/OpenAPI-Specification)
-- [go-openapi/spec](https://github.com/go-openapi/spec)
-- [APIs.guru - json, yaml](https://apis.guru/browse-apis/)
-  - [GitHub - yaml](https://github.com/APIs-guru/openapi-directory)
-- [swaggo/swag - testdata](https://github.com/swaggo/swag/tree/v1.7.0/testdata)
+- [APIs.guru](https://apis.guru/browse-apis/)
+- [APIs.guru - GitHub](https://github.com/APIs-guru/openapi-directory)
+
+## Roadmap
+
+- [x] Improve code coverage
+- [x] Support data from web server (by `go-openapi/spec`)
+- [x] Support OAS YAML format (by `go-openapi/spec`)
+- [ ] Effectively organize all data in Excel
+- [ ] Release Swage with GoReleaser
+- [x] Support OAS [v2.0](http://spec.openapis.org/oas/v2.0)
+- [ ] Support OAS [v3.0 (latest)](http://spec.openapis.org/oas/v3.0.3): Create a new tag
+  - [go-openapi/spec3](https://github.com/go-openapi/spec3)
 
 ## Open API Specification (OAS) Revision History
 
@@ -87,12 +116,3 @@ aio/scripts/docker.ps1
 
 ![OAS Version](./oas-version.jpg)
 *[A Guide to What’s New in OpenAPI 3.0](https://swagger.io/blog/news/whats-new-in-openapi-3-0/) - Ryan Pinkham*
-
-## Roadmap
-
-- [x] Support OAS [v2.0](http://spec.openapis.org/oas/v2.0)
-- [ ] Support OAS [v3.0 (latest)](http://spec.openapis.org/oas/v3.0.3): Create a new tag
-- [x] Improve code coverage
-- [ ] Effectively organize all data in Excel
-- [ ] Support OAS YAML format
-- [ ] Release Swage with GoReleaser

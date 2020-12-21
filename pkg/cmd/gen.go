@@ -34,11 +34,16 @@ func genRun(cmd *cobra.Command, args []string) error {
 	if verbose {
 		fmt.Printf(">>> INPUT %s\n", args[0])
 	}
-	swaggerAPI, err := parser.Parse(args[0])
+	parser := parser.Parser{
+		JsonPath: args[0],
+	}
+	swaggerAPI, err := parser.Parse()
 	if err != nil {
 		return err
 	}
-	path, err := excel.Save(swaggerAPI, outputPath, verbose)
+	e := excel.New(outputPath)
+	e.Verbose = verbose
+	path, err := e.Save(swaggerAPI)
 	if err != nil {
 		return err
 	}

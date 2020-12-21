@@ -3,54 +3,62 @@ package excel
 import (
 	"testing"
 
-	"github.com/markruler/swage/pkg/spec"
+	"github.com/go-openapi/spec"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSave(t *testing.T) {
+	xl := New("")
 	var err error
-	_, err = Save(nil, "", false)
+
+	_, err = xl.Save(nil)
 	assert.Error(t, err)
 
-	_, err = Save(&spec.SwaggerAPI{}, "", false)
+	_, err = xl.Save(&spec.Swagger{})
 	assert.Error(t, err)
 
-	path, err := Save(&spec.SwaggerAPI{
-		Swagger: "2.0",
-		Paths: map[string]map[string]spec.Operation{
-			"/test": {
-				"get": {
-					Summary: "test",
+	xl.Verbose = true
+	path, err := xl.Save(&spec.Swagger{
+		SwaggerProps: spec.SwaggerProps{
+			Swagger: "2.0",
+			Paths: &spec.Paths{
+				Paths: map[string]spec.PathItem{
+					"/test": {
+						PathItemProps: spec.PathItemProps{
+							Get: &spec.Operation{
+								OperationProps: spec.OperationProps{
+									Summary: "test",
+								},
+							},
+						},
+					},
 				},
 			},
 		},
-	}, "", true)
+	})
 	assert.NoError(t, err)
 	assert.Equal(t, "swage.xlsx", path)
 
-	path, err = Save(&spec.SwaggerAPI{
-		Swagger: "2.0",
-		Paths: map[string]map[string]spec.Operation{
-			"/test": {
-				"get": {
-					Summary: "test",
+	xl.OutputFilePath = "excel_test.xlsx"
+	// xl = New("excel_test.xlsx")
+	path, err = xl.Save(&spec.Swagger{
+		SwaggerProps: spec.SwaggerProps{
+			Swagger: "2.0",
+			Paths: &spec.Paths{
+				Paths: map[string]spec.PathItem{
+					"/test": {
+						PathItemProps: spec.PathItemProps{
+							Get: &spec.Operation{
+								OperationProps: spec.OperationProps{
+									Summary: "test",
+								},
+							},
+						},
+					},
 				},
 			},
 		},
-	}, "excel_test.xlsx", true)
+	})
 	assert.NoError(t, err)
 	assert.Equal(t, "excel_test.xlsx", path)
-
-	path, err = Save(&spec.SwaggerAPI{
-		Swagger: "2.0",
-		Paths: map[string]map[string]spec.Operation{
-			"/test": {
-				"get": {
-					Summary: "test",
-				},
-			},
-		},
-	}, "excel_test.xlsx", false)
-	assert.NoError(t, err)
-	assert.Equal(t, "", path)
 }

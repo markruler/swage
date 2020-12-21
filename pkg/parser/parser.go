@@ -1,30 +1,28 @@
 package parser
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"os"
-
-	"github.com/markruler/swage/pkg/spec"
+	"github.com/go-openapi/loads"
+	"github.com/go-openapi/spec"
 )
 
+type Parser struct {
+	JsonPath string
+}
+
 // Parse ...
-func Parse(jsonPath string) (*spec.SwaggerAPI, error) {
-	jsonFile, err := os.Open(jsonPath)
+func (p *Parser) Parse() (*spec.Swagger, error) {
+	doc, err := loads.Spec(p.JsonPath)
 	if err != nil {
 		return nil, err
 	}
-	defer jsonFile.Close()
-
-	byteValue, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		return nil, err
-	}
-
-	var swaggerAPI spec.SwaggerAPI
-	if err := json.Unmarshal(byteValue, &swaggerAPI); err != nil {
-		return nil, err
-	}
-
-	return &swaggerAPI, err
+	// an := analysis.New(doc.Spec())
+	// opt := analysis.FlattenOpts{
+	// 	Spec: an, BasePath: p.JsonPath,
+	// 	Expand: true,
+	// }
+	// erf := analysis.Flatten(opt)
+	// if erf != nil {
+	// 	return nil, erf
+	// }
+	return doc.Spec(), nil
 }

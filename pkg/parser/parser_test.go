@@ -3,23 +3,35 @@ package parser
 import (
 	"testing"
 
-	"github.com/markruler/swage/pkg/spec"
+	"github.com/go-openapi/spec"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestParseSpecV2(t *testing.T) {
-	fakePath := "../../aio/testdata/fake.js"
-	api, err := Parse(fakePath)
+	var err error
+	var parser Parser
+
+	fakePath := "../../aio/testdata/json/fake.js"
+	parser = Parser{
+		JsonPath: fakePath,
+	}
+	api, err := parser.Parse()
 	assert.Error(t, err)
 
-	fakeJSON := "../../aio/testdata/fake.json"
-	api, err = Parse(fakeJSON)
+	fakeJSON := "../../aio/testdata/json/fake.json"
+	parser = Parser{
+		JsonPath: fakeJSON,
+	}
+	api, err = parser.Parse()
 	assert.Error(t, err)
 
-	realJSONPath := "../../aio/testdata/v2.0.json"
-	api, err = Parse(realJSONPath)
-
-	assert.Equal(t, nil, err, "Error should be nil")
+	realJSONPath := "../../aio/testdata/json/dev.json"
+	parser = Parser{
+		JsonPath: realJSONPath,
+	}
+	api, err = parser.Parse()
+	assert.Equal(t, "Swagger Sample App", api.Info.InfoProps.Title)
+	assert.NoError(t, err)
 	assert.Equal(t, "2.0", api.Swagger)
 	assert.Equal(t, "Swagger Sample App", api.Info.Title)
 	assert.Equal(t, "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md", api.Info.Description)
@@ -34,23 +46,29 @@ func TestParseSpecV2(t *testing.T) {
 
 	tag := []spec.Tag{
 		{
-			Name:        "pet",
-			Description: "Everything about your Pets",
-			ExternalDocs: spec.ExternalDocs{
-				Description: "Find out more",
-				URL:         "http://swagger.io",
+			TagProps: spec.TagProps{
+				Name:        "pet",
+				Description: "Everything about your Pets",
+				ExternalDocs: &spec.ExternalDocumentation{
+					Description: "Find out more",
+					URL:         "http://swagger.io",
+				},
 			},
 		},
 		{
-			Name:        "store",
-			Description: "Access to Petstore orders",
+			TagProps: spec.TagProps{
+				Name:        "store",
+				Description: "Access to Petstore orders",
+			},
 		},
 		{
-			Name:        "user",
-			Description: "Operations about user",
-			ExternalDocs: spec.ExternalDocs{
-				Description: "Find out more about our store",
-				URL:         "http://swagger.io",
+			TagProps: spec.TagProps{
+				Name:        "user",
+				Description: "Operations about user",
+				ExternalDocs: &spec.ExternalDocumentation{
+					Description: "Find out more about our store",
+					URL:         "http://swagger.io",
+				},
 			},
 		},
 	}
@@ -72,212 +90,359 @@ func TestParseSpecV2(t *testing.T) {
 	}
 	assert.Equal(t, produce, api.Produces)
 
-	post := api.Paths["/_hello/_world/{id}"]
-	assert.Equal(t, "world description!", post["post"].Description)
-	assert.Equal(t, []string{"*/*"}, post["post"].Consumes)
-	assert.Equal(t, []string{"application/json", "text/html"}, post["post"].Produces)
-	assert.Equal(t, []string{"world"}, post["post"].Tags)
-	assert.Equal(t, "world summary!", post["post"].Summary)
+	post := api.Paths.Paths["/_hello/_world/{id}"]
+	assert.Equal(t, "world description!", post.Post.Description)
+	assert.Equal(t, []string{"*/*"}, post.Post.Consumes)
+	assert.Equal(t, []string{"application/json", "text/html"}, post.Post.Produces)
+	assert.Equal(t, []string{"world"}, post.Post.Tags)
+	assert.Equal(t, "world summary!", post.Post.Summary)
 
-	postParameters := []spec.Parameters{
+	postParameters := []spec.Parameter{
 		{
-			Name:        "id",
-			In:          "path",
-			Description: "ID of pet to use",
-			Required:    true,
-			Type:        "array",
-			Items: spec.Items{
-				Type: "string",
+			SimpleSchema: spec.SimpleSchema{
+				Type:             "array",
+				Items:            spec.NewItems().Typed("string", ""),
+				CollectionFormat: "csv",
 			},
-			CollectionFormat: "csv",
+			ParamProps: spec.ParamProps{
+				Name:        "id",
+				In:          "path",
+				Description: "ID of pet to use",
+				Required:    true,
+			},
 		},
 		{
-			Name:        "pet",
-			In:          "body",
-			Description: "pet description!",
-			Required:    false,
-			Schema: spec.Schema{
-				Ref: "definitions.json#/Pet",
-			},
-		},
-	}
-	assert.Equal(t, postParameters, post["post"].Parameters)
-
-	postResponses := map[string]spec.Response{
-		"200": {
-			Description: "OK",
-			Schema: spec.Schema{
-				Ref: "#/definitions/Pet",
-			},
-		},
-		"500": {
-			Description: "Internal Server Error",
-			Schema: spec.Schema{
-				Type: "object",
-				AdditionalProperties: spec.Property{
-					Type:   "integer",
-					Format: "int32",
+			ParamProps: spec.ParamProps{
+				Name:        "pet",
+				In:          "body",
+				Description: "pet description!",
+				Required:    false,
+				Schema: &spec.Schema{
+					SchemaProps: spec.SchemaProps{
+						Ref: spec.MustCreateRef("definitions.json#/Pet"),
+					},
 				},
 			},
 		},
 	}
-	assert.Equal(t, postResponses, post["post"].Responses)
+	assert.Equal(t, postParameters, post.Post.Parameters)
+
+	postResponses := &spec.Responses{
+		ResponsesProps: spec.ResponsesProps{
+			StatusCodeResponses: map[int]spec.Response{
+				200: {
+					ResponseProps: spec.ResponseProps{
+						Description: "OK",
+						Schema: &spec.Schema{
+							SchemaProps: spec.SchemaProps{
+								Ref: spec.MustCreateRef("#/definitions/Pet"),
+							},
+						},
+					},
+				},
+				500: {
+					ResponseProps: spec.ResponseProps{
+						Description: "Internal Server Error",
+						Schema: &spec.Schema{
+							SchemaProps: spec.SchemaProps{
+								Type: spec.StringOrArray{
+									"object",
+								},
+								AdditionalProperties: &spec.SchemaOrBool{
+									Allows: true,
+									Schema: &spec.Schema{
+										SchemaProps: spec.SchemaProps{
+											Type: spec.StringOrArray{
+												"integer",
+											},
+											Format: "int32",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	assert.Equal(t, postResponses, post.Post.Responses)
 
 	postSecurity := []map[string][]string{
 		{
 			"petstore_auth": {"write:pets", "read:pets"},
 		},
 	}
-	assert.Equal(t, postSecurity, post["post"].Security)
+	assert.Equal(t, postSecurity, post.Post.Security)
 
-	get := api.Paths["/hello/swage"]
-	assert.Equal(t, "swage description!", get["get"].Description)
-	assert.Equal(t, []string{"application/vnd.github.v3+json"}, get["get"].Consumes)
-	assert.Equal(t, []string{"application/json"}, get["get"].Produces)
-	assert.Equal(t, []string{"swage"}, get["get"].Tags)
-	assert.Equal(t, "swage summary!", get["get"].Summary)
+	get := api.Paths.Paths["/hello/swage"]
+	assert.Equal(t, "swage description!", get.Get.Description)
+	assert.Equal(t, []string{"application/vnd.github.v3+json"}, get.Get.Consumes)
+	assert.Equal(t, []string{"application/json"}, get.Get.Produces)
+	assert.Equal(t, []string{"swage"}, get.Get.Tags)
+	assert.Equal(t, "swage summary!", get.Get.Summary)
 
-	getParameters := []spec.Parameters(nil)
-	assert.Equal(t, getParameters, get["get"].Parameters)
+	getParameters := []spec.Parameter(nil)
+	assert.Equal(t, getParameters, get.Get.Parameters)
 
-	getResponses := map[string]spec.Response{
-		"200": {
-			Description: "OK",
-			Schema: spec.Schema{
-				Type: "array",
-				Items: spec.Items{
-					Ref: "#/definitions/ApiResponse",
+	getResponses := &spec.Responses{
+		ResponsesProps: spec.ResponsesProps{
+			StatusCodeResponses: map[int]spec.Response{
+				200: {
+					ResponseProps: spec.ResponseProps{
+						Description: "OK",
+						Schema: &spec.Schema{
+							SchemaProps: spec.SchemaProps{
+								Type: spec.StringOrArray{
+									"array",
+								},
+								Items: &spec.SchemaOrArray{
+									Schema: &spec.Schema{
+										SchemaProps: spec.SchemaProps{
+											Ref: spec.MustCreateRef("#/definitions/ApiResponse"),
+										},
+									},
+								},
+							},
+						},
+					},
 				},
-			},
-		},
-		"500": {
-			Description: "Internal Server Error",
-			Schema: spec.Schema{
-				Type: "object",
-				AdditionalProperties: spec.Property{
-					Type:   "integer",
-					Format: "int32",
+				500: {
+					ResponseProps: spec.ResponseProps{
+						Description: "Internal Server Error",
+						Schema: &spec.Schema{
+							SchemaProps: spec.SchemaProps{
+								Type: spec.StringOrArray{
+									"object",
+								},
+								AdditionalProperties: &spec.SchemaOrBool{
+									Allows: true,
+									Schema: &spec.Schema{
+										SchemaProps: spec.SchemaProps{
+											Type: spec.StringOrArray{
+												"integer",
+											},
+											Format: "int32",
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
 	}
-	assert.Equal(t, getResponses, get["get"].Responses)
+	assert.Equal(t, getResponses, get.Get.Responses)
 
 	getSecurity := []map[string][]string{
 		{
 			"api_key": {},
 		},
 	}
-	assert.Equal(t, getSecurity, get["get"].Security)
+	assert.Equal(t, getSecurity, get.Get.Security)
 
-	categoryDefinition := spec.Definition{
-		Type: "object",
-		Properties: map[string]spec.Property{
-			"id": {
-				Type:   "integer",
-				Format: "int64",
+	allDefinition := spec.Definitions{
+		"Category": spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: spec.StringOrArray{
+					"object",
+				},
+				Properties: spec.SchemaProperties{
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"integer",
+							},
+							Format: "int64",
+						},
+					},
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"string",
+							},
+						},
+					},
+				},
 			},
-			"name": {
-				Type: "string",
+			SwaggerSchemaProps: spec.SwaggerSchemaProps{
+				XML: &spec.XMLObject{
+					Name: "Category",
+				},
 			},
 		},
-		XML: spec.XML{
-			Name: "Category",
+		"Pet": spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: spec.StringOrArray{
+					"object",
+				},
+				Required: []string{"name", "photoUrls"},
+				Properties: spec.SchemaProperties{
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"integer",
+							},
+							Format: "int64",
+						},
+					},
+					"category": {
+						SchemaProps: spec.SchemaProps{
+							Ref: spec.MustCreateRef("#/definitions/Category"),
+						},
+					},
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"string",
+							},
+						},
+						SwaggerSchemaProps: spec.SwaggerSchemaProps{
+							Example: "doggie",
+						},
+					},
+					"photoUrls": {
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"array",
+							},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type: spec.StringOrArray{
+											"string",
+										},
+									},
+								},
+							},
+						},
+						SwaggerSchemaProps: spec.SwaggerSchemaProps{
+							XML: &spec.XMLObject{
+								Name:    "photoUrls",
+								Wrapped: true,
+							},
+						},
+					},
+					"age": {
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"integer",
+							},
+							Format:  "int32",
+							Minimum: &[]float64{1}[0],
+						},
+					},
+					"tags": {
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"array",
+							},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: spec.MustCreateRef("#/definitions/Tag"),
+									},
+								},
+							},
+						},
+						SwaggerSchemaProps: spec.SwaggerSchemaProps{
+							XML: &spec.XMLObject{
+								Name:    "tags",
+								Wrapped: true,
+							},
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"string",
+							},
+							Description: "pet status in the store",
+							Enum: []interface{}{
+								"available",
+								"pending",
+								"sold",
+							},
+						},
+					},
+				},
+			},
+			SwaggerSchemaProps: spec.SwaggerSchemaProps{
+				XML: &spec.XMLObject{
+					Name: "Pet",
+				},
+			},
+		},
+		"ApiResponse": spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: spec.StringOrArray{
+					"object",
+				},
+				Properties: spec.SchemaProperties{
+					"code": spec.Schema{
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"integer",
+							},
+							Format: "int32",
+							Enum: []interface{}{
+								"00",
+								"11",
+								"22",
+							},
+						},
+					},
+					"type": spec.Schema{
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"string",
+							},
+						},
+						SwaggerSchemaProps: spec.SwaggerSchemaProps{
+							Example: "test type",
+						},
+					},
+					"message": spec.Schema{
+						SchemaProps: spec.SchemaProps{
+							Type: spec.StringOrArray{
+								"string",
+							},
+						},
+						SwaggerSchemaProps: spec.SwaggerSchemaProps{
+							Example: "test-msg",
+						},
+					},
+				},
+			},
 		},
 	}
-	assert.Equal(t, categoryDefinition, api.Definitions["Category"])
 
-	petDefinition := spec.Definition{
-		Type:     "object",
-		Required: []string{"name", "photoUrls"},
-		Properties: map[string]spec.Property{
-			"id": {
-				Type:   "integer",
-				Format: "int64",
-			},
-			"category": {
-				Ref: "#/definitions/Category",
-			},
-			"name": {
-				Type:    "string",
-				Example: "doggie",
-			},
-			"photoUrls": {
-				Type: "array",
-				XML: spec.XML{
-					Name:    "photoUrl",
-					Wrapped: true,
-				},
-				Items: spec.Items{
-					Type: "string",
-				},
-			},
-			"age": {
-				Type:    "integer",
-				Format:  "int32",
-				Minimum: 1,
-			},
-			"tags": {
-				Type: "array",
-				XML: spec.XML{
-					Name:    "tag",
-					Wrapped: true,
-				},
-				Items: spec.Items{
-					Ref: "#/definitions/Tag",
-				},
-			},
-			"status": {
-				Type:        "string",
-				Description: "pet status in the store",
-				Enum:        []string{"available", "pending", "sold"},
-			},
-		},
-		XML: spec.XML{
-			Name: "Pet",
-		},
-	}
-	assert.Equal(t, petDefinition, api.Definitions["Pet"])
+	assert.Equal(t, allDefinition, api.Definitions)
 
-	apiResponseDefinition := spec.Definition{
-		Type: "object",
-		Properties: map[string]spec.Property{
-			"code": {
-				Type:   "integer",
-				Format: "int32",
-				Enum:   []string{"00", "11", "22"},
-			},
-			"type": {
-				Type:    "string",
-				Example: "test type",
-			},
-			"message": {
-				Type:    "string",
-				Example: "test-msg",
-			},
+	apiKey := &spec.SecurityScheme{
+		SecuritySchemeProps: spec.SecuritySchemeProps{
+			Type: "apiKey",
+			Name: "api_key",
+			In:   "header",
 		},
-	}
-	assert.Equal(t, apiResponseDefinition, api.Definitions["ApiResponse"])
-
-	apiKey := spec.SecurityDefinition{
-		Type: "apiKey",
-		Name: "api_key",
-		In:   "header",
 	}
 	assert.Equal(t, apiKey, api.SecurityDefinitions["api_key"])
 
-	petstoreAuth := spec.SecurityDefinition{
-		Type:             "oauth2",
-		AuthorizationURL: "http://petstore.swagger.io/oauth/dialog",
-		Flow:             "implicit",
-		Scopes: map[string]string{
-			"write:pets": "modify pets in your account",
-			"read:pets":  "read your pets",
+	petstoreAuth := &spec.SecurityScheme{
+		SecuritySchemeProps: spec.SecuritySchemeProps{
+			Type:             "oauth2",
+			AuthorizationURL: "http://petstore.swagger.io/oauth/dialog",
+			Flow:             "implicit",
+			Scopes: map[string]string{
+				"write:pets": "modify pets in your account",
+				"read:pets":  "read your pets",
+			},
 		},
 	}
 	assert.Equal(t, petstoreAuth, api.SecurityDefinitions["petstore_auth"])
 
-	externalDocs := spec.ExternalDocs{
+	externalDocs := &spec.ExternalDocumentation{
 		Description: "Find out more about Swagger",
 		URL:         "http://swagger.io",
 	}

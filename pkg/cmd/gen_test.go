@@ -11,10 +11,10 @@ import (
 func TestCommandGen(t *testing.T) {
 	var output string
 	var err error
-	output, err = executeCommand(genCmd, "../../aio/testdata/v2.0.json", "--output", "swage.xlsx")
+	output, err = executeCommand(genCmd, "../../aio/testdata/json/dev.json", "--output", "swage.xlsx")
 	assert.NoError(t, err)
 	assert.Empty(t, output)
-	output, err = executeCommand(genCmd, "../../aio/testdata/v2.0.json")
+	output, err = executeCommand(genCmd, "../../aio/testdata/json/dev.json")
 	assert.NoError(t, err)
 	assert.Empty(t, output)
 	output, err = executeCommand(genCmd, "--help")
@@ -26,13 +26,13 @@ func TestGenRun(t *testing.T) {
 	var err error
 	err = genRun(genCmd, []string{})
 	assert.Error(t, err)
-	err = genRun(genCmd, []string{"../../aio/testdata/v2.0.js"})
+	err = genRun(genCmd, []string{"../../aio/testdata/json/dev.js"})
 	assert.Error(t, err)
-	err = genRun(genCmd, []string{"../../aio/testdata/v2.0.json"})
+	err = genRun(genCmd, []string{"../../aio/testdata/json/dev.json"})
 	if err := genCmd.Flags().Set("verbose", "true"); err != nil {
 		t.Error(err)
 	}
-	err = genRun(genCmd, []string{"../../aio/testdata/v2.0.json"})
+	err = genRun(genCmd, []string{"../../aio/testdata/json/dev.json"})
 	assert.NoError(t, err)
 }
 

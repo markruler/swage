@@ -177,7 +177,7 @@
         "photoUrls": {
           "type": "array",
           "xml": {
-            "name": "photoUrl",
+            "name": "photoUrls",
             "wrapped": true
           },
           "items": {
@@ -192,7 +192,7 @@
         "tags": {
           "type": "array",
           "xml": {
-            "name": "tag",
+            "name": "tags",
             "wrapped": true
           },
           "items": {

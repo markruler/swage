@@ -1,4 +1,4 @@
-package style
+package excel
 
 import (
 	"testing"
@@ -7,16 +7,20 @@ import (
 )
 
 func TestStyleLeft(t *testing.T) {
-	assert.Equal(t, 1, IDLeft)
+	xl := New("")
+	assert.Equal(t, 1, xl.Style.Left)
 }
 func TestStyleCenter(t *testing.T) {
-	assert.Equal(t, 2, IDCenter)
+	xl := New("")
+	assert.Equal(t, 2, xl.Style.Center)
 }
 
 func TestStyleTitle(t *testing.T) {
-	assert.Equal(t, 3, IDTitle)
+	xl := New("")
+	assert.Equal(t, 3, xl.Style.Title)
 }
 
 func TestStyleButton(t *testing.T) {
-	assert.Equal(t, 4, IDButton)
+	xl := New("")
+	assert.Equal(t, 4, xl.Style.Button)
 }

@@ -7,139 +7,181 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/markruler/swage/pkg/spec"
-	"github.com/markruler/swage/pkg/style"
+	"github.com/go-openapi/spec"
 )
 
-func createAPISheet(xl *excelize.File, path, operation string, detail spec.Operation, definitions map[string]spec.Definition, sheetName int) error {
+func (xl *Excel) createAPISheet(path, method string, operation *spec.Operation, definitions spec.Definitions, sheetName int) error {
+	if operation == nil {
+		return errors.New("Operation should not be empty")
+	}
 	worksheetName := strconv.Itoa(sheetName)
-	xl.NewSheet(worksheetName)
-	xl.SetColWidth(worksheetName, "A", "A", 12.0)
-	xl.SetColWidth(worksheetName, "B", "B", 13.0)
-	xl.SetColWidth(worksheetName, "F", "F", 40.0)
+	xl.File.NewSheet(worksheetName)
 
 	row := 1
-	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row))
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Back to Index")
-	xl.SetCellHyperLink(worksheetName, fmt.Sprintf("%s%d", "A", row), "INDEX!A1", "Location")
-	xl.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "A", row), style.Button(xl))
+	rowHeader := xl.setAPISheetHeader(row, worksheetName, path, method, operation)
+	if row == rowHeader {
+		return errors.New("Something wrong happened")
+	}
+	rowReuqest := xl.setAPISheetRequest(rowHeader, worksheetName, operation)
+	if rowHeader == rowReuqest {
+		return errors.New("Something wrong happened")
+	}
+	rowResponse := xl.setAPISheetResponse(rowReuqest, worksheetName)
+	if rowReuqest == rowResponse {
+		return errors.New("Something wrong happened")
+	}
+	return nil
+}
+
+func (xl *Excel) setAPISheetHeader(row int, worksheetName string, path, method string, operation *spec.Operation) int {
+	xl.File.SetColWidth(worksheetName, "A", "A", 12.0)
+	xl.File.SetColWidth(worksheetName, "B", "B", 13.0)
+	xl.File.SetColWidth(worksheetName, "F", "F", 40.0)
+
+	xl.File.MergeCell(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row))
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Back to Index")
+	xl.File.SetCellHyperLink(worksheetName, fmt.Sprintf("%s%d", "A", row), "INDEX!A1", "Location")
+	xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "A", row), xl.Style.Button)
 	row++
 
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Tag")
-	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
-	if len(detail.Tags) > 0 {
-		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), detail.Tags[0])
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Tag")
+	xl.File.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
+	if len(operation.Tags) > 0 {
+		xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), operation.Tags[0])
 	}
 	row++
 
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Path")
-	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), path)
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Path")
+	xl.File.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), path)
 	row++
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Method")
-	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), operation)
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Method")
+	xl.File.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), method)
 	row++
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Summary")
-	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), detail.Summary)
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Summary")
+	xl.File.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), operation.Summary)
 	row++
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Description")
-	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), detail.Description)
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "Description")
+	xl.File.MergeCell(worksheetName, fmt.Sprintf("%s%d", "B", row), fmt.Sprintf("%s%d", "F", row))
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), operation.Description)
+	row++
+	return row
+}
+
+func (xl *Excel) setAPISheetRequest(row int, worksheetName string, operation *spec.Operation) int {
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "REQUEST")
+	xl.File.MergeCell(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row))
+	xl.File.SetRowHeight(worksheetName, row, 15)
+	xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row), xl.Style.Title)
 	row++
 
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "REQUEST")
-	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row))
-	xl.SetRowHeight(worksheetName, row, 15)
-	xl.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row), style.Title(xl))
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "required")
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), "parameter")
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "type")
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "D", row), "level")
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), "data")
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), "description")
+	xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row), xl.Style.Center)
 	row++
 
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "required")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), "parameter")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "type")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "D", row), "level")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), "data")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), "description")
-	xl.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row), style.Center(xl))
-	row++
-
-	for _, param := range detail.Parameters {
+	for _, param := range operation.Parameters {
 		if param.Required {
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "O")
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "O")
 		} else {
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "X")
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "X")
 		}
-		// TODO: Set definitions
-		if param.Schema.Ref != "" {
-			lastIndex := strings.LastIndex(param.Schema.Ref, "/")
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), param.Schema.Ref[lastIndex+1:])
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), param.Schema.Type)
-		} else if !reflect.DeepEqual(param.Schema.Items, spec.Items{}) {
-			lastIndex := strings.LastIndex(param.Schema.Items.Ref, "/")
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), param.Schema.Items.Ref[lastIndex+1:])
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), param.Schema.Type)
-			// fmt.Println("strings.Join(items[:], ", "):", strings.Join(param.Schema.Items.Enum[:], ", "))
-		} else {
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), param.Name)
+
+		if param.Name != "" {
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), param.Name)
+		}
+		if param.Type != "" {
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), param.Type)
+		}
+
+		if param.Schema != nil {
+			if !reflect.DeepEqual(param.Schema.Ref, spec.Ref{}) {
+				// lastIndex := strings.LastIndex(param.Schema.Ref, "/")
+				// xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), param.Schema.Ref[lastIndex+1:])
+				definitionName := strings.TrimLeft(param.Schema.Ref.GetPointer().String(), "/")
+				xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), definitionName)
+				definition := xl.SwaggerSpec.Definitions[definitionName]
+				xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), strings.Join(definition.Type, ";"))
+			}
+			if !reflect.DeepEqual(param.Schema.Items, spec.Items{}) {
+				// TODO: array definition
+				// definitionName := strings.TrimLeft(param.Schema.Ref.GetPointer().String(), "/")
+				// xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), definitionName)
+				// definition := xl.SwaggerSpec.Definitions[definitionName]
+				// xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), strings.Join(definition.Type, ";"))
+			}
 		}
 
 		if param.In != "" {
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), param.In)
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), param.In)
 		}
 
-		xl.SetCellInt(worksheetName, fmt.Sprintf("%s%d", "D", row), 1)
-
-		if param.Type != "" {
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), param.Type)
-		}
+		xl.File.SetCellInt(worksheetName, fmt.Sprintf("%s%d", "D", row), 1)
 
 		if param.Description != "" {
-			xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), param.Description)
+			xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), param.Description)
 		}
 
-		xl.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "E", row), style.Center(xl))
+		xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "E", row), xl.Style.Center)
 		row++
 	}
 	row++
+	return row
+}
 
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "RESPONSE")
-	xl.MergeCell(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row))
-	xl.SetRowHeight(worksheetName, row, 15)
-	xl.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row), style.Title(xl))
+func (xl *Excel) setAPISheetResponse(row int, worksheetName string) int {
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "RESPONSE")
+	xl.File.MergeCell(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row))
+	xl.File.SetRowHeight(worksheetName, row, 15)
+	xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row), xl.Style.Title)
 	row++
 
 	// xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "A", row), "required")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), "schema")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "type")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "D", row), "level")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), "data")
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), "description")
-	xl.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row), style.Center(xl))
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), "schema")
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "type")
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "D", row), "level")
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), "data")
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), "description")
+	xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "F", row), xl.Style.Center)
 	row++
 
-	response := detail.Responses["200"]
-	if reflect.DeepEqual(spec.Response{}, response) {
-		return errors.New("Response is empty")
-	}
+	// response := detail.Responses["200"]
+	// if reflect.DeepEqual(spec.Response{}, response) {
+	// 	return errors.New("Response is empty")
+	// }
 
-	xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "body")
-	xl.SetCellInt(worksheetName, fmt.Sprintf("%s%d", "D", row), 1)
-	if response.Schema.Type == "array" {
-		lastIndex := strings.LastIndex(response.Schema.Items.Ref, "/")
-		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), response.Schema.Items.Ref[lastIndex+1:])
-		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), response.Schema.Type)
-	} else {
-		// TODO: Set definitions
-		lastIndex := strings.LastIndex(response.Schema.Ref, "/")
-		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), response.Schema.Ref[lastIndex+1:])
-		xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), "object")
-	}
+	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "C", row), "body")
+	xl.File.SetCellInt(worksheetName, fmt.Sprintf("%s%d", "D", row), 1)
+	// TODO: Set definitions
+	// if response.Schema.Type == "array" {
+	// 	lastIndex := strings.LastIndex(response.Schema.Items.Ref, "/")
+	// 	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), response.Schema.Items.Ref[lastIndex+1:])
+	// 	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), response.Schema.Type)
+	// } else {
+	// 	lastIndex := strings.LastIndex(response.Schema.Ref, "/")
+	// 	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "B", row), response.Schema.Ref[lastIndex+1:])
+	// 	xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "E", row), "object")
+	// }
 	// TODO: Set description
-	// xl.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), response.Description)
-	xl.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "E", row), style.Center(xl))
+	// xl.File.SetCellStr(worksheetName, fmt.Sprintf("%s%d", "F", row), response.Description)
+	xl.File.SetCellStyle(worksheetName, fmt.Sprintf("%s%d", "A", row), fmt.Sprintf("%s%d", "E", row), xl.Style.Center)
 	row++
+	return row
+}
 
-	return nil
+func definitionFromRef(ref spec.Ref) string {
+	url := ref.GetURL()
+	if url == nil {
+		return ""
+	}
+	fragmentParts := strings.Split(url.Fragment, "/")
+	numParts := len(fragmentParts)
+
+	return fragmentParts[numParts-1]
 }

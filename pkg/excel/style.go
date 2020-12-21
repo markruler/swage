@@ -1,26 +1,26 @@
-package style
+package excel
 
 import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 )
 
-var (
-	IDLeft   int
-	IDCenter int
-	IDTitle  int
-	IDButton int
-)
-
-func init() {
-	xl := excelize.NewFile()
-	IDLeft = Left(xl)     // 1
-	IDCenter = Center(xl) // 2
-	IDTitle = Title(xl)   // 3
-	IDButton = Button(xl) // 4
+type style struct {
+	Left   int
+	Center int
+	Title  int
+	Button int
 }
 
-// Left ...
-func Left(xl *excelize.File) int {
+func (xl *Excel) setStyle() {
+	xl.Style = style{
+		Left:   left(xl.File),
+		Center: center(xl.File),
+		Title:  title(xl.File),
+		Button: button(xl.File),
+	}
+}
+
+func left(xl *excelize.File) int {
 	styleID, err := xl.NewStyle(&excelize.Style{
 		Alignment: &excelize.Alignment{
 			Horizontal: "left",
@@ -33,8 +33,7 @@ func Left(xl *excelize.File) int {
 	return styleID
 }
 
-// Center ...
-func Center(xl *excelize.File) int {
+func center(xl *excelize.File) int {
 	styleID, err := xl.NewStyle(&excelize.Style{
 		Alignment: &excelize.Alignment{
 			Horizontal: "center",
@@ -47,8 +46,7 @@ func Center(xl *excelize.File) int {
 	return styleID
 }
 
-// Title ...
-func Title(xl *excelize.File) int {
+func title(xl *excelize.File) int {
 	styleID, err := xl.NewStyle(&excelize.Style{
 		Alignment: &excelize.Alignment{
 			Horizontal: "center",
@@ -66,8 +64,7 @@ func Title(xl *excelize.File) int {
 	return styleID
 }
 
-// Button ...
-func Button(xl *excelize.File) int {
+func button(xl *excelize.File) int {
 	styleID, err := xl.NewStyle(&excelize.Style{
 		Font: &excelize.Font{
 			Size: 14,
