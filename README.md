@@ -85,14 +85,15 @@ aio/scripts/docker.ps1
 
 ## Roadmap
 
-- [x] Improve code coverage
-- [x] Support data from web server (by `go-openapi/spec`)
+- [x] Support OAS JSON format (by `go-openapi/spec`)
 - [x] Support OAS YAML format (by `go-openapi/spec`)
+- [x] Support data from web server (by `go-openapi/spec`)
+- [x] Improve code coverage
+- [ ] Investigate memory leaks
 - [ ] Effectively organize all data in Excel
 - [ ] Release Swage with GoReleaser
 - [x] Support OAS [v2.0](http://spec.openapis.org/oas/v2.0)
-- [ ] Support OAS [v3.0 (latest)](http://spec.openapis.org/oas/v3.0.3): Create a new tag
-  - [go-openapi/spec3](https://github.com/go-openapi/spec3)
+- [ ] Support OAS [v3.0 (latest)](http://spec.openapis.org/oas/v3.0.3) (by [go-openapi/spec3](https://github.com/go-openapi/spec3))
 
 ## Open API Specification (OAS) Revision History
 
