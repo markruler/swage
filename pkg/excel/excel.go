@@ -13,7 +13,6 @@ type Excel struct {
 	Style          style
 	SwaggerSpec    *spec.Swagger
 	indexSheetName string
-	OutputFilePath string
 	Context        *context
 }
 
@@ -23,22 +22,13 @@ type context struct {
 }
 
 // New returns an Excel struct instance.
-func New(path string) *Excel {
+func New() *Excel {
 	xl := &Excel{
 		File:    excelize.NewFile(),
 		Context: &context{},
 	}
-
-	xl.indexSheetName = "INDEX"
-
 	xl.setStyle()
-
-	if path == "" {
-		xl.OutputFilePath = "swage.xlsx"
-	} else {
-		xl.OutputFilePath = path
-	}
-
+	xl.indexSheetName = "INDEX"
 	return xl
 }
 

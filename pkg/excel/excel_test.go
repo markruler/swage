@@ -8,7 +8,7 @@ import (
 )
 
 func TestGenerate(t *testing.T) {
-	xl := New("")
+	xl := New()
 	var err error
 
 	err = xl.Generate(nil)
@@ -36,9 +36,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, "swage.xlsx", xl.OutputFilePath)
 
-	xl.OutputFilePath = "excel_test.xlsx"
 	err = xl.Generate(&spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Swagger: "2.0",

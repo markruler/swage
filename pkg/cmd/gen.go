@@ -22,7 +22,7 @@ ex) swage gen aio/example/example.json -o $HOME/swage.xlsx
 }
 
 func init() {
-	genCmd.Flags().StringVarP(&outputPath, "output", "o", "", "set a path to save a Excel file")
+	genCmd.Flags().StringVarP(&outputPath, "output", "o", "swage.xlsx", "set a path to save a Excel file")
 	genCmd.Flags().BoolP("verbose", "v", false, "verbose print")
 }
 
@@ -43,18 +43,18 @@ func genRun(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	xl := excel.New(outputPath)
+	xl := excel.New()
 
 	if err = xl.Generate(swaggerAPI); err != nil {
 		return err
 	}
 
-	if err := xl.File.SaveAs(xl.OutputFilePath); err != nil {
+	if err := xl.File.SaveAs(outputPath); err != nil {
 		return err
 	}
 
 	if verbose {
-		fmt.Printf("OUTPUT >>> %s\n", xl.OutputFilePath)
+		fmt.Printf("OUTPUT >>> %s\n", outputPath)
 	}
 	return nil
 }

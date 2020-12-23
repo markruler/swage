@@ -8,7 +8,7 @@ import (
 )
 
 func TestCreateIndexSheet(t *testing.T) {
-	xl := New("")
+	xl := New()
 	var err error
 
 	xl.SwaggerSpec = &spec.Swagger{

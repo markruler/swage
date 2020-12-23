@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateAPISheet(t *testing.T) {
-	xl := New("")
+	xl := New()
 	var err error
 
 	err = xl.createAPISheet("", "", &spec.Operation{}, nil, 1)
@@ -37,7 +37,7 @@ func TestCreateAPISheet(t *testing.T) {
 }
 
 func TestResponseSchemaItems(t *testing.T) {
-	xl := New("")
+	xl := New()
 	var err error
 	// spotify.json - [get] /albums
 	xl.SwaggerSpec = &spec.Swagger{
@@ -122,7 +122,7 @@ func TestResponseSchemaItems(t *testing.T) {
 
 func TestRootSchemaFromRef(t *testing.T) {
 	// zoom.us.json - [get] /accounts/{accountId}/billing
-	xl := New("")
+	xl := New()
 	var err error
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
@@ -207,7 +207,7 @@ func TestRootDefinitionAllOfFromRef(t *testing.T) {
 	// zoom.us.json - [get] /meetings/{meetingId}/registrants
 	// zoom.us.json - [get] /accounts
 	// zoom.us.json - [get] /groups
-	xl := New("")
+	xl := New()
 	var err error
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
