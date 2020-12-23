@@ -14,12 +14,19 @@ type Excel struct {
 	SwaggerSpec    *spec.Swagger
 	indexSheetName string
 	OutputFilePath string
+	Context        *context
+}
+
+type context struct {
+	worksheetName string
+	row           int
 }
 
 // New returns an Excel struct instance.
 func New(path string) *Excel {
 	xl := &Excel{
-		File: excelize.NewFile(),
+		File:    excelize.NewFile(),
+		Context: &context{},
 	}
 
 	xl.indexSheetName = "INDEX"

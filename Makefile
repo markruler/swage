@@ -16,16 +16,16 @@ deps:
 	@go mod tidy
 	@go mod vendor
 
-.PHONY: fmt
-fmt:
+.PHONY: gofmt
+gofmt:
 	go fmt ./...
 
 .PHONY: test
-test: fmt
+test: gofmt
 	go test ./... --cover
 
 .PHONY: testv
-testv: fmt
+testv: gofmt
 	go test ./... -v --cover
 
 .PHONY: cover

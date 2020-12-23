@@ -14,8 +14,8 @@ import (
 func (xl *Excel) createIndexSheet() error {
 	err := xl.File.SetDocProps(&excelize.DocProperties{
 		Category:    "OpenAPI",
-		Created:     time.Now().String(),
-		Modified:    time.Now().String(),
+		Created:     time.Now().Format(time.RFC3339),
+		Modified:    time.Now().Format(time.RFC3339),
 		Creator:     "Swage",
 		Description: "Open API Specification",
 		Identifier:  "xlsx",
