@@ -120,7 +120,7 @@ func TestResponseSchemaItems(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestRootSchemaFromRef(t *testing.T) {
+func TestSchemaWithRef(t *testing.T) {
 	// zoom.us.json - [get] /accounts/{accountId}/billing
 	xl := New()
 	var err error
@@ -203,7 +203,62 @@ func TestRootSchemaFromRef(t *testing.T) {
 	assert.Equal(t, "The account ID", row[8][6])
 }
 
-func TestRootDefinitionAllOfFromRef(t *testing.T) {
+func TestSchemaWithoutRef(t *testing.T) {
+	// cisco.meraki.json - [post] /devices/{serial}/camera/generateSnapshot
+	xl := New()
+	var err error
+	xl.SwaggerSpec = &spec.Swagger{}
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Parameters: []spec.Parameter{
+				{
+					ParamProps: spec.ParamProps{
+						In:       "path",
+						Name:     "serial",
+						Required: true,
+					},
+					SimpleSchema: spec.SimpleSchema{
+						Type: "string",
+					},
+				},
+			},
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						202: {
+							ResponseProps: spec.ResponseProps{
+								Description: "Successful operation",
+								Examples: map[string]interface{}{
+									"application/json": map[string]string{
+										"expiry": "Access to the image will expire at 2018-12-11T03:12:39Z.",
+										"url":    "https://spn4.meraki.com/stream/jpeg/snapshot/b2d123asdf423qd22d2",
+									},
+								},
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type: spec.StringOrArray{
+											"object",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "O", row[8][0])
+	assert.Equal(t, "serial", row[8][1])
+	assert.Equal(t, "path", row[8][2])
+	assert.Equal(t, "string", row[8][3])
+	assert.Equal(t, "", row[8][6])
+}
+
+func TestDefinitionAllOfFromRef(t *testing.T) {
 	// zoom.us.json - [get] /meetings/{meetingId}/registrants
 	// zoom.us.json - [get] /accounts
 	// zoom.us.json - [get] /groups
