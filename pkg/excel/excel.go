@@ -45,6 +45,7 @@ func (xl *Excel) Generate(swaggerAPI *spec.Swagger) error {
 		return errors.New("Path sould not be empty")
 	}
 	xl.SwaggerSpec = swaggerAPI
+	// TODO: make templates (ex. template1, template2, ...)
 	if err := xl.createIndexSheet(); err != nil {
 		return err
 	}
