@@ -68,36 +68,29 @@ func (xl *Excel) createIndexSheet() error {
 	for _, path := range paths {
 		operations := xl.SwaggerSpec.Paths.Paths[path]
 		if operations.PathItemProps.Get != nil {
-			xl.setOperation(row, path, "GET", operations.PathItemProps.Get, xl.SwaggerSpec.Definitions)
-			row++
+			row = xl.setOperation(row, path, "GET", operations.PathItemProps.Get, xl.SwaggerSpec.Definitions)
 		}
 		if operations.PathItemProps.Put != nil {
-			xl.setOperation(row, path, "PUT", operations.PathItemProps.Put, xl.SwaggerSpec.Definitions)
-			row++
+			row = xl.setOperation(row, path, "PUT", operations.PathItemProps.Put, xl.SwaggerSpec.Definitions)
 		}
 		if operations.PathItemProps.Post != nil {
-			xl.setOperation(row, path, "POST", operations.PathItemProps.Post, xl.SwaggerSpec.Definitions)
-			row++
+			row = xl.setOperation(row, path, "POST", operations.PathItemProps.Post, xl.SwaggerSpec.Definitions)
 		}
 		if operations.PathItemProps.Delete != nil {
-			xl.setOperation(row, path, "DELETE", operations.PathItemProps.Delete, xl.SwaggerSpec.Definitions)
-			row++
+			row = xl.setOperation(row, path, "DELETE", operations.PathItemProps.Delete, xl.SwaggerSpec.Definitions)
 		}
 		if operations.PathItemProps.Options != nil {
-			xl.setOperation(row, path, "OPTIONS", operations.PathItemProps.Options, xl.SwaggerSpec.Definitions)
-			row++
+			row = xl.setOperation(row, path, "OPTIONS", operations.PathItemProps.Options, xl.SwaggerSpec.Definitions)
 		}
 		if operations.PathItemProps.Head != nil {
-			xl.setOperation(row, path, "HEAD", operations.PathItemProps.Head, xl.SwaggerSpec.Definitions)
-			row++
+			row = xl.setOperation(row, path, "HEAD", operations.PathItemProps.Head, xl.SwaggerSpec.Definitions)
 		}
 		if operations.PathItemProps.Patch != nil {
-			xl.setOperation(row, path, "PATCH", operations.PathItemProps.Patch, xl.SwaggerSpec.Definitions)
-			row++
+			row = xl.setOperation(row, path, "PATCH", operations.PathItemProps.Patch, xl.SwaggerSpec.Definitions)
 		}
 	}
 
-	err = xl.File.AddTable(xl.indexSheetName, "A1", fmt.Sprintf("%s%d", "E", row+1), `{
+	err = xl.File.AddTable(xl.indexSheetName, "A1", fmt.Sprintf("%s%d", "E", row), `{
     "table_name": "table",
     "table_style": "TableStyleMedium21",
     "show_first_column": false,
@@ -112,7 +105,7 @@ func (xl *Excel) createIndexSheet() error {
 	return nil
 }
 
-func (xl *Excel) setOperation(row int, path, method string, operation *spec.Operation, definitions spec.Definitions) {
+func (xl *Excel) setOperation(row int, path, method string, operation *spec.Operation, definitions spec.Definitions) int {
 	xl.File.SetCellInt(xl.indexSheetName, fmt.Sprintf("%s%d", "A", row+1), row)
 	xl.File.SetCellHyperLink(xl.indexSheetName, fmt.Sprintf("%s%d", "A", row+1), fmt.Sprintf("%d!A1", row), "Location")
 	xl.File.SetCellStr(xl.indexSheetName, fmt.Sprintf("%s%d", "B", row+1), strings.Join(operation.Tags, ";"))
@@ -120,5 +113,5 @@ func (xl *Excel) setOperation(row int, path, method string, operation *spec.Oper
 	xl.File.SetCellStr(xl.indexSheetName, fmt.Sprintf("%s%d", "D", row+1), path)
 	xl.File.SetCellStr(xl.indexSheetName, fmt.Sprintf("%s%d", "E", row+1), operation.Summary)
 	xl.createAPISheet(path, method, operation, definitions, row)
-	row++
+	return row + 1
 }

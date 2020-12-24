@@ -12,11 +12,11 @@ func TestCreateAPISheet(t *testing.T) {
 	xl := New()
 	var err error
 
-	err = xl.createAPISheet("", "", &spec.Operation{}, nil, 1)
-	assert.Error(t, err)
-
 	err = xl.createAPISheet("", "", nil, nil, 1)
 	assert.Error(t, err)
+
+	err = xl.createAPISheet("", "", &spec.Operation{}, nil, 1)
+	assert.NoError(t, err)
 
 	err = xl.createAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
@@ -29,17 +29,198 @@ func TestCreateAPISheet(t *testing.T) {
 			},
 		},
 	}, nil, 1)
-	assert.Error(t, err)
+	assert.NoError(t, err)
 
 	p := parser.New("../../aio/testdata/json/dev.json")
 	xl.SwaggerSpec, _ = p.Parse()
 	xl.createAPISheet("", "", nil, nil, 1)
 }
 
-func TestResponseSchemaItems(t *testing.T) {
+// @source editor.swagger.json
+// @method POST
+// @path /user
+func TestParameterSchemaWithRef(t *testing.T) {
 	xl := New()
 	var err error
-	// spotify.json - [get] /albums
+	xl.SwaggerSpec = &spec.Swagger{
+		SwaggerProps: spec.SwaggerProps{
+			Definitions: spec.Definitions{
+				"User": {
+					SchemaProps: spec.SchemaProps{
+						Type: spec.StringOrArray{
+							"object",
+						},
+						Properties: spec.SchemaProperties{
+							"id": {
+								SchemaProps: spec.SchemaProps{
+									Type:   []string{"integer"},
+									Format: "int64",
+								},
+							},
+							"username": {
+								SchemaProps: spec.SchemaProps{
+									Type: []string{"string"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Parameters: []spec.Parameter{
+				{
+					ParamProps: spec.ParamProps{
+						Name:        "user",
+						In:          "body",
+						Description: "Created user object",
+						Required:    true,
+						Schema: &spec.Schema{
+							SchemaProps: spec.SchemaProps{
+								Ref: spec.MustCreateRef("#/definitions/User"),
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "O", row[8][0])
+	assert.Equal(t, "User", row[8][1])
+	assert.Equal(t, "body", row[8][2])
+	assert.Equal(t, "object", row[8][3])
+	assert.Equal(t, "Created user object", row[8][6])
+}
+
+// @source editor.swagger.json
+// @method POST
+// @path /user/createWithList
+func TestParameterSchemaItemsWithRef(t *testing.T) {
+	xl := New()
+	var err error
+	xl.SwaggerSpec = &spec.Swagger{
+		SwaggerProps: spec.SwaggerProps{
+			Definitions: spec.Definitions{
+				"User": {
+					SchemaProps: spec.SchemaProps{
+						Type: spec.StringOrArray{
+							"object",
+						},
+						Properties: spec.SchemaProperties{
+							"id": {
+								SchemaProps: spec.SchemaProps{
+									Type:   []string{"integer"},
+									Format: "int64",
+								},
+							},
+							"username": {
+								SchemaProps: spec.SchemaProps{
+									Type: []string{"string"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Tags:    []string{"user"},
+			Summary: "Creates list of users with given input array",
+			ID:      "createUsersWithListInput",
+			Produces: []string{
+				"application/xml",
+				"application/json",
+			},
+			Parameters: []spec.Parameter{
+				{
+					ParamProps: spec.ParamProps{
+						Name:        "users",
+						In:          "body",
+						Description: "List of user object",
+						Required:    true,
+					},
+					SimpleSchema: spec.SimpleSchema{
+						Type: "array",
+						Items: &spec.Items{
+							Refable: spec.Refable{
+								Ref: spec.MustCreateRef("#/definitions/User"),
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "O", row[8][0])
+	assert.Equal(t, "users", row[8][1])
+	assert.Equal(t, "body", row[8][2])
+	assert.Equal(t, "array", row[8][3])
+	assert.Equal(t, "List of user object", row[8][6])
+}
+
+// @source editor.swagger.json
+// @method GET
+// @path /pet/findByStatus
+func TestParameterSchemaItemsWithoutRef(t *testing.T) {
+	xl := New()
+	var err error
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Parameters: []spec.Parameter{
+				{
+					ParamProps: spec.ParamProps{
+						Name:        "status",
+						In:          "query",
+						Description: "Status values that need to be considered for filter",
+						Required:    true,
+					},
+					SimpleSchema: spec.SimpleSchema{
+						Type: "array",
+						Items: &spec.Items{
+							CommonValidations: spec.CommonValidations{
+								Enum: []interface{}{
+									"available",
+									"pending",
+									"sold",
+								},
+							},
+							SimpleSchema: spec.SimpleSchema{
+								Type:    "string",
+								Default: "available",
+							},
+						},
+						CollectionFormat: "multi",
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "O", row[8][0])
+	assert.Equal(t, "status", row[8][1])
+	assert.Equal(t, "query", row[8][2])
+	assert.Equal(t, "array", row[8][3])
+	assert.Equal(t, "Status values that need to be considered for filter", row[8][6])
+}
+
+// @source spotify.json
+// @method get
+// @path /albums
+func TestResponseSchemaItemsWithRef(t *testing.T) {
+	xl := New()
+	var err error
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Definitions: spec.Definitions{
@@ -120,8 +301,10 @@ func TestResponseSchemaItems(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+// @source zoom.us.json
+// @method GET
+// @path /accounts/{accountId}/billing
 func TestSchemaWithRef(t *testing.T) {
-	// zoom.us.json - [get] /accounts/{accountId}/billing
 	xl := New()
 	var err error
 	xl.SwaggerSpec = &spec.Swagger{
@@ -182,7 +365,6 @@ func TestSchemaWithRef(t *testing.T) {
 								Description: "OK",
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										// Ref: spec.MustCreateRef("#/definitions/AccountPlans"),
 										Ref: spec.MustCreateRef("#/definitions/AccountPlan"),
 									},
 								},
@@ -203,8 +385,10 @@ func TestSchemaWithRef(t *testing.T) {
 	assert.Equal(t, "The account ID", row[8][6])
 }
 
+// @source cisco.meraki.json
+// @method POST
+// @path /devices/{serial}/camera/generateSnapshot
 func TestSchemaWithoutRef(t *testing.T) {
-	// cisco.meraki.json - [post] /devices/{serial}/camera/generateSnapshot
 	xl := New()
 	var err error
 	xl.SwaggerSpec = &spec.Swagger{}
@@ -258,10 +442,12 @@ func TestSchemaWithoutRef(t *testing.T) {
 	assert.Equal(t, "", row[8][6])
 }
 
-func TestDefinitionAllOfFromRef(t *testing.T) {
-	// zoom.us.json - [get] /meetings/{meetingId}/registrants
-	// zoom.us.json - [get] /accounts
-	// zoom.us.json - [get] /groups
+// @source zoom.us.json
+// @method GET
+// @path /meetings/{meetingId}/registrants
+// @path /accounts
+// @path /groups
+func TestDefinitionAllOfWithRef(t *testing.T) {
 	xl := New()
 	var err error
 	xl.SwaggerSpec = &spec.Swagger{

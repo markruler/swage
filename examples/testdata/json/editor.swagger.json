@@ -482,7 +482,7 @@
         "parameters": [
           {
             "in": "body",
-            "name": "body",
+            "name": "user",
             "description": "Created user object",
             "required": true,
             "schema": {
@@ -507,7 +507,7 @@
         "parameters": [
           {
             "in": "body",
-            "name": "body",
+            "name": "users",
             "description": "List of user object",
             "required": true,
             "schema": {
@@ -535,7 +535,7 @@
         "parameters": [
           {
             "in": "body",
-            "name": "body",
+            "name": "users",
             "description": "List of user object",
             "required": true,
             "schema": {
