@@ -84,6 +84,7 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Center)
 	xl.Context.row++
 
+	// TODO: refactoring
 	for _, param := range operation.Parameters {
 		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
 
@@ -121,6 +122,7 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 					}
 					schemaName, _ := xl.getDefinitionFromRef(param.Schema.Ref)
 					xl.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ";"), param.Description)
+					xl.Context.row++
 				}
 				if strings.Contains(param.Schema.Ref.GetPointer().String(), "parameters") {
 					schema, err := spec.ResolveParameter(xl.SwaggerSpec, param.Schema.Ref)
@@ -133,9 +135,20 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 						xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "X")
 					}
 					xl.setCellWithSchema(schema.Name, schema.In, schema.Type, schema.Description)
+					xl.Context.row++
 				}
-				xl.Context.row++
-				return nil
+				continue
+			}
+			if param.Schema.Properties != nil {
+				for k, v := range param.Schema.Properties {
+					xl.setCellWithSchema(k, param.In, strings.Join(v.Type, ";"), "")
+				}
+			}
+			if param.Schema.Type != nil {
+				xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ";"))
+			}
+			if param.Schema.Description != "" {
+				xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), param.Schema.Description)
 			}
 		}
 		xl.Context.row++
@@ -163,6 +176,7 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) error {
 	// TODO: refactor
 	response := operation.Responses
 	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
+	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Left)
 	if response == nil {
 		// return errors.New("response == nil")
 		return nil
