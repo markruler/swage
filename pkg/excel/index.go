@@ -107,11 +107,15 @@ func (xl *Excel) createIndexSheet() error {
 
 func (xl *Excel) setOperation(row int, path, method string, operation *spec.Operation, definitions spec.Definitions) int {
 	xl.File.SetCellInt(xl.indexSheetName, fmt.Sprintf("%s%d", "A", row+1), row)
-	xl.File.SetCellHyperLink(xl.indexSheetName, fmt.Sprintf("%s%d", "A", row+1), fmt.Sprintf("%d!A1", row), "Location")
 	xl.File.SetCellStr(xl.indexSheetName, fmt.Sprintf("%s%d", "B", row+1), strings.Join(operation.Tags, ";"))
 	xl.File.SetCellStr(xl.indexSheetName, fmt.Sprintf("%s%d", "C", row+1), method)
 	xl.File.SetCellStr(xl.indexSheetName, fmt.Sprintf("%s%d", "D", row+1), path)
 	xl.File.SetCellStr(xl.indexSheetName, fmt.Sprintf("%s%d", "E", row+1), operation.Summary)
+	xl.File.SetCellHyperLink(xl.indexSheetName, fmt.Sprintf("%s%d", "A", row+1), fmt.Sprintf("%d!A1", row), "Location")
+	xl.File.SetCellHyperLink(xl.indexSheetName, fmt.Sprintf("%s%d", "B", row+1), fmt.Sprintf("%d!A1", row), "Location")
+	xl.File.SetCellHyperLink(xl.indexSheetName, fmt.Sprintf("%s%d", "C", row+1), fmt.Sprintf("%d!A1", row), "Location")
+	xl.File.SetCellHyperLink(xl.indexSheetName, fmt.Sprintf("%s%d", "D", row+1), fmt.Sprintf("%d!A1", row), "Location")
+	xl.File.SetCellHyperLink(xl.indexSheetName, fmt.Sprintf("%s%d", "E", row+1), fmt.Sprintf("%d!A1", row), "Location")
 	xl.createAPISheet(path, method, operation, definitions, row)
 	return row + 1
 }
