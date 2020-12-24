@@ -31,7 +31,7 @@ docker build \
 --tag $IMAGE:$VERSION \
 --tag $IMAGE:latest \
 --build-arg VERSION=$VERSION \
---file ./aio/Dockerfile \
+--file ./Dockerfile \
 $PWD
 
 echo "Tag..."
@@ -50,7 +50,7 @@ docker run \
 --rm \
 --interactive \
 --tty \
---volume $PWD/aio/testdata:/testdata \
-swage:$VERSION gen /testdata/v2.0.json \
+--volume $PWD/examples/testdata:/testdata \
+swage:$VERSION gen /testdata/json/editor.swagger.json \
 --output /testdata/docker-swage.xlsx \
 --verbose

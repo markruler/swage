@@ -8,24 +8,6 @@
 swage gen <path>
 ```
 
-### Example
-
-- File Path
-
-```bash
-swage gen aio/testdata/composition.swaggo.json
-```
-
-- URL Path
-
-```bash
-swage gen https://api.apis.guru/v2/specs/wikimedia.org/1.0.0/swagger.json
-```
-
-```bash
-swage gen https://github.com/APIs-guru/openapi-directory/raw/master/APIs/wikimedia.org/1.0.0/swagger.yaml
-```
-
 ## Prerequisite
 
 > OAS
@@ -41,34 +23,6 @@ swage gen https://github.com/APIs-guru/openapi-directory/raw/master/APIs/wikimed
 >   The extensions are specified using conventions provided by the Office Open XML file formats
 >   described in [ISO/IEC29500-3:2015](https://www.iso.org/standard/65533.html).
 
-## Development
-
-```bash
-make deps
-```
-
-### Build
-
-```bash
-go build -o swage main.go
-```
-
-### Runnig on Local Machine
-
-```bash
-make run
-```
-
-### Running on Docker
-
-```bash
-# Linux, Darwin
-make docker
-
-# Windows
-aio/scripts/docker.ps1
-```
-
 ## Dependencies
 
 - [spf13/cobra](https://github.com/spf13/cobra)
@@ -79,7 +33,7 @@ aio/scripts/docker.ps1
 ## References
 
 - [SmartBear Documentations](https://swagger.io/docs/specification)
-- [OAI/OpenAPI-Specification](https://github.com/OAI/OpenAPI-Specification)
+- [OAI OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification)
 - [APIs.guru](https://apis.guru/browse-apis/)
 - [APIs.guru - GitHub](https://github.com/APIs-guru/openapi-directory)
 

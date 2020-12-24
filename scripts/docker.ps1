@@ -22,7 +22,7 @@ docker build `
 --tag ${BINARY}:${VERSION} `
 --tag ${BINARY}:latest `
 --build-arg VERSION=${VERSION} `
---file ./aio/Dockerfile `
+--file ./Dockerfile `
 ${PWD}
 
 Write-Host "Tag..."
@@ -38,7 +38,7 @@ docker run `
 --rm `
 --interactive `
 --tty `
---volume ${PWD}/aio/testdata:/testdata `
-${IMAGE}:${VERSION} gen /testdata/v2.0.json `
+--volume ${PWD}/examples/testdata:/testdata `
+${IMAGE}:${VERSION} gen /testdata/json/editor.swagger.json `
 --output /testdata/docker-swage.xlsx `
 --verbose

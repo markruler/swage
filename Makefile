@@ -1,18 +1,23 @@
-BINARY = swage
-VERSION = $(file < ./VERSION)
+GOOS		:= $(shell go env GOOS)
+GOARCH	:= $(shell go env GOARCH)
+# GOBIN		:= $(shell go env GOPATH)/bin
+BINDIR	:= bin
+BINARY	:= swage
+VERSION	:= $(file < ./VERSION)
+# TARGETS	:= darwin/amd64 linux/amd64 linux/386 linux/arm linux/arm64 linux/ppc64le linux/s390x windows/amd64
 
 .PHONY: all
-all: echo deps test cover run
+all: version deps test cover run
 
-.PHONY: echo
-echo:
-	@echo ${BINARY}.${VERSION}
+.PHONY: version
+version:
+	@echo $(GOBIN)/$(BINARY).$(VERSION)
 
 .PHONY: deps
 deps:
-	@rm -rf vendor/
 	@# go get -u
-	@go get -t -u -d -v ./...
+	@rm -rf vendor/
+	@go get -t -d -v ./...
 	@go mod tidy
 	@go mod vendor
 
@@ -30,27 +35,23 @@ testv: gofmt
 
 .PHONY: cover
 cover:
-	@aio/scripts/cover --html
-	@aio/scripts/cover
+	@scripts/cover --html
+	@scripts/cover
 
 .PHONY: run
 run:
-	go run main.go gen aio/example/short.json
+	go run main.go gen examples/testdata/json/editor.swagger.json
 
 .PHONY: clean
 clean:
-	@rm -f *.xlsx
-	@rm -f ${BINARY}.${VERSION}-linux-amd64
-	@rm -f ${BINARY}.${VERSION}-darwin-amd64
-	@rm -f ${BINARY}.${VERSION}-windows-amd64
+	rm -f *.xlsx
+	rm -rf $(BINDIR)
 
 .PHONY: build
 build:
 	@# VERSION := $(cat ./VERSION)
-	@GOOS=linux GOARCH=amd64 go build -o ${BINARY}.${VERSION}-linux-amd64 main.go
-	@#GOOS=darwin GOARCH=amd64 go build -o ${BINARY}.${VERSION}-darwin-amd64 main.go
-	@#GOOS=windows GOARCH=amd64 go build -o ${BINARY}.${VERSION}-windows-amd64 main.go
+	@GO111MODULE=on GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o $(BINDIR)/$(BINARY) main.go
 
 .PHONY: docker
 docker:
-	@aio/scripts/docker.sh
+	@scripts/docker.sh
