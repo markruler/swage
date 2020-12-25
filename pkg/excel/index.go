@@ -45,7 +45,7 @@ func (xl *Excel) createIndexSheet() error {
 	xl.File.SetColStyle(xl.indexSheetName, "C", xl.Style.Center)
 	xl.File.SetColStyle(xl.indexSheetName, "D", xl.Style.Left)
 	xl.File.SetColStyle(xl.indexSheetName, "E", xl.Style.Left)
-	xl.File.SetColWidth(xl.indexSheetName, "B", "B", 16.4)
+	xl.File.SetColWidth(xl.indexSheetName, "B", "B", 23.9)
 	xl.File.SetColWidth(xl.indexSheetName, "D", "E", 60.0)
 
 	// Set Header

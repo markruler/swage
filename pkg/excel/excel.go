@@ -27,6 +27,7 @@ func New() *Excel {
 		File:    excelize.NewFile(),
 		Context: &context{},
 	}
+	xl.File.SetDefaultFont("Arial")
 	xl.setStyle()
 	xl.indexSheetName = "INDEX"
 	return xl

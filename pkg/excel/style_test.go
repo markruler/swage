@@ -15,12 +15,17 @@ func TestStyleCenter(t *testing.T) {
 	assert.Equal(t, 2, xl.Style.Center)
 }
 
-func TestStyleTitle(t *testing.T) {
-	xl := New()
-	assert.Equal(t, 3, xl.Style.Title)
-}
-
 func TestStyleButton(t *testing.T) {
 	xl := New()
-	assert.Equal(t, 4, xl.Style.Button)
+	assert.Equal(t, 3, xl.Style.Button)
+}
+
+func TestStyleTitle(t *testing.T) {
+	xl := New()
+	assert.Equal(t, 4, xl.Style.Title)
+}
+
+func TestStyleColumn(t *testing.T) {
+	xl := New()
+	assert.Equal(t, 5, xl.Style.Column)
 }

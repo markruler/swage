@@ -31,16 +31,18 @@ func (xl *Excel) createAPISheet(path, method string, operation *spec.Operation, 
 func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operation) error {
 	xl.File.SetColWidth(xl.Context.worksheetName, "A", "A", 12.0)
 	xl.File.SetColWidth(xl.Context.worksheetName, "B", "B", 33.0)
-	xl.File.SetColWidth(xl.Context.worksheetName, "C", "C", 20.0)
-	xl.File.SetColWidth(xl.Context.worksheetName, "D", "D", 40.0)
+	xl.File.SetColWidth(xl.Context.worksheetName, "C", "C", 12.0)
+	xl.File.SetColWidth(xl.Context.worksheetName, "D", "D", 12.0)
+	xl.File.SetColWidth(xl.Context.worksheetName, "E", "E", 20.0)
+	xl.File.SetColWidth(xl.Context.worksheetName, "F", "F", 40.0)
 	xl.File.SetColWidth(xl.Context.worksheetName, "G", "G", 90.0)
+	// xl.File.SetColStyle(xl.Context.worksheetName, "A:G", xl.Style.Line)
 
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
+	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "A", xl.Context.row), xl.Style.Button)
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Back to Index")
 	xl.File.SetCellHyperLink(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "INDEX!A1", "Location")
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "A", xl.Context.row), xl.Style.Button)
 	xl.Context.row++
-
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Tag")
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
 	if len(operation.Tags) > 0 {
@@ -76,7 +78,7 @@ func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operatio
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.Description)
 	xl.Context.row++
 
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", 2), fmt.Sprintf("%s%d", "A", xl.Context.row-1), xl.Style.Center)
+	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", 2), fmt.Sprintf("%s%d", "A", xl.Context.row-1), xl.Style.Column)
 	xl.Context.row++
 	return nil
 }
@@ -95,7 +97,7 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), "enum")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "F", xl.Context.row), "example")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), "description")
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Center)
+	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Column)
 	xl.Context.row++
 
 	// TODO: refactoring if-hell
@@ -185,7 +187,7 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), "enum")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "F", xl.Context.row), "example")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), "description")
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Center)
+	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Column)
 	xl.Context.row++
 
 	// TODO: refactoring if-hell
