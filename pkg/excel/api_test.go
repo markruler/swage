@@ -63,11 +63,11 @@ func TestParameterWithoutSchema(t *testing.T) {
 	assert.NoError(t, err)
 	row, err := xl.File.GetRows("1")
 	assert.NoError(t, err)
-	assert.Equal(t, "O", row[8][0])
-	assert.Equal(t, "all", row[8][1])
-	assert.Equal(t, "query", row[8][2])
-	assert.Equal(t, "boolean", row[8][3])
-	assert.Equal(t, "Return all containers. By default, only running containers are shown.\n", row[8][6])
+	assert.Equal(t, "O", row[12][0])
+	assert.Equal(t, "all", row[12][1])
+	assert.Equal(t, "query", row[12][2])
+	assert.Equal(t, "boolean", row[12][3])
+	assert.Equal(t, "Return all containers. By default, only running containers are shown.\n", row[12][6])
 }
 
 func TestParameterSchemaWithRef(t *testing.T) {
@@ -175,22 +175,22 @@ func TestParameterSchemaWithRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err := xl.File.GetRows("1")
 	assert.NoError(t, err)
-	assert.Equal(t, "X", row[8][0])
-	assert.Equal(t, "page_size", row[8][1])
-	assert.Equal(t, "query", row[8][2])
-	assert.Equal(t, "integer", row[8][3])
-	assert.Equal(t, "The number of records returned within a single API call", row[8][6])
-	assert.Equal(t, "O", row[9][0])
-	assert.Equal(t, "User", row[9][1])
-	assert.Equal(t, "body", row[9][2])
-	assert.Equal(t, "object", row[9][3])
-	assert.Equal(t, "Created user object", row[9][6])
-	assert.Equal(t, "O", row[10][0])
-	assert.Equal(t, "action", row[10][1])
-	assert.Equal(t, "body", row[10][2])
-	assert.Equal(t, "string", row[10][3])
-	assert.Equal(t, "", row[10][6])
-	// assert.Equal(t, "recover meeting recording", row[10][6])
+	assert.Equal(t, "X", row[12][0])
+	assert.Equal(t, "page_size", row[12][1])
+	assert.Equal(t, "query", row[12][2])
+	assert.Equal(t, "integer", row[12][3])
+	assert.Equal(t, "The number of records returned within a single API call", row[12][6])
+	assert.Equal(t, "O", row[13][0])
+	assert.Equal(t, "User", row[13][1])
+	assert.Equal(t, "body", row[13][2])
+	assert.Equal(t, "object", row[13][3])
+	assert.Equal(t, "Created user object", row[13][6])
+	assert.Equal(t, "O", row[14][0])
+	assert.Equal(t, "action", row[14][1])
+	assert.Equal(t, "body", row[14][2])
+	assert.Equal(t, "string", row[14][3])
+	assert.Equal(t, "", row[14][6])
+	// assert.Equal(t, "recover meeting recording", row[14][6])
 }
 
 func TestParameterSchemaWithoutRef(t *testing.T) {
@@ -226,11 +226,11 @@ func TestParameterSchemaWithoutRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err = xl.File.GetRows("1")
 	assert.NoError(t, err)
-	assert.Equal(t, "O", row[8][0])
-	assert.Equal(t, "inputStream", row[8][1])
-	assert.Equal(t, "body", row[8][2])
-	assert.Equal(t, "string;strings", row[8][3])
-	assert.Equal(t, "A tar archive compressed with one of the following algorithms: identity (no compression), gzip, bzip2, xz.", row[8][6])
+	assert.Equal(t, "O", row[12][0])
+	assert.Equal(t, "inputStream", row[12][1])
+	assert.Equal(t, "body", row[12][2])
+	assert.Equal(t, "string;strings", row[12][3])
+	assert.Equal(t, "A tar archive compressed with one of the following algorithms: identity (no compression), gzip, bzip2, xz.", row[12][6])
 
 	// @source zoom.us.json
 	// @method POST
@@ -257,11 +257,11 @@ func TestParameterSchemaWithoutRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err = xl.File.GetRows("2")
 	assert.NoError(t, err)
-	assert.Equal(t, "O", row[8][0])
-	assert.Equal(t, "body", row[8][1])
-	assert.Equal(t, "body", row[8][2])
-	assert.Equal(t, "string", row[8][3])
-	assert.Equal(t, "Group name", row[8][6])
+	assert.Equal(t, "O", row[12][0])
+	assert.Equal(t, "body", row[12][1])
+	assert.Equal(t, "body", row[12][2])
+	assert.Equal(t, "string", row[12][3])
+	assert.Equal(t, "Group name", row[12][6])
 }
 
 // @source editor.swagger.json
@@ -328,11 +328,11 @@ func TestParameterSchemaItemsWithRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err := xl.File.GetRows("1")
 	assert.NoError(t, err)
-	assert.Equal(t, "O", row[8][0])
-	assert.Equal(t, "users", row[8][1])
-	assert.Equal(t, "body", row[8][2])
-	assert.Equal(t, "array", row[8][3])
-	assert.Equal(t, "List of user object", row[8][6])
+	assert.Equal(t, "O", row[12][0])
+	assert.Equal(t, "users", row[12][1])
+	assert.Equal(t, "body", row[12][2])
+	assert.Equal(t, "array", row[12][3])
+	assert.Equal(t, "List of user object", row[12][6])
 }
 
 // @source editor.swagger.json
@@ -375,11 +375,287 @@ func TestParameterSchemaItemsWithoutRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err := xl.File.GetRows("1")
 	assert.NoError(t, err)
-	assert.Equal(t, "O", row[8][0])
-	assert.Equal(t, "status", row[8][1])
-	assert.Equal(t, "query", row[8][2])
-	assert.Equal(t, "array", row[8][3])
-	assert.Equal(t, "Status values that need to be considered for filter", row[8][6])
+	assert.Equal(t, "O", row[12][0])
+	assert.Equal(t, "status", row[12][1])
+	assert.Equal(t, "query", row[12][2])
+	assert.Equal(t, "array", row[12][3])
+	assert.Equal(t, "Status values that need to be considered for filter", row[12][6])
+}
+
+// @source docker.v1.41.json
+// @method head
+// @path /containers/{id}/archive
+func TestResponseHeaders(t *testing.T) {
+	xl := New()
+	var err error
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			ID: "ContainerArchiveInfo",
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						200: {
+							ResponseProps: spec.ResponseProps{
+								Description: "no error",
+								Schema:      &spec.Schema{},
+								Headers: map[string]spec.Header{
+									"X-Docker-Container-Path-Stat": {
+										SimpleSchema: spec.SimpleSchema{
+											Type: "string",
+										},
+										HeaderProps: spec.HeaderProps{
+											Description: "A base64 - encoded JSON object with some filesystem header\ninformation about the path\n",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "200", row[15][0])
+	assert.Equal(t, "X-Docker-Container-Path-Stat", row[15][1])
+	assert.Equal(t, "header", row[15][2])
+	assert.Equal(t, "string", row[15][3])
+	assert.Equal(t, "A base64 - encoded JSON object with some filesystem header\ninformation about the path\n", row[15][6])
+}
+
+// @source docker.v1.41.json
+func TestResponseWithoutSchema(t *testing.T) {
+	xl := New()
+	var err error
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			ID: "ContainerInspect",
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						// @method post
+						// @path /containers/{id}/attach
+						101: {
+							ResponseProps: spec.ResponseProps{
+								Description: "no error, hints proxy about hijacking",
+							},
+						},
+						// @method get
+						// @path /containers/{id}/json
+						200: {
+							ResponseProps: spec.ResponseProps{
+								Description: "no error",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Title: "ContainerInspectResponse",
+										Type:  []string{"object"},
+										Properties: spec.SchemaProperties{
+											"Id": {
+												SchemaProps: spec.SchemaProps{
+													Description: "The ID of the container",
+													Type:        []string{"string"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "101", row[15][0])
+	assert.Equal(t, "", row[15][1])
+	assert.Equal(t, "", row[15][2])
+	assert.Equal(t, "", row[15][3])
+	assert.Equal(t, "no error, hints proxy about hijacking", row[15][6])
+	assert.Equal(t, "200", row[16][0])
+	assert.Equal(t, "ContainerInspectResponse", row[16][1])
+	assert.Equal(t, "body", row[16][2])
+	assert.Equal(t, "object", row[16][3])
+	assert.Equal(t, "no error", row[16][6])
+}
+
+// @source docker.v1.41.json
+// @method DELETE
+// @path /containers/{id}
+func TestResponseSchemaWithRef(t *testing.T) {
+	xl := New()
+	var err error
+	xl.SwaggerSpec = &spec.Swagger{
+		SwaggerProps: spec.SwaggerProps{
+			Definitions: spec.Definitions{
+				"ErrorResponse": spec.Schema{
+					SchemaProps: spec.SchemaProps{
+						Description: "Account plan object",
+						Type: spec.StringOrArray{
+							"object",
+						},
+						Properties: spec.SchemaProperties{
+							"hosts": spec.Schema{
+								SchemaProps: spec.SchemaProps{
+									Description: "Account plan number of hosts",
+									Type: spec.StringOrArray{
+										"integer",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						204: {
+							ResponseProps: spec.ResponseProps{
+								Description: "no error",
+							},
+						},
+						400: {
+							ResponseProps: spec.ResponseProps{
+								Description: "bad parameter",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: spec.MustCreateRef("#/definitions/ErrorResponse"),
+									},
+								},
+							},
+						},
+						404: {
+							ResponseProps: spec.ResponseProps{
+								Description: "bad parameter",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Description: "no such container",
+										Ref:         spec.MustCreateRef("#/definitions/ErrorResponse"),
+									},
+									SwaggerSchemaProps: spec.SwaggerSchemaProps{
+										Example: map[string]map[string]interface{}{
+											"application/json": {
+												"message": "No such container: c2ada9df5af8",
+											},
+										},
+									},
+								},
+							},
+						},
+						409: {
+							ResponseProps: spec.ResponseProps{
+								Description: "conflict",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: spec.MustCreateRef("#/definitions/ErrorResponse"),
+									},
+									SwaggerSchemaProps: spec.SwaggerSchemaProps{
+										Example: map[string]map[string]interface{}{
+											"application/json": {
+												"message": "You cannot remove a running container: c2ada9df5af8. Stop the\ncontainer before attempting removal or force remove\n",
+											},
+										},
+									},
+								},
+							},
+						},
+						500: {
+							ResponseProps: spec.ResponseProps{
+								Description: "server error",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: spec.MustCreateRef("#/definitions/ErrorResponse"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "204", row[15][0])
+	assert.Equal(t, "", row[15][1])
+	assert.Equal(t, "", row[15][2])
+	assert.Equal(t, "", row[15][3])
+	assert.Equal(t, "no error", row[15][6])
+	assert.Equal(t, "400", row[16][0])
+	assert.Equal(t, "ErrorResponse", row[16][1])
+	assert.Equal(t, "body", row[16][2])
+	assert.Equal(t, "object", row[16][3])
+	assert.Equal(t, "bad parameter", row[16][6])
+	assert.Equal(t, "404", row[17][0])
+	assert.Equal(t, "ErrorResponse", row[17][1])
+	assert.Equal(t, "body", row[17][2])
+	assert.Equal(t, "object", row[17][3])
+	assert.Equal(t, "bad parameter", row[17][6])
+	assert.Equal(t, "409", row[18][0])
+	assert.Equal(t, "ErrorResponse", row[18][1])
+	assert.Equal(t, "body", row[18][2])
+	assert.Equal(t, "object", row[18][3])
+	assert.Equal(t, "conflict", row[18][6])
+	assert.Equal(t, "500", row[19][0])
+	assert.Equal(t, "ErrorResponse", row[19][1])
+	assert.Equal(t, "body", row[19][2])
+	assert.Equal(t, "object", row[19][3])
+	assert.Equal(t, "server error", row[19][6])
+}
+
+// @source cisco.meraki.json
+// @method POST
+// @path /devices/{serial}/camera/generateSnapshot
+func TestResponseSchemaWithoutRef(t *testing.T) {
+	xl := New()
+	var err error
+	xl.SwaggerSpec = &spec.Swagger{}
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						202: {
+							ResponseProps: spec.ResponseProps{
+								Description: "Successful operation",
+								Examples: map[string]interface{}{
+									"application/json": map[string]string{
+										"expiry": "Access to the image will expire at 2018-12-11T03:12:39Z.",
+										"url":    "https://spn4.meraki.com/stream/jpeg/snapshot/b2d123asdf423qd22d2",
+									},
+								},
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type: spec.StringOrArray{
+											"object",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "202", row[15][0])
+	assert.Equal(t, "", row[15][1])
+	assert.Equal(t, "body", row[15][2])
+	assert.Equal(t, "object", row[15][3])
+	assert.Equal(t, "Successful operation", row[15][6])
 }
 
 // @source spotify.json
@@ -436,144 +712,48 @@ func TestResponseSchemaItemsWithRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err := xl.File.GetRows("1")
 	assert.NoError(t, err)
-	assert.Equal(t, "", row[11][0])
-	assert.Equal(t, "Test", row[11][1])
-	assert.Equal(t, "body", row[11][2])
-	assert.Equal(t, "array", row[11][3])
-	assert.Equal(t, "OK", row[11][6])
-
-	err = xl.createAPISheet("", "", &spec.Operation{
-		OperationProps: spec.OperationProps{
-			Responses: &spec.Responses{
-				ResponsesProps: spec.ResponsesProps{
-					StatusCodeResponses: map[int]spec.Response{
-						200: {
-							ResponseProps: spec.ResponseProps{
-								Description: "OK",
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Type: spec.StringOrArray{
-											"integer",
-											"object",
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}, nil, 1)
-	assert.NoError(t, err)
+	assert.Equal(t, "200", row[15][0])
+	assert.Equal(t, "Test", row[15][1])
+	assert.Equal(t, "body", row[15][2])
+	assert.Equal(t, "array", row[15][3])
+	assert.Equal(t, "OK", row[15][6])
 }
 
-// @source zoom.us.json
-// @method GET
-// @path /accounts/{accountId}/billing
-func TestResponseSchemaWithRef(t *testing.T) {
-	xl := New()
-	var err error
-	xl.SwaggerSpec = &spec.Swagger{
-		SwaggerProps: spec.SwaggerProps{
-			Definitions: spec.Definitions{
-				"AccountPlan": spec.Schema{
-					SchemaProps: spec.SchemaProps{
-						Description: "Account plan object",
-						Type: spec.StringOrArray{
-							"object",
-						},
-						Properties: spec.SchemaProperties{
-							"hosts": spec.Schema{
-								SchemaProps: spec.SchemaProps{
-									Description: "Account plan number of hosts",
-									Type: spec.StringOrArray{
-										"integer",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-	err = xl.createAPISheet("", "", &spec.Operation{
-		OperationProps: spec.OperationProps{
-			Responses: &spec.Responses{
-				ResponsesProps: spec.ResponsesProps{
-					StatusCodeResponses: map[int]spec.Response{
-						200: {
-							ResponseProps: spec.ResponseProps{
-								Description: "OK",
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Ref: spec.MustCreateRef("#/definitions/AccountPlan"),
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}, nil, 1)
-	assert.NoError(t, err)
-	row, err := xl.File.GetRows("1")
-	assert.NoError(t, err)
-	assert.Equal(t, "", row[11][0])
-	assert.Equal(t, "AccountPlan", row[11][1])
-	assert.Equal(t, "body", row[11][2])
-	assert.Equal(t, "object", row[11][3])
-	assert.Equal(t, "OK", row[11][6])
-	// TODO:
-	// assert.Equal(t, "Account plan object", row[11][6])
+// TODO:
+// POST
+// /containers/prune
+// GET
+// /images/{name}/history
+func TestResponseSchemaItemsWithoutRef(t *testing.T) {
+	// err = xl.createAPISheet("", "", &spec.Operation{
+	// 	OperationProps: spec.OperationProps{
+	// 		Responses: &spec.Responses{
+	// 			ResponsesProps: spec.ResponsesProps{
+	// 				StatusCodeResponses: map[int]spec.Response{
+	// 					200: {
+	// 						ResponseProps: spec.ResponseProps{
+	// 							Description: "OK",
+	// 							Schema: &spec.Schema{
+	// 								SchemaProps: spec.SchemaProps{
+	// 									Type: spec.StringOrArray{
+	// 										"integer",
+	// 										"object",
+	// 									},
+	// 								},
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// }, nil, 1)
+	// assert.NoError(t, err)
 }
 
-// @source cisco.meraki.json
-// @method POST
-// @path /devices/{serial}/camera/generateSnapshot
-func TestResponseSchemaWithoutRef(t *testing.T) {
-	xl := New()
-	var err error
-	xl.SwaggerSpec = &spec.Swagger{}
-	err = xl.createAPISheet("", "", &spec.Operation{
-		OperationProps: spec.OperationProps{
-			Responses: &spec.Responses{
-				ResponsesProps: spec.ResponsesProps{
-					StatusCodeResponses: map[int]spec.Response{
-						202: {
-							ResponseProps: spec.ResponseProps{
-								Description: "Successful operation",
-								Examples: map[string]interface{}{
-									"application/json": map[string]string{
-										"expiry": "Access to the image will expire at 2018-12-11T03:12:39Z.",
-										"url":    "https://spn4.meraki.com/stream/jpeg/snapshot/b2d123asdf423qd22d2",
-									},
-								},
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Type: spec.StringOrArray{
-											"object",
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}, nil, 1)
-	assert.NoError(t, err)
-	row, err := xl.File.GetRows("1")
-	assert.NoError(t, err)
-	// code 202
-	assert.Equal(t, "", row[11][0])
-	assert.Equal(t, "", row[11][1])
-	assert.Equal(t, "", row[11][2])
-	assert.Equal(t, "", row[11][3])
-	assert.Equal(t, "", row[11][6])
+// TODO:
+func TestResponseDefault(t *testing.T) {
+	// xl := New()
 }
 
 // @source zoom.us.json
@@ -681,11 +861,11 @@ func TestAllOfDefinitionWithRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err := xl.File.GetRows("1")
 	assert.NoError(t, err)
-	assert.Equal(t, "", row[11][0])
-	assert.Equal(t, "AccountList", row[11][1])
-	assert.Equal(t, "body", row[11][2])
+	assert.Equal(t, "200", row[15][0])
+	assert.Equal(t, "AccountList", row[15][1])
+	assert.Equal(t, "body", row[15][2])
 	// TODO:
-	// assert.Equal(t, "objects", row[11][3])
-	assert.Equal(t, "object", row[11][3])
-	assert.Equal(t, "Account list returned", row[11][6])
+	// assert.Equal(t, "objects", row[15][3])
+	assert.Equal(t, "object", row[15][3])
+	assert.Equal(t, "Account list returned", row[15][6])
 }

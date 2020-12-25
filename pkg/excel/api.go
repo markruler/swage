@@ -47,7 +47,10 @@ func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operatio
 		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.Tags[0])
 	}
 	xl.Context.row++
-
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "ID")
+	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.ID)
+	xl.Context.row++
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Path")
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), path)
@@ -55,6 +58,14 @@ func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operatio
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Method")
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), method)
+	xl.Context.row++
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Consumes")
+	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), strings.Join(operation.Consumes, ", "))
+	xl.Context.row++
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Produces")
+	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), strings.Join(operation.Produces, ", "))
 	xl.Context.row++
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Summary")
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
@@ -64,18 +75,21 @@ func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operatio
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.Description)
 	xl.Context.row++
+
+	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", 2), fmt.Sprintf("%s%d", "A", xl.Context.row-1), xl.Style.Center)
+	xl.Context.row++
 	return nil
 }
 
 func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "REQUEST")
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetRowHeight(xl.Context.worksheetName, xl.Context.row, 15)
+	xl.File.SetRowHeight(xl.Context.worksheetName, xl.Context.row, 20.0)
 	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Title)
 	xl.Context.row++
 
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "required")
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), "parameter")
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), "schema")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "param-type")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), "data-type")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), "enum")
@@ -84,7 +98,7 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Center)
 	xl.Context.row++
 
-	// TODO: refactoring
+	// TODO: refactoring if-hell
 	for _, param := range operation.Parameters {
 		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
 
@@ -157,13 +171,14 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 	return nil
 }
 
-func (xl *Excel) setAPISheetResponse(operation *spec.Operation) error {
+func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "RESPONSE")
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetRowHeight(xl.Context.worksheetName, xl.Context.row, 15)
+	xl.File.SetRowHeight(xl.Context.worksheetName, xl.Context.row, 20.0)
 	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Title)
 	xl.Context.row++
 
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "code")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), "schema")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "param-type")
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), "data-type")
@@ -173,57 +188,95 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) error {
 	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Center)
 	xl.Context.row++
 
-	// TODO: refactor
-	response := operation.Responses
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Left)
-	if response == nil {
-		// return errors.New("response == nil")
+	// TODO: refactoring if-hell
+	responses := operation.Responses
+	if responses == nil {
+		// return errors.New("[spec.Responses] is empty")
 		return nil
 	}
-	// /accounts/{accountId}/plans/addons
-	// TODO: code 201, 202 code
-	success := response.StatusCodeResponses[200]
-	if !reflect.DeepEqual(spec.Response{}, success) {
-		if success.Schema == nil || &success.Ref == nil {
+
+	codes := sortMap(responses.StatusCodeResponses)
+	for _, code := range codes {
+		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
+		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Left)
+		var icode int
+		if icode, err = strconv.Atoi(code); err != nil {
+			return err
+		}
+		xl.File.SetCellInt(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), icode)
+		response := responses.StatusCodeResponses[icode]
+		// fmt.Println(icode, response)
+		switch icode {
+		// case 101:
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
+		// case 200, 201, 204:
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), "string")
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
+		// case 400, 403, 404:
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), "string")
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
+		// case 500:
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), "string")
+		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
+		default:
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
+		}
+		if reflect.DeepEqual(spec.Response{}, response) {
+			continue
+		}
+		for headerKey, header := range response.Headers {
+			xl.setCellWithSchema(headerKey, "header", header.Type, header.Description)
+		}
+		if response.Schema == nil || &response.Ref == nil {
 			// TODO: write test code
-			if response.Default != nil {
-				schema, err := spec.ResolveRef(xl.SwaggerSpec, &response.Default.Schema.Ref)
+			if responses.Default != nil {
+				schema, err := spec.ResolveRef(xl.SwaggerSpec, &responses.Default.Schema.Ref)
 				if err != nil {
 					return err
 				}
-				schemaName, _ := xl.getDefinitionFromRef(response.Default.Schema.Ref)
-				xl.setCellWithSchema(schemaName, "body", schema.Type[0], response.Default.Description)
+				schemaName, _ := xl.getDefinitionFromRef(responses.Default.Schema.Ref)
+				xl.setCellWithSchema(schemaName, "body", schema.Type[0], responses.Default.Description)
 			}
-			return nil
+			xl.Context.row++
+			continue
 		}
 
+		if response.Schema.Title != "" {
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), response.Schema.Title)
+		}
+		if response.Schema.Type != nil {
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(response.Schema.Type, ";"))
+		}
 		// TODO: update test code
-		if success.Schema.Type.Contains("array") {
-			items := success.Schema.Items
+		if response.Schema.Type.Contains("array") {
+			items := response.Schema.Items
 			// fmt.Println("items.Schemas:", items.Schemas)
 			if len(items.Schemas) != 0 {
 				// fmt.Println("items.Schemas[0].Ref:", items.Schemas[0].Ref)
 				definitionName, definition := xl.getDefinitionFromRef(items.Schemas[0].Ref)
 				// fmt.Println(definitionName, definition)
 				if definition == nil {
-					return errors.New("not found success.Schema.Items definition")
+					return errors.New("not found response.Schema.Items definition")
 				}
-				xl.setCellWithSchema(definitionName, "body", "array", success.Description)
+				xl.setCellWithSchema(definitionName, "body", "array", response.Description)
 				return nil
 			}
 			return errors.New("not found item schema")
 		}
 
 		// TODO: write test code
-		// fmt.Println("success.Schema.Items:", success.Schema.Items)
-		// if success.Schema.Items != nil {
-		// 	items := success.Schema.Items
+		// fmt.Println("response.Schema.Items:", response.Schema.Items)
+		// if response.Schema.Items != nil {
+		// 	items := response.Schema.Items
 		// 	fmt.Println("items.Schema.Type:", items.Schema.Type)
 		// 	if items.Schema.Type != nil {
 		// 		itemType := strings.Join(items.Schema.Type, ";")
-		// 		if success.Schema.Type != nil {
-		// 			schemaType := strings.Join(success.Schema.Type, ";")
+		// 		if response.Schema.Type != nil {
+		// 			schemaType := strings.Join(response.Schema.Type, ";")
 		// 			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), schemaType)
 		// 		}
 		// 		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
@@ -232,13 +285,13 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) error {
 		// 	}
 		// }
 
-		if !reflect.DeepEqual(spec.Ref{}, success.Schema.Ref) {
-			schema, err := spec.ResolveRef(*xl.SwaggerSpec, &success.Schema.Ref)
+		if !reflect.DeepEqual(spec.Ref{}, response.Schema.Ref) {
+			schema, err := spec.ResolveRef(*xl.SwaggerSpec, &response.Schema.Ref)
 			if err != nil {
 				return err
 			}
 			if schema == nil {
-				return errors.New("not found success.Schema.Ref definition")
+				return errors.New("not found response.Schema.Ref definition")
 			}
 			// TODO: handle 'AllOf'
 			// if len(schema.AllOf) != 0 {
@@ -257,26 +310,39 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) error {
 			// 	}
 			// 	return nil
 			// }
-			schemaName, _ := xl.getDefinitionFromRef(success.Schema.Ref)
-			xl.setCellWithSchema(schemaName, "body", "object", success.Description)
-			return nil
+			schemaName, _ := xl.getDefinitionFromRef(response.Schema.Ref)
+			// fmt.Println("schemaName:", schemaName)
+			xl.setCellWithSchema(schemaName, "body", "object", response.Description)
+			xl.Context.row++
+			continue
+		}
+
+		if response.Schema.Title != "" {
+			xl.setCellWithSchema(response.Schema.Title, "body", "object", response.Description)
+			xl.Context.row++
+			continue
 		}
 
 		// TODO: write test code
-		if success.Schema.Properties != nil {
-			for propertyName, propertySchema := range success.Schema.Properties {
-				definitionName, definition := xl.getDefinitionFromRef(propertySchema.Ref)
-				if definition == nil {
-					return errors.New("not found definition")
-				}
-				if propertySchema.Items != nil {
-					definitionName, definition = xl.getDefinitionFromRef(propertySchema.Items.Schema.Ref)
+		if response.Schema.Properties != nil {
+			for propertyName, propertySchema := range response.Schema.Properties {
+				if !reflect.DeepEqual(spec.Ref{}, propertySchema.Ref) {
+					definitionName, definition := xl.getDefinitionFromRef(propertySchema.Ref)
 					if definition == nil {
 						return errors.New("not found definition")
 					}
+					if propertySchema.Items != nil {
+						definitionName, definition = xl.getDefinitionFromRef(propertySchema.Items.Schema.Ref)
+						if definition == nil {
+							return errors.New("not found definition")
+						}
+					}
+					xl.setCellWithSchema(definitionName, "body", propertyName, propertySchema.Description)
+					xl.Context.row++
+					continue
 				}
-				xl.setCellWithSchema(definitionName, "body", propertyName, propertySchema.Description)
-				return nil
+				xl.setCellWithSchema(propertyName, "body", strings.Join(response.Schema.Type, ";"), response.Description)
+				xl.Context.row++
 			}
 		}
 	}

@@ -3,7 +3,6 @@ package excel
 import (
 	"fmt"
 	"log"
-	"sort"
 	"strings"
 	"time"
 
@@ -56,14 +55,8 @@ func (xl *Excel) createIndexSheet() error {
 	xl.File.SetCellStr(xl.indexSheetName, "D1", "path")
 	xl.File.SetCellStr(xl.indexSheetName, "E1", "summary")
 
-	// Sort a map by path
-	paths := make([]string, 0, len(xl.SwaggerSpec.Paths.Paths))
-	for path := range xl.SwaggerSpec.Paths.Paths {
-		paths = append(paths, path)
-	}
-	sort.Strings(paths)
-
 	// Set Data
+	paths := sortMap(xl.SwaggerSpec.Paths.Paths)
 	row := 1
 	for _, path := range paths {
 		operations := xl.SwaggerSpec.Paths.Paths[path]
