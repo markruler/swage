@@ -26,22 +26,28 @@ func sortMap(hashmap interface{}) []string {
 
 func (xl *Excel) getParameterFromRef(ref spec.Ref) *spec.Parameter {
 	url := ref.GetURL()
-	if url == nil {
+	if url == nil || url.String() == "" {
 		return nil
 	}
 	lastIndex := strings.LastIndex(url.Fragment, "/")
 	parameterName := url.Fragment[lastIndex+1:]
+	if xl.SwaggerSpec == nil || len(xl.SwaggerSpec.Parameters) == 0 {
+		return nil
+	}
 	param := xl.SwaggerSpec.Parameters[parameterName]
 	return &param
 }
 
 func (xl *Excel) getDefinitionFromRef(ref spec.Ref) (definitionName string, definition *spec.Schema) {
 	url := ref.GetURL()
-	if url == nil {
+	if url == nil || url.String() == "" {
 		return "", nil
 	}
 	lastIndex := strings.LastIndex(url.Fragment, "/")
 	defName := url.Fragment[lastIndex+1:]
+	if xl.SwaggerSpec == nil || len(xl.SwaggerSpec.Definitions) == 0 {
+		return "", nil
+	}
 	def := xl.SwaggerSpec.Definitions[defName]
 	return defName, &def
 }
