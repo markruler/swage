@@ -54,8 +54,8 @@ func title(xl *excelize.File) int {
 		},
 		Fill: excelize.Fill{
 			Type:    "gradient",
-			Color:   []string{"#ffffff", "#38b832"},
-			Shading: 5,
+			Color:   []string{"#beff32", "#6ba543"},
+			Shading: 2,
 		},
 	})
 	if err != nil {
