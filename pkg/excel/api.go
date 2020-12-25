@@ -30,7 +30,7 @@ func (xl *Excel) createAPISheet(path, method string, operation *spec.Operation, 
 
 func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operation) error {
 	xl.File.SetColWidth(xl.Context.worksheetName, "A", "A", 12.0)
-	xl.File.SetColWidth(xl.Context.worksheetName, "B", "B", 13.0)
+	xl.File.SetColWidth(xl.Context.worksheetName, "B", "B", 20.0)
 	xl.File.SetColWidth(xl.Context.worksheetName, "C", "C", 12.0)
 	xl.File.SetColWidth(xl.Context.worksheetName, "D", "D", 12.0)
 	xl.File.SetColWidth(xl.Context.worksheetName, "G", "G", 40.0)
