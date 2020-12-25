@@ -2,6 +2,7 @@ package excel
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/go-openapi/spec"
@@ -35,7 +36,9 @@ func New() *Excel {
 
 // Generate function generates a spreadsheet and then saves Excel file
 // with the specified path.
-func (xl *Excel) Generate(swaggerAPI *spec.Swagger) error {
+func (xl *Excel) Generate(swaggerAPI *spec.Swagger, template string) error {
+	// fmt.Printf("template: \"%s\"\n", strings.TrimSpace(template))
+
 	if swaggerAPI == nil {
 		return errors.New("OpenAPI should not be empty")
 	}
@@ -46,9 +49,18 @@ func (xl *Excel) Generate(swaggerAPI *spec.Swagger) error {
 		return errors.New("Path sould not be empty")
 	}
 	xl.SwaggerSpec = swaggerAPI
-	// TODO: make templates (ex. template1, template2, ...)
-	if err := xl.createIndexSheet(); err != nil {
-		return err
+
+	switch strings.TrimSpace(template) {
+	case "1":
+		if err := xl.createIndexSheet(); err != nil {
+			return err
+		}
+	case "2":
+	// if err := xl.createIndexSheet(); err != nil {
+	// 	return err
+	// }
+	default:
+		return errors.New("the template not found")
 	}
 	return nil
 }

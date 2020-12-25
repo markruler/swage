@@ -9,7 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var outputPath string
+var (
+	outputPath string
+	template   string
+)
 
 var genCmd = &cobra.Command{
 	Use:   "gen [JSON_PATH]",
@@ -23,6 +26,7 @@ ex) swage gen aio/example/example.json -o $HOME/swage.xlsx
 
 func init() {
 	genCmd.Flags().StringVarP(&outputPath, "output", "o", "swage.xlsx", "set a path to save a Excel file")
+	genCmd.Flags().StringVarP(&template, "template", "t", "1", "set a Excel template [1]")
 	genCmd.Flags().BoolP("verbose", "v", false, "verbose print")
 }
 
@@ -45,7 +49,7 @@ func genRun(cmd *cobra.Command, args []string) error {
 
 	xl := excel.New()
 
-	if err = xl.Generate(swaggerAPI); err != nil {
+	if err = xl.Generate(swaggerAPI, template); err != nil {
 		return err
 	}
 

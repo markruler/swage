@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"strings"
+
+	"github.com/go-openapi/spec"
 )
 
 func sortMap(hashmap interface{}) []string {
@@ -19,4 +22,35 @@ func sortMap(hashmap interface{}) []string {
 		return keys
 	}
 	return nil
+}
+
+func (xl *Excel) getParameterFromRef(ref spec.Ref) *spec.Parameter {
+	url := ref.GetURL()
+	if url == nil {
+		return nil
+	}
+	lastIndex := strings.LastIndex(url.Fragment, "/")
+	parameterName := url.Fragment[lastIndex+1:]
+	param := xl.SwaggerSpec.Parameters[parameterName]
+	return &param
+}
+
+func (xl *Excel) getDefinitionFromRef(ref spec.Ref) (definitionName string, definition *spec.Schema) {
+	url := ref.GetURL()
+	if url == nil {
+		return "", nil
+	}
+	lastIndex := strings.LastIndex(url.Fragment, "/")
+	defName := url.Fragment[lastIndex+1:]
+	def := xl.SwaggerSpec.Definitions[defName]
+	return defName, &def
+}
+
+func (xl *Excel) setCellWithSchema(schemaName, paramType, dataType, description string) {
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), schemaName)
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), paramType)
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), dataType)
+	// xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), enum)
+	// xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "F", xl.Context.row), example)
+	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), description)
 }
