@@ -719,41 +719,199 @@ func TestResponseSchemaItemsWithRef(t *testing.T) {
 	assert.Equal(t, "OK", row[15][6])
 }
 
-// TODO:
-// POST
-// /containers/prune
-// GET
-// /images/{name}/history
 func TestResponseSchemaItemsWithoutRef(t *testing.T) {
-	// err = xl.createAPISheet("", "", &spec.Operation{
-	// 	OperationProps: spec.OperationProps{
-	// 		Responses: &spec.Responses{
-	// 			ResponsesProps: spec.ResponsesProps{
-	// 				StatusCodeResponses: map[int]spec.Response{
-	// 					200: {
-	// 						ResponseProps: spec.ResponseProps{
-	// 							Description: "OK",
-	// 							Schema: &spec.Schema{
-	// 								SchemaProps: spec.SchemaProps{
-	// 									Type: spec.StringOrArray{
-	// 										"integer",
-	// 										"object",
-	// 									},
-	// 								},
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// }, nil, 1)
-	// assert.NoError(t, err)
+	xl := New()
+	var err error
+	// @source docker.v1.41.json
+	// @method POST
+	// @path /containers/prune
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						200: {
+							ResponseProps: spec.ResponseProps{
+								Description: "No error",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type:  []string{"object"},
+										Title: "ContainerPruneResponse",
+										Properties: spec.SchemaProperties{
+											"ContainersDeleted": {
+												SchemaProps: spec.SchemaProps{
+													Description: "Container IDs that were deleted",
+													Type:        []string{"array"},
+													Items: &spec.SchemaOrArray{
+														Schema: &spec.Schema{
+															SchemaProps: spec.SchemaProps{
+																Type: []string{"string"},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "200", row[15][0])
+	assert.Equal(t, "ContainerPruneResponse", row[15][1])
+	assert.Equal(t, "body", row[15][2])
+	assert.Equal(t, "object", row[15][3])
+	assert.Equal(t, "No error", row[15][6])
+
+	// @source docker.v1.41.json
+	// @method GET
+	// @path /images/search
+	// @path /images/{name}/history
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						200: {
+							ResponseProps: spec.ResponseProps{
+								Description: "No error",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type: []string{"array"},
+										Items: &spec.SchemaOrArray{
+											Schema: &spec.Schema{
+												SchemaProps: spec.SchemaProps{
+													Type:  []string{"object"},
+													Title: "ImageSearchResponseItem",
+													Properties: spec.SchemaProperties{
+														"description": {
+															SchemaProps: spec.SchemaProps{
+																Type: []string{"string"},
+															},
+														},
+														"is_official": {
+															SchemaProps: spec.SchemaProps{
+																Type: []string{"boolean"},
+															},
+														},
+														"is_automated": {
+															SchemaProps: spec.SchemaProps{
+																Type: []string{"boolean"},
+															},
+														},
+														"name": {
+															SchemaProps: spec.SchemaProps{
+																Type: []string{"string"},
+															},
+														},
+														"star_count": {
+															SchemaProps: spec.SchemaProps{
+																Type: []string{"integer"},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+								Examples: map[string]interface{}{
+									"application/json": map[string]interface{}{
+										"description":  "",
+										"is_official":  false,
+										"is_automated": false,
+										"name":         "wma55/u1210sshd",
+										"star_cound":   0,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 2)
+	assert.NoError(t, err)
+	row, err = xl.File.GetRows("2")
+	assert.NoError(t, err)
+	assert.Equal(t, "200", row[15][0])
+	assert.Equal(t, "ImageSearchResponseItem", row[15][1])
+	assert.Equal(t, "body", row[15][2])
+	assert.Equal(t, "array", row[15][3])
+	assert.Equal(t, "No error", row[15][6])
 }
 
-// TODO:
+// @source bbc.radio.json
+// @method GET
+// @path /broadcasts/latest
 func TestResponseDefault(t *testing.T) {
-	// xl := New()
+	xl := New()
+	var err error
+	xl.SwaggerSpec = &spec.Swagger{
+		SwaggerProps: spec.SwaggerProps{
+			Definitions: spec.Definitions{
+				"BroadcastsResponse": spec.Schema{
+					SchemaProps: spec.SchemaProps{},
+				},
+				"ErrorResponse": spec.Schema{
+					SchemaProps: spec.SchemaProps{
+						Type:     []string{"object"},
+						Required: []string{"errors"},
+					},
+				},
+			},
+		},
+	}
+	err = xl.createAPISheet("", "", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Responses: &spec.Responses{
+				ResponsesProps: spec.ResponsesProps{
+					StatusCodeResponses: map[int]spec.Response{
+						200: {
+							ResponseProps: spec.ResponseProps{
+								Description: "OK",
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: spec.MustCreateRef("#/definitions/BroadcastsResponse"),
+									},
+								},
+							},
+						},
+					},
+					Default: &spec.Response{
+						ResponseProps: spec.ResponseProps{
+							Description: "Unexpected error",
+							Schema: &spec.Schema{
+								SchemaProps: spec.SchemaProps{
+									Ref: spec.MustCreateRef("#/definitions/ErrorResponse"),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+	assert.Equal(t, "default", row[15][0])
+	assert.Equal(t, "ErrorResponse", row[15][1])
+	assert.Equal(t, "body", row[15][2])
+	assert.Equal(t, "object", row[15][3])
+	assert.Equal(t, "Unexpected error", row[15][6])
+	assert.Equal(t, "200", row[16][0])
+	assert.Equal(t, "BroadcastsResponse", row[16][1])
+	assert.Equal(t, "body", row[16][2])
+	assert.Equal(t, "object", row[16][3])
+	assert.Equal(t, "OK", row[16][6])
 }
 
 // @source zoom.us.json
