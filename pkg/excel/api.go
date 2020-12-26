@@ -116,6 +116,7 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 		xl.setCellWithSchema(param.Name, param.In, param.Type, param.Description)
 
 		if param.Schema != nil {
+			// TODO: write test code
 			if param.Schema.Items != nil {
 				if param.Schema.Items.Schema != nil {
 					xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ";"))

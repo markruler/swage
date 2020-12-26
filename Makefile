@@ -15,8 +15,8 @@ version:
 
 .PHONY: deps
 deps:
-	@# go get -u
-	@rm -rf vendor/
+	@#go get -u
+	@#rm -rf vendor/
 	@go get -t -d -v ./...
 	@go mod tidy
 	@go mod vendor

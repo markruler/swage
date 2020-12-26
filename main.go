@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/markruler/swage/pkg/cmd"
+	"github.com/cxsu/swage/pkg/cmd"
 )
 
 func main() {

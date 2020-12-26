@@ -1,4 +1,4 @@
-module github.com/markruler/swage
+module github.com/cxsu/swage
 
 go 1.14
 
