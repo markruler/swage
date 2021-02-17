@@ -37,18 +37,6 @@ swage gen <path>
 - [APIs.guru](https://apis.guru/browse-apis/)
 - [APIs.guru - GitHub](https://github.com/APIs-guru/openapi-directory)
 
-## Roadmap
-
-- [x] Support OAS JSON format (by `go-openapi/spec`)
-- [x] Support OAS YAML format (by `go-openapi/spec`)
-- [x] Support data from web server (by `go-openapi/spec`)
-- [x] Improve code coverage
-- [ ] Investigate memory leaks
-- [ ] Make templates in Excel format
-- [ ] Release Swage with GoReleaser
-- [x] Support OAS [v2.0](http://spec.openapis.org/oas/v2.0)
-- [ ] Support OAS [v3.0 (latest)](http://spec.openapis.org/oas/v3.0.3) (by [go-openapi/spec3](https://github.com/go-openapi/spec3))
-
 ## Open API Specification (OAS) Revision History
 
 - [OpenAPI Specification - Appendix A: Revision History](https://swagger.io/specification/#appendix-a-revision-history)
