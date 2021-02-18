@@ -8,7 +8,7 @@
 swage gen <path>
 ```
 
-## Prerequisite
+## Background
 
 > OAS
 >
@@ -58,4 +58,5 @@ swage gen <path>
 | 1.0       | 2011-08-10 | First release of the Swagger Specification        |
 
 ![OAS Version](./oas-version.jpg)
-*[A Guide to What’s New in OpenAPI 3.0](https://swagger.io/blog/news/whats-new-in-openapi-3-0/) - Ryan Pinkham*
+
+_[A Guide to What’s New in OpenAPI 3.0](https://swagger.io/blog/news/whats-new-in-openapi-3-0/) - Ryan Pinkham_

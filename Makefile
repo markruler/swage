@@ -6,14 +6,24 @@ BINARY	:= swage
 VERSION	:= $(file < ./VERSION)
 # TARGETS	:= darwin/amd64 linux/amd64 linux/386 linux/arm linux/arm64 linux/ppc64le linux/s390x windows/amd64
 
-.PHONY: all
-all: version deps test cover run
+.PHONY: \
+				all \
+				run \
+				version \
+				deps \
+				gofmt \
+				test \
+				testv \
+				cover \
+				clean \
+				build \
+				docker
 
-.PHONY: version
+all: version deps test cover build
+
 version:
-	@echo $(GOBIN)/$(BINARY).$(VERSION)
+	@echo $(VERSION)
 
-.PHONY: deps
 deps:
 	@#go get -u
 	@#rm -rf vendor/
@@ -21,37 +31,28 @@ deps:
 	@go mod tidy
 	@go mod vendor
 
-.PHONY: gofmt
 gofmt:
 	go fmt ./...
 
-.PHONY: test
 test: gofmt
 	go test ./... --cover
 
-.PHONY: testv
 testv: gofmt
 	go test ./... -v --cover
 
-.PHONY: cover
 cover:
 	@scripts/cover --html
 	@scripts/cover
 
-.PHONY: run
 run:
-	go run main.go gen examples/testdata/json/editor.swagger.json
+	go run main.go
 
-.PHONY: clean
 clean:
 	rm -f *.xlsx
 	rm -rf $(BINDIR)
 
-.PHONY: build
-build:
-	@# VERSION := $(cat ./VERSION)
+build: test
 	@GO111MODULE=on GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o $(BINDIR)/$(BINARY) main.go
 
-.PHONY: docker
 docker:
 	@scripts/docker.sh
