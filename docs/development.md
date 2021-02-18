@@ -1,5 +1,14 @@
 # Development
 
+## Prerequisite
+
+- [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
+
+```bash
+# binary will be $(go env GOPATH)/bin/golangci-lint
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.37.0
+golangci-lint --version
+```
 
 ## Dependencies
 
@@ -13,7 +22,6 @@ make deps
 make build
 bin/swage version
 ```
-
 
 ## Run
 

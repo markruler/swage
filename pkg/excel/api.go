@@ -191,9 +191,9 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Column)
 	xl.Context.row++
 
-	// TODO: refactoring if-hell
 	responses := operation.Responses
 	if responses == nil {
+		// TODO: nil check
 		// return errors.New("[spec.Responses] is empty")
 		return nil
 	}
@@ -219,27 +219,10 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 		if icode, err = strconv.Atoi(code); err != nil {
 			return err
 		}
-		xl.File.SetCellInt(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), icode)
 		response := responses.StatusCodeResponses[icode]
-		// fmt.Println(icode, response)
-		switch icode {
-		// case 101:
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
-		// case 200, 201, 204:
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), "string")
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
-		// case 400, 403, 404:
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), "string")
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
-		// case 500:
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), "string")
-		// 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
-		default:
-			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
-		}
+		
+		xl.File.SetCellInt(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), icode)
+		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
 
 		if reflect.DeepEqual(spec.Response{}, response) {
 			continue
@@ -259,6 +242,7 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 		if response.Schema.Title != "" {
 			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), response.Schema.Title)
 		}
+
 		if response.Schema.Type != nil {
 			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
 			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(response.Schema.Type, ";"))
@@ -267,7 +251,6 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 		if response.Schema.Type.Contains("array") {
 			items := response.Schema.Items
 			if items.Schema != nil {
-				// fmt.Println("items.Schema:", items.Schema)
 				schema := items.Schema
 				xl.setCellWithSchema(schema.Title, "body", strings.Join(response.Schema.Type, ";"), response.Description)
 				continue
@@ -321,6 +304,7 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 			continue
 		}
 
+		// TODO: refactoring if-hell
 		// TODO: write test code
 		if response.Schema.Properties != nil {
 			for propertyName, propertySchema := range response.Schema.Properties {

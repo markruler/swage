@@ -13,17 +13,17 @@ func TestParseSpecV2(t *testing.T) {
 
 	fakePath := "../../examples/testdata/json/fake.js"
 	parser = *New(fakePath)
-	api, err := parser.Parse()
+	_, err = parser.Parse()
 	assert.Error(t, err)
 
 	fakeJSON := "../../examples/testdata/json/fake.json"
 	parser = *New(fakeJSON)
-	api, err = parser.Parse()
+	_, err = parser.Parse()
 	assert.Error(t, err)
 
 	realJSONPath := "../../examples/testdata/json/dev.json"
 	parser = *New(realJSONPath)
-	api, err = parser.Parse()
+	api, err := parser.Parse()
 	assert.NoError(t, err)
 
 	assert.Equal(t, "Swagger Sample App", api.Info.InfoProps.Title)
