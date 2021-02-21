@@ -1,5 +1,7 @@
 # Example
 
+- [Template images](../docs/templates.md)
+
 - File Path
 
 ```bash
