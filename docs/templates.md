@@ -1,6 +1,6 @@
 # Templates
 
-## template 1
+## default template (pkg/excel)
 
 - Index worksheet
 
@@ -12,4 +12,4 @@
 
 ## template 2
 
-- Coming soon...
+- TODO

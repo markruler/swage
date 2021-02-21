@@ -15,7 +15,7 @@ var (
 )
 
 var genCmd = &cobra.Command{
-	Use:   "gen [JSON_PATH]",
+	Use:   "gen [PATH]",
 	Short: "Generate a Excel file",
 	Long: `Generate a Excel file
 		
@@ -33,7 +33,7 @@ func init() {
 func genRun(cmd *cobra.Command, args []string) error {
 	verbose, _ := cmd.Flags().GetBool("verbose")
 	if len(args) == 0 {
-		return errors.New("JSON_PATH is required")
+		return errors.New("PATH is required")
 	}
 	if verbose {
 		fmt.Printf(">>> INPUT %s\n", args[0])

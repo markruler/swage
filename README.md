@@ -8,6 +8,20 @@
 swage gen <path>
 ```
 
+### Example
+
+```bash
+swage gen examples/testdata/yaml/docker.v1.41.yaml
+```
+
+```bash
+swage gen https://docs.docker.com/engine/api/v1.41.yaml
+```
+
+```bash
+swage gen https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/swagger.json
+```
+
 ## Background
 
 > OAS

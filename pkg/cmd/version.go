@@ -20,5 +20,5 @@ var versionCmd = &cobra.Command{
 }
 
 func versionRun(cmd *cobra.Command, args []string) {
-	fmt.Printf("Swage v%s\n", swageVersion)
+	fmt.Printf("swage v%s\n", swageVersion)
 }
