@@ -118,7 +118,7 @@ func getSchemaRef(xl *Excel, param spec.Parameter) error {
 
 		schemaName, _ := xl.getDefinitionFromRef(param.Schema.Ref)
 		xl.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ","), param.Description)
-		
+
 		xl.Context.row++
 	}
 
