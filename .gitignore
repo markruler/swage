@@ -1,9 +1,12 @@
 ### etc ###
 vendor/
-.DS_Store
 .vscode/
-*.xlsx
 .cover/
 
 ### bin ###
 bin/
+
+### tmp ###
+.DS_Store
+*.xlsx
+.~lock.*.xlsx#

@@ -19,16 +19,14 @@ func (xl *Excel) createAPISheet(path, method string, operation *spec.Operation, 
 
 	xl.Context.row = 1
 	xl.setAPISheetHeader(path, method, operation)
-	if err = xl.setAPISheetRequest(operation); err != nil {
-		return err
-	}
+	xl.setAPISheetRequest(operation)
 	if err = xl.setAPISheetResponse(operation); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operation) error {
+func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operation) {
 	xl.File.SetColWidth(xl.Context.worksheetName, "A", "A", 12.0)
 	xl.File.SetColWidth(xl.Context.worksheetName, "B", "B", 33.0)
 	xl.File.SetColWidth(xl.Context.worksheetName, "C", "C", 12.0)
@@ -73,6 +71,7 @@ func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operatio
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.Summary)
 	xl.Context.row++
+	// https://github.com/360EntSecGroup-Skylar/excelize/issues/573
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Description")
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.Description)
@@ -80,10 +79,9 @@ func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operatio
 
 	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", 2), fmt.Sprintf("%s%d", "A", xl.Context.row-1), xl.Style.Column)
 	xl.Context.row++
-	return nil
 }
 
-func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
+func (xl *Excel) setAPISheetRequest(operation *spec.Operation) {
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "REQUEST")
 	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
 	xl.File.SetRowHeight(xl.Context.worksheetName, xl.Context.row, 20.0)
@@ -100,7 +98,6 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Column)
 	xl.Context.row++
 
-	// TODO: refactoring if-hell
 	for _, param := range operation.Parameters {
 		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
 
@@ -116,60 +113,87 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) (err error) {
 		xl.setCellWithSchema(param.Name, param.In, param.Type, param.Description)
 
 		if param.Schema != nil {
-			// TODO: write test code
-			if param.Schema.Items != nil {
-				if param.Schema.Items.Schema != nil {
-					xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ";"))
-				}
-				// TODO: Schema's'
-				if param.Schema.Items.Schemas != nil {
-					xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ";"))
-				}
-			}
-			if !reflect.DeepEqual(spec.Ref{}, param.Schema.Ref) {
-				if strings.Contains(param.Schema.Ref.GetPointer().String(), "definitions") {
-					schema, err := spec.ResolveRef(xl.SwaggerSpec, &param.Schema.Ref)
-					if err != nil {
-						return err
-					}
-					if param.Required {
-						xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "O")
-					} else {
-						xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "X")
-					}
-					schemaName, _ := xl.getDefinitionFromRef(param.Schema.Ref)
-					xl.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ";"), param.Description)
-					xl.Context.row++
-				}
-				if strings.Contains(param.Schema.Ref.GetPointer().String(), "parameters") {
-					schema, err := spec.ResolveParameter(xl.SwaggerSpec, param.Schema.Ref)
-					if err != nil {
-						return err
-					}
-					if schema.Required {
-						xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "O")
-					} else {
-						xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "X")
-					}
-					xl.setCellWithSchema(schema.Name, schema.In, schema.Type, schema.Description)
-					xl.Context.row++
-				}
-				continue
-			}
-			if param.Schema.Properties != nil {
-				for k, v := range param.Schema.Properties {
-					xl.setCellWithSchema(k, param.In, strings.Join(v.Type, ";"), "")
-				}
-			}
-			if param.Schema.Type != nil {
-				xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ";"))
-			}
-			if param.Schema.Description != "" {
-				xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), param.Schema.Description)
-			}
+			getSchema(xl, param)
+		}
+
+		if param.Items != nil && param.Items.Enum != nil {
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), enum2string(param.Items.Enum...))
+		}
+		if param.Enum != nil {
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), enum2string(param.Enum...))
 		}
 		xl.Context.row++
 	}
+	xl.Context.row++
+}
+
+func enum2string(enums ...interface{}) string {
+	var enumSlice []string
+	for _, enum := range enums {
+		enumSlice = append(enumSlice, enum.(string))
+	}
+	enumString := strings.Join(enumSlice, ",")
+	return enumString
+}
+
+func getSchema(xl *Excel, param spec.Parameter) error {
+	// TODO: write test code
+	if param.Schema.Items != nil {
+		if param.Schema.Items.Schema != nil {
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ";"))
+		}
+		// TODO: Schema's'
+		if param.Schema.Items.Schemas != nil {
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ";"))
+		}
+	}
+
+	if !reflect.DeepEqual(spec.Ref{}, param.Schema.Ref) {
+		if strings.Contains(param.Schema.Ref.GetPointer().String(), "definitions") {
+			schema, err := spec.ResolveRef(xl.SwaggerSpec, &param.Schema.Ref)
+			if err != nil {
+				return err
+			}
+			if param.Required {
+				xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "O")
+			} else {
+				xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "X")
+			}
+			schemaName, _ := xl.getDefinitionFromRef(param.Schema.Ref)
+			xl.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ";"), param.Description)
+			xl.Context.row++
+		}
+		if strings.Contains(param.Schema.Ref.GetPointer().String(), "parameters") {
+			schema, err := spec.ResolveParameter(xl.SwaggerSpec, param.Schema.Ref)
+			if err != nil {
+				return err
+			}
+			if schema.Required {
+				xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "O")
+			} else {
+				xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "X")
+			}
+			xl.setCellWithSchema(schema.Name, schema.In, schema.Type, schema.Description)
+			xl.Context.row++
+		}
+		// continue
+		return nil
+	}
+
+	if param.Schema.Properties != nil {
+		for k, v := range param.Schema.Properties {
+			xl.setCellWithSchema(k, param.In, strings.Join(v.Type, ";"), "")
+		}
+	}
+
+	if param.Schema.Type != nil {
+		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ";"))
+	}
+
+	if param.Schema.Description != "" {
+		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), param.Schema.Description)
+	}
+
 	xl.Context.row++
 	return nil
 }
@@ -199,15 +223,19 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 	}
 
 	if responses.Default != nil {
-		schema, err := spec.ResolveRef(xl.SwaggerSpec, &responses.Default.Schema.Ref)
-		if err != nil {
-			return err
-		}
-		schemaName, _ := xl.getDefinitionFromRef(responses.Default.Schema.Ref)
 		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
 		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Left)
 		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "default")
-		xl.setCellWithSchema(schemaName, "body", strings.Join(schema.Type, ";"), responses.Default.Description)
+		if responses.Default.Schema != nil && !reflect.DeepEqual(spec.Ref{}, responses.Default.Schema.Ref) {
+			schema, err := spec.ResolveRef(xl.SwaggerSpec, &responses.Default.Schema.Ref)
+			if err != nil {
+				return err
+			}
+			schemaName, _ := xl.getDefinitionFromRef(responses.Default.Schema.Ref)
+			xl.setCellWithSchema(schemaName, "body", strings.Join(schema.Type, ";"), responses.Default.Description)
+		} else {
+			xl.setCellWithSchema("", "body", "string", responses.Default.Description)
+		}
 		xl.Context.row++
 	}
 
@@ -220,7 +248,7 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 			return err
 		}
 		response := responses.StatusCodeResponses[icode]
-		
+
 		xl.File.SetCellInt(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), icode)
 		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
 
