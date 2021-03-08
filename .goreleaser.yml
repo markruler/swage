@@ -1,5 +1,8 @@
 # http://goreleaser.com
 release:
+  github:
+    owner: cxsu
+    name: swage
   prerelease: false
 
 env_files:
@@ -11,8 +14,8 @@ before:
     # - go generate ./...
 
 builds:
-  # - binary: swage
-  - env:
+  - binary: swage
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -20,16 +23,16 @@ builds:
       - darwin
     goarch:
       - amd64
-      - 386
-      - arm64
+      # - 386
+      # - arm64
     ldflags:
-      - -s -w -extldflags='-static' -X github.com/cxsu/swage/pkg/cmd.swageVersion={{ .Version }}
+      - -s -w -extldflags='-static' -X github.com/cxsu/swage/pkg/cmd.swageVersion={{ .Tag }}
 
 archives:
   - replacements:
       # 386: i386 # 32-bit
       # amd64: x86_64 # 64-bit
-    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    name_template: '{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}'
     format: tar.gz
     format_overrides:
       - goos: windows
@@ -45,8 +48,15 @@ changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
+    - docs
+    - test
+    - typo
     - Merge pull request
     - Merge branch
-    - go mod tidy
+
+snapcrafts:
+  # - name_template: '{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  - name_template: '{{ .ProjectName }}_{{ .Arch }}'
+    grade: stable
+    confinement: strict
+    publish: true

@@ -78,9 +78,11 @@ release-snapshot:
 	@goreleaser --snapshot --skip-publish
 .PHONY: release
 
+# https://github.com/settings/tokens
+# - [x] repo_deployment
+# - [x] public_repo
 release-publish:
 	@rm -rf dist
-	@#git tag --annotate=$(VERSION) --message="release message"
 	git tag $(VERSION)
 	git push origin $(VERSION)
 	goreleaser release --rm-dist
