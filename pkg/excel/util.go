@@ -66,7 +66,6 @@ func (xl *Excel) setCellWithSchema(schemaName, paramType, dataType, description 
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), schemaName)
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), paramType)
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), dataType)
-	// xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), enum)
 	// xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "F", xl.Context.row), example)
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), description)
 }
@@ -181,7 +180,6 @@ func (xl *Excel) getResponseSchema(response spec.Response) error {
 		return nil
 	}
 
-	// TODO: refactoring if-hell
 	// TODO: write test code
 	if response.Schema.Properties != nil {
 		for propertyName, propertySchema := range response.Schema.Properties {
