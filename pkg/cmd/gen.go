@@ -26,7 +26,7 @@ ex) swage gen aio/example/example.json -o $HOME/swage.xlsx
 
 func init() {
 	genCmd.Flags().StringVarP(&outputPath, "output", "o", "swage.xlsx", "set a path to save a Excel file")
-	genCmd.Flags().StringVarP(&template, "template", "t", "1", "set a Excel template [1]")
+	genCmd.Flags().StringVarP(&template, "template", "t", "default", "set a Excel template [default]")
 	genCmd.Flags().BoolP("verbose", "v", false, "verbose print")
 }
 

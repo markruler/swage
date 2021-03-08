@@ -54,7 +54,7 @@ func TestGenerate(t *testing.T) {
 				},
 			},
 		},
-	}, "1")
+	}, "default")
 	assert.NoError(t, err)
 
 	err = xl.Generate(&spec.Swagger{
@@ -74,6 +74,6 @@ func TestGenerate(t *testing.T) {
 				},
 			},
 		},
-	}, "1")
+	}, "default")
 	assert.NoError(t, err)
 }

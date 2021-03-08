@@ -51,12 +51,13 @@ func (xl *Excel) Generate(swaggerAPI *spec.Swagger, template string) error {
 	xl.SwaggerSpec = swaggerAPI
 
 	switch strings.TrimSpace(template) {
-	case "1":
+	case "default":
 		if err := xl.createIndexSheet(); err != nil {
 			return err
 		}
-	case "2":
-	// if err := xl.createIndexSheet(); err != nil {
+	// TODO:
+	// case "custom":
+	// if err := xl.createMyCustomSheet(); err != nil {
 	// 	return err
 	// }
 	default:
