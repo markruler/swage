@@ -1,0 +1,52 @@
+# http://goreleaser.com
+release:
+  prerelease: false
+
+env_files:
+  github_token: ~/.config/goreleaser/github_token
+
+before:
+  hooks:
+    - go mod tidy
+    # - go generate ./...
+
+builds:
+  # - binary: swage
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - 386
+      - arm64
+    ldflags:
+      - -s -w -extldflags='-static' -X github.com/cxsu/swage/pkg/cmd.swageVersion={{ .Version }}
+
+archives:
+  - replacements:
+      # 386: i386 # 32-bit
+      # amd64: x86_64 # 64-bit
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+
+snapshot:
+  name_template: '{{ .Tag }}-SNAPSHOT-{{ .ShortCommit }}'
+
+checksum:
+  name_template: '{{ .ProjectName }}_{{ .Tag }}_checksums'
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+    - Merge pull request
+    - Merge branch
+    - go mod tidy

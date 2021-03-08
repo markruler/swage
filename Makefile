@@ -1,20 +1,19 @@
 SHELL := bash
 .ONESHELL:
 
-NAME					:= swage
-BIN_DIR				:= bin
-GOOS					:= $(shell go env GOOS)
-GOARCH				:= $(shell go env GOARCH)
-VERSION				:= $(file < ./VERSION)
-# GOBIN					:= $(shell go env GOPATH)/bin
-# TARGETS				:= darwin/amd64 linux/amd64 linux/386 linux/arm linux/arm64 linux/ppc64le linux/s390x windows/amd64
+NAME := swage
+BUILD_DIR := bin
+GOOS := $(shell go env GOOS)
+GOARCH := $(shell go env GOARCH)
+VERSION := $(file < ./VERSION)
+# GOBIN := $(shell go env GOPATH)/bin
+# TARGETS := darwin/amd64 linux/amd64 linux/386 linux/arm linux/arm64 linux/ppc64le linux/s390x windows/amd64
 
-.SHELLFLAGS 	:= -eu -o pipefail -c
+.SHELLFLAGS := -eu -o pipefail -c
 .DEFAULT_GOAL := all
-MAKEFLAGS 		+= --warn-undefined-variables
+MAKEFLAGS += --warn-undefined-variables
 # go tool link (https://golang.org/cmd/link/)
-LDFLAGS 			:= -s -w -extldflags='-static' \
-								-X 'github.com/cxsu/swage/pkg/cmd.swageVersion=${VERSION}'
+LDFLAGS := -s -w -extldflags='-static' -X 'github.com/cxsu/swage/pkg/cmd.swageVersion=${VERSION}'
 
 all: version deps test cover build
 .PHONY: all
@@ -23,16 +22,12 @@ version:
 	@echo $(VERSION)
 .PHONY: version
 
-tag:
-	git tag $(VERSION)
-.PHONY: tag
-
 deps:
 	@#go get -u
 	@#rm -rf vendor/
 	@go get -t -d -v ./...
 	@go mod tidy
-	@go mod vendorbi
+	@go mod vendor
 .PHONY: deps
 
 fmt:
@@ -67,6 +62,7 @@ clean:
 	go clean
 	rm -f *.xlsx
 	rm -rf $(BIN_DIR)
+	rm -rf dist
 .PHONY: clean
 
 build: test
@@ -76,3 +72,16 @@ build: test
 docker:
 	@scripts/docker.sh
 .PHONY: docker
+
+release-snapshot:
+	@rm -rf dist
+	@goreleaser --snapshot --skip-publish
+.PHONY: release
+
+release-publish:
+	@rm -rf dist
+	@#git tag --annotate=$(VERSION) --message="release message"
+	git tag $(VERSION)
+	git push origin $(VERSION)
+	goreleaser release --rm-dist
+.PHONY: release-publish
