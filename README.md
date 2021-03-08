@@ -2,40 +2,54 @@
 
 > Command line tool to convert OpenAPI specification data (`json`, `yaml`) to Excel (`xlsx`) format
 
+## Install
+
+- [Releases](https://github.com/cxsu/swage/releases)
+
+```bash
+cd /tmp
+# curl -LO https://github.com/cxsu/swage/releases/download/${VERSION}/swage_${VERSION}_$(uname -s)_$(uname -p).tar.gz
+wget https://github.com/cxsu/swage/releases/download/${VERSION}/swage_${VERSION}_$(uname -s)_$(uname -p).tar.gz
+tar zxvf swage_${VERSION}_Linux_x86_64.tar.gz
+sudo mv swage /usr/local/bin/swage
+```
+
+```bash
+swage version
+```
+
 ## Usage
 
 ```bash
 swage gen <path>
 ```
 
-### Example
-
 ```bash
+# file path
 swage gen examples/testdata/yaml/docker.v1.41.yaml
 ```
 
 ```bash
+# URL path
 swage gen https://docs.docker.com/engine/api/v1.41.yaml
-```
-
-```bash
 swage gen https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/swagger.json
 ```
 
 ## Background
 
-> OAS
->
-> - [Swagger - SmartBear Software](https://swagger.io/docs/specification/about)
-> - [OpenAPI - The Linux Foundation](https://www.openapis.org/about)
-> - OpenAPI Specification (formerly Swagger Specification) is an API description format for REST APIs. An OpenAPI file allows you to describe your entire API.
+### OAS
 
-> [XLSX extension](https://docs.microsoft.com/en-us/openspecs/office_standards/ms-xlsx/)
->
-> - The Excel (.xlsx) Extensions to the Office Open XML SpreadsheetML File Format specifies extensions
->   to the Office Open XML file formats described in [ISO/IEC29500-1:2016](https://www.iso.org/standard/71691.html).
->   The extensions are specified using conventions provided by the Office Open XML file formats
->   described in [ISO/IEC29500-3:2015](https://www.iso.org/standard/65533.html).
+- [Swagger - SmartBear Software](https://swagger.io/docs/specification/about)
+- [OpenAPI - The Linux Foundation](https://www.openapis.org/about)
+- OpenAPI Specification (formerly Swagger Specification) is an API description format for REST APIs. An OpenAPI file allows you to describe your entire API.
+
+### XLSX extension
+
+- [MS-XLSX Standard](https://docs.microsoft.com/en-us/openspecs/office_standards/ms-xlsx/)
+- The Excel (.xlsx) Extensions to the Office Open XML SpreadsheetML File Format specifies extensions
+  to the Office Open XML file formats described in [ISO/IEC29500-1:2016](https://www.iso.org/standard/71691.html).
+  The extensions are specified using conventions provided by the Office Open XML file formats
+  described in [ISO/IEC29500-3:2015](https://www.iso.org/standard/65533.html).
 
 ## Dependencies
 
