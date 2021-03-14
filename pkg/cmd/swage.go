@@ -6,8 +6,8 @@ import (
 
 var swageCmd = &cobra.Command{
 	Use:   "swage",
-	Short: "Swage is a swagger.json converter to excel format",
-	Long: `Swage is a swagger.json converter
+	Short: "Swage is a swagger docs converter to excel format",
+	Long: `Swage is a swagger docs converter
 (to Excel format)
 
 ex) swage gen aio/example/example.json -o $HOME/swage.xlsx
