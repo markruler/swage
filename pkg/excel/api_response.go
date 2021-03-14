@@ -42,7 +42,7 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 			if err != nil {
 				return err
 			}
-			schemaName, _ := xl.getDefinitionFromRef(responses.Default.Schema.Ref)
+			schemaName, _ := xl.definitionFromRef(responses.Default.Schema.Ref)
 			xl.setCellWithSchema(schemaName, "body", strings.Join(schema.Type, ","), responses.Default.Description)
 		} else {
 			xl.setCellWithSchema("", "body", "string", responses.Default.Description)
@@ -80,9 +80,9 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 		}
 
 		if !reflect.DeepEqual(response.Schema.Ref, spec.Ref{}) {
-			xl.getResponseSchemaRef(response)
+			xl.responseSchemaRef(response)
 		}
-		xl.getResponseSchema(response)
+		xl.responseSchema(response)
 	}
 	return nil
 }

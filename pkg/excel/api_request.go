@@ -28,18 +28,15 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) {
 		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
 
 		if !reflect.DeepEqual(param.Ref, spec.Ref{}) {
-			param = *xl.getParameterFromRef(param.Ref)
+			param = *xl.parameterFromRef(param.Ref)
 		}
 
-		if param.Required {
-			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "O")
-		} else {
-			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "X")
-		}
+		xl.checkRequired(param.Required)
+
 		xl.setCellWithSchema(param.Name, param.In, param.Type, param.Description)
 
 		if param.Schema != nil {
-			xl.getParameterSchema(param)
+			xl.parameterSchema(param)
 		}
 
 		if param.Items != nil && param.Items.Enum != nil {

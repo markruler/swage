@@ -18,17 +18,17 @@ func TestGetParameterSchema(t *testing.T) {
 	// type Ref struct {
 	// 	jsonreference.Ref
 	// }
-	// param := xl.getParameterFromRef(spec.Ref{
+	// param := xl.parameterFromRef(spec.Ref{
 	// 	jsonreference.MustCreateRef("#/re/re"),
 	// })
 
-	param := xl.getParameterFromRef(spec.Ref{})
+	param := xl.parameterFromRef(spec.Ref{})
 	assert.Nil(t, param)
 
-	param = xl.getParameterFromRef(spec.MustCreateRef(""))
+	param = xl.parameterFromRef(spec.MustCreateRef(""))
 	assert.Nil(t, param)
 
-	param = xl.getParameterFromRef(spec.MustCreateRef("#/asd/qwe"))
+	param = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Nil(t, param)
 
 	xl.SwaggerSpec = &spec.Swagger{
@@ -36,7 +36,7 @@ func TestGetParameterSchema(t *testing.T) {
 			Swagger: "2.0",
 		},
 	}
-	param = xl.getParameterFromRef(spec.MustCreateRef("#/asd/qwe"))
+	param = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Nil(t, param)
 
 	xl.SwaggerSpec = &spec.Swagger{
@@ -50,7 +50,7 @@ func TestGetParameterSchema(t *testing.T) {
 			},
 		},
 	}
-	param = xl.getParameterFromRef(spec.MustCreateRef("#/asd/qwe"))
+	param = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Equal(t, xl.SwaggerSpec.Parameters["qwe"], *param)
 	assert.Equal(t, xl.SwaggerSpec.Parameters["qwe"].Name, "test name")
 }
@@ -58,13 +58,13 @@ func TestGetParameterSchema(t *testing.T) {
 func TestGetDefinitionSchema(t *testing.T) {
 	xl := New()
 
-	_, def := xl.getDefinitionFromRef(spec.Ref{})
+	_, def := xl.definitionFromRef(spec.Ref{})
 	assert.Nil(t, def)
 
-	_, def = xl.getDefinitionFromRef(spec.MustCreateRef(""))
+	_, def = xl.definitionFromRef(spec.MustCreateRef(""))
 	assert.Nil(t, def)
 
-	// _, def = xl.getParameterFromRef(spec.MustCreateRef("#/asd/qwe"))
+	// _, def = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	// assert.Nil(t, def)
 
 	xl.SwaggerSpec = &spec.Swagger{
@@ -72,7 +72,7 @@ func TestGetDefinitionSchema(t *testing.T) {
 			Swagger: "2.0",
 		},
 	}
-	_, def = xl.getDefinitionFromRef(spec.MustCreateRef("#/asd/qwe"))
+	_, def = xl.definitionFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Nil(t, def)
 
 	xl.SwaggerSpec = &spec.Swagger{
@@ -86,7 +86,7 @@ func TestGetDefinitionSchema(t *testing.T) {
 			},
 		},
 	}
-	_, def = xl.getDefinitionFromRef(spec.MustCreateRef("#/asd/qwe"))
+	_, def = xl.definitionFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Equal(t, xl.SwaggerSpec.Definitions["qwe"], *def)
 	assert.Equal(t, xl.SwaggerSpec.Definitions["qwe"].ID, "test id")
 }
