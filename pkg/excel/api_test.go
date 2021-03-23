@@ -3,8 +3,8 @@ package excel
 import (
 	"testing"
 
-	"github.com/cxsu/swage/pkg/parser"
 	"github.com/go-openapi/spec"
+	"github.com/markruler/swage/pkg/parser"
 	"github.com/stretchr/testify/assert"
 )
 

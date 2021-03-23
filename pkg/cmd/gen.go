@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/cxsu/swage/pkg/excel"
-	"github.com/cxsu/swage/pkg/parser"
+	"github.com/markruler/swage/pkg/excel"
+	"github.com/markruler/swage/pkg/parser"
 	"github.com/spf13/cobra"
 )
 
