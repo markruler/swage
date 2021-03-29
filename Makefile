@@ -46,6 +46,10 @@ test: fmt
 .PHONY: test
 
 testv: fmt
+	go test ./... -v
+.PHONY: testv
+
+test-verbose-cover: fmt
 	go test ./... -v --cover
 .PHONY: testv
 

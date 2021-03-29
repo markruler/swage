@@ -37,6 +37,7 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) {
 
 		if param.Schema != nil {
 			xl.parameterSchema(param)
+			continue
 		}
 
 		if param.Items != nil && param.Items.Enum != nil {
@@ -46,7 +47,6 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) {
 		if param.Enum != nil {
 			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), enum2string(param.Enum...))
 		}
-		// TODO: remove empty row
 		xl.Context.row++
 	}
 	xl.Context.row++

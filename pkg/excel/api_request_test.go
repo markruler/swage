@@ -106,6 +106,16 @@ func TestParameterSchemaWithRef(t *testing.T) {
 				},
 				{
 					ParamProps: spec.ParamProps{
+						Name:        "limit",
+						In:          "query",
+						Description: "Return this number of most recently created containers, including\nnon-running ones.\n",
+					},
+					SimpleSchema: spec.SimpleSchema{
+						Type: "integer",
+					},
+				},
+				{
+					ParamProps: spec.ParamProps{
 						Name:        "user",
 						In:          "body",
 						Description: "Created user object",
@@ -130,7 +140,6 @@ func TestParameterSchemaWithRef(t *testing.T) {
 											Enum: []interface{}{"recover"},
 											Type: []string{"string"},
 										},
-										// TODO: need to handle extra props? this header used in common?
 										ExtraProps: map[string]interface{}{
 											"x-enum-descriptions": "recover meeting recording",
 										},
@@ -151,28 +160,26 @@ func TestParameterSchemaWithRef(t *testing.T) {
 	assert.Equal(t, "query", row[12][2])
 	assert.Equal(t, "integer", row[12][3])
 	assert.Equal(t, "The number of records returned within a single API call", row[12][6])
-	// TODO: remove empty row
-	// assert.Equal(t, "O", row[13][0])
-	// assert.Equal(t, "User", row[13][1])
-	// assert.Equal(t, "body", row[13][2])
-	// assert.Equal(t, "object", row[13][3])
-	// assert.Equal(t, "Created user object", row[13][6])
-	// assert.Equal(t, "O", row[14][0])
-	// assert.Equal(t, "action", row[14][1])
-	// assert.Equal(t, "body", row[14][2])
-	// assert.Equal(t, "string", row[14][3])
-	// assert.Equal(t, "", row[14][6])
-	// assert.Equal(t, "recover meeting recording", row[14][6])
+
+	assert.Equal(t, "X", row[13][0])
+	assert.Equal(t, "limit", row[13][1])
+	assert.Equal(t, "query", row[13][2])
+	assert.Equal(t, "integer", row[13][3])
+	assert.Equal(t, "Return this number of most recently created containers, including\nnon-running ones.\n", row[13][6])
+
 	assert.Equal(t, "O", row[14][0])
 	assert.Equal(t, "User", row[14][1])
 	assert.Equal(t, "body", row[14][2])
 	assert.Equal(t, "object", row[14][3])
 	assert.Equal(t, "Created user object", row[14][6])
-	assert.Equal(t, "O", row[16][0])
-	assert.Equal(t, "action", row[16][1])
-	assert.Equal(t, "body", row[16][2])
-	assert.Equal(t, "string", row[16][3])
-	assert.Equal(t, "", row[16][6])
+
+	assert.Equal(t, "O", row[15][0])
+	assert.Equal(t, "action", row[15][1])
+	assert.Equal(t, "body", row[15][2])
+	assert.Equal(t, "string", row[15][3])
+	assert.Equal(t, "", row[15][6])
+
+	// TODO: ExtraProps
 	// assert.Equal(t, "recover meeting recording", row[15][6])
 }
 

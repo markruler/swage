@@ -104,7 +104,6 @@ func (xl *Excel) parameterSchema(param spec.Parameter) error {
 		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), param.Schema.Description)
 	}
 
-	xl.Context.row++
 	return nil
 }
 
