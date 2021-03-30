@@ -12,8 +12,7 @@ import (
 // @path /containers/json
 func TestParameterWithoutSchema(t *testing.T) {
 	xl := New()
-	var err error
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err := xl.createAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{
@@ -43,7 +42,6 @@ func TestParameterWithoutSchema(t *testing.T) {
 
 func TestParameterSchemaWithRef(t *testing.T) {
 	xl := New()
-	var err error
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			// @source zoom.us.json
@@ -92,7 +90,7 @@ func TestParameterSchemaWithRef(t *testing.T) {
 			},
 		},
 	}
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err := xl.createAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{
@@ -155,6 +153,8 @@ func TestParameterSchemaWithRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err := xl.File.GetRows("1")
 	assert.NoError(t, err)
+
+	// t.Log(row)
 	assert.Equal(t, "X", row[12][0])
 	assert.Equal(t, "page_size", row[12][1])
 	assert.Equal(t, "query", row[12][2])
@@ -179,18 +179,22 @@ func TestParameterSchemaWithRef(t *testing.T) {
 	assert.Equal(t, "string", row[15][3])
 	assert.Equal(t, "", row[15][6])
 
+	// @source docker.v1.41.json
+	// @method POST
+	// @path /containers/create
+	// TODO: AllOf
+
 	// TODO: ExtraProps
 	// assert.Equal(t, "recover meeting recording", row[15][6])
 }
 
 func TestParameterSchemaWithoutRef(t *testing.T) {
 	xl := New()
-	var err error
 	var row [][]string
 	// @source docker.v1.41.json
 	// @method POST
 	// @path /build
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err := xl.createAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{
@@ -259,7 +263,6 @@ func TestParameterSchemaWithoutRef(t *testing.T) {
 // @path /user/createWithList
 func TestParameterSchemaItemsWithRef(t *testing.T) {
 	xl := New()
-	var err error
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Definitions: spec.Definitions{
@@ -286,7 +289,7 @@ func TestParameterSchemaItemsWithRef(t *testing.T) {
 			},
 		},
 	}
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err := xl.createAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Tags:    []string{"user"},
 			Summary: "Creates list of users with given input array",
@@ -330,8 +333,7 @@ func TestParameterSchemaItemsWithRef(t *testing.T) {
 // @path /pet/findByStatus
 func TestParameterSchemaItemsWithoutRef(t *testing.T) {
 	xl := New()
-	var err error
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err := xl.createAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{

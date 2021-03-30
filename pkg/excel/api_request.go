@@ -35,11 +35,6 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) {
 
 		xl.setCellWithSchema(param.Name, param.In, param.Type, param.Description)
 
-		if param.Schema != nil {
-			xl.parameterSchema(param)
-			continue
-		}
-
 		if param.Items != nil && param.Items.Enum != nil {
 			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), enum2string(param.Items.Enum...))
 		}
@@ -47,6 +42,11 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) {
 		if param.Enum != nil {
 			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), enum2string(param.Enum...))
 		}
+
+		if param.Schema != nil {
+			xl.parameterSchema(param)
+		}
+
 		xl.Context.row++
 	}
 	xl.Context.row++

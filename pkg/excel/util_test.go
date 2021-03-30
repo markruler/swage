@@ -7,6 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// func init() {
+// 	xl = New()
+// }
+
 func TestSortMap(t *testing.T) {
 	arr := sortMap("")
 	assert.Nil(t, arr)
@@ -64,6 +68,7 @@ func TestGetDefinitionSchema(t *testing.T) {
 	_, def = xl.definitionFromRef(spec.MustCreateRef(""))
 	assert.Nil(t, def)
 
+	// FIXME:
 	// _, def = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	// assert.Nil(t, def)
 
