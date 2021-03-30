@@ -55,7 +55,7 @@ func (xl *Excel) Generate(swaggerAPI *spec.Swagger, template string) error {
 		if err := xl.createIndexSheet(); err != nil {
 			return err
 		}
-	// TODO:
+	// TODO: make a formal template
 	// case "custom":
 	// if err := xl.createMyCustomSheet(); err != nil {
 	// 	return err

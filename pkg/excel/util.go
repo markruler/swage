@@ -66,13 +66,13 @@ func (xl *Excel) setCellWithSchema(schemaName, paramType, dataType, description 
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), schemaName)
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), paramType)
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), dataType)
-	// FIXME:
+	// FIXME: converting example
 	// xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "F", xl.Context.row), example)
 	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), description)
 }
 
 func (xl *Excel) parameterSchema(param spec.Parameter) error {
-	// FIXME:
+	// FIXME: converting items
 	// if param.Schema.Items != nil {
 	// 	if param.Schema.Items.Schema != nil {
 	// 		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ","))

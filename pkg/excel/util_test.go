@@ -68,7 +68,7 @@ func TestGetDefinitionSchema(t *testing.T) {
 	_, def = xl.definitionFromRef(spec.MustCreateRef(""))
 	assert.Nil(t, def)
 
-	// FIXME:
+	// FIXME: converting undefined references
 	// _, def = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	// assert.Nil(t, def)
 

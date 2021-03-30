@@ -12,4 +12,4 @@
 
 ## template 2
 
-- TODO
+- TODO: make a formal template
