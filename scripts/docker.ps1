@@ -1,6 +1,6 @@
 Set-Variable -Name "BINARY" -Value "swage"
 Set-Variable -Name "IMAGE" -Value "swage"
-Set-Variable -Name "REPO" -Value "cxsu"
+Set-Variable -Name "REPO" -Value "markruler"
 Set-Variable -Name "REPO_PORT" -Value ""
 Set-Variable -Name "VERSION" -Value $(Get-Content -Path ./VERSION)
 

@@ -13,7 +13,7 @@ VERSION := $(file < ./VERSION)
 .DEFAULT_GOAL := all
 MAKEFLAGS += --warn-undefined-variables
 # go tool link (https://golang.org/cmd/link/)
-LDFLAGS := -s -w -extldflags='-static' -X 'github.com/cxsu/swage/pkg/cmd.swageVersion=${VERSION}'
+LDFLAGS := -s -w -extldflags='-static' -X 'github.com/markruler/swage/pkg/cmd.swageVersion=${VERSION}'
 
 all: version deps test cover build
 .PHONY: all

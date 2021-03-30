@@ -26,7 +26,7 @@ builds:
       # - 386
       # - arm64
     ldflags:
-      - -s -w -extldflags='-static' -X github.com/cxsu/swage/pkg/cmd.swageVersion={{ .Tag }}
+      - -s -w -extldflags='-static' -X github.com/markruler/swage/pkg/cmd.swageVersion={{ .Tag }}
 
 archives:
   - replacements:

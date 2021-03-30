@@ -4,7 +4,7 @@ set -e
 
 BINARY="swage"
 IMAGE="swage"
-REPO="cxsu"
+REPO="markruler"
 REPO_PORT=""
 VERSION=$(cat ./VERSION)
 

@@ -1,6 +1,6 @@
 # Templates
 
-## default template ([pkg/excel](https://github.com/cxsu/swage/tree/main/pkg/excel))
+## default template ([pkg/excel](https://github.com/markruler/swage/tree/main/pkg/excel))
 
 - Index worksheet
 
