@@ -539,6 +539,13 @@ func TestResponseDefault(t *testing.T) {
 	assert.Equal(t, "OK", row[16][6])
 }
 
+func TestPropDefinitionFromSchemaRef(t *testing.T) {
+	xl := New()
+	err := xl.propDefinitionFromSchemaRef(spec.Response{})
+	assert.EqualError(t, err, "response is empty")
+}
+
+// FIXME:
 // @source zoom.us.json
 // @method GET
 // @path /accounts
@@ -644,11 +651,10 @@ func TestAllOfDefinitionWithRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err := xl.File.GetRows("1")
 	assert.NoError(t, err)
+
 	assert.Equal(t, "200", row[15][0])
 	assert.Equal(t, "AccountList", row[15][1])
 	assert.Equal(t, "body", row[15][2])
-	// TODO:
-	// assert.Equal(t, "objects", row[15][3])
 	assert.Equal(t, "object", row[15][3])
 	assert.Equal(t, "Account list returned", row[15][6])
 }
