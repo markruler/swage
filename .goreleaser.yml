@@ -1,7 +1,7 @@
 # http://goreleaser.com
 release:
   github:
-    owner: cxsu
+    owner: markruler
     name: swage
   prerelease: false
 
