@@ -70,24 +70,27 @@ clean:
 .PHONY: clean
 
 build: test
-	@GO111MODULE=on GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o $(BIN_DIR)/$(NAME) -v -ldflags="${LDFLAGS}" main.go
+	GO111MODULE=on GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o $(BIN_DIR)/$(NAME) -v -ldflags="${LDFLAGS}" main.go
 .PHONY: build
 
 docker:
-	@scripts/docker.sh
+	scripts/docker.sh
 .PHONY: docker
 
 release-snapshot:
-	@rm -rf dist
-	@goreleaser --snapshot --skip-publish
+	rm -rf dist
+	goreleaser --snapshot --skip-publish
 .PHONY: release
 
 # https://github.com/settings/tokens
 # - [x] repo_deployment
 # - [x] public_repo
 release-publish:
-	@rm -rf dist
+	rm -rf dist
+	# Update README.md
+	# Update VERSION
+	# git commit
 	git tag $(VERSION)
-	git push origin $(VERSION)
 	goreleaser release --rm-dist
+	# git push origin main
 .PHONY: release-publish
