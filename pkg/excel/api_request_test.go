@@ -28,6 +28,7 @@ func TestParameterWithoutSchema(t *testing.T) {
 					},
 				},
 			},
+			Responses: &spec.Responses{},
 		},
 	}, nil, 1)
 	assert.NoError(t, err)
@@ -148,6 +149,7 @@ func TestParameterSchemaWithRef(t *testing.T) {
 					},
 				},
 			},
+			Responses: &spec.Responses{},
 		},
 	}, nil, 1)
 	assert.NoError(t, err)
@@ -215,6 +217,7 @@ func TestParameterSchemaWithoutRef(t *testing.T) {
 					},
 				},
 			},
+			Responses: &spec.Responses{},
 		},
 	}, nil, 1)
 	assert.NoError(t, err)
@@ -246,6 +249,7 @@ func TestParameterSchemaWithoutRef(t *testing.T) {
 					},
 				},
 			},
+			Responses: &spec.Responses{},
 		},
 	}, nil, 2)
 	assert.NoError(t, err)
@@ -316,6 +320,7 @@ func TestParameterSchemaItemsWithRef(t *testing.T) {
 					},
 				},
 			},
+			Responses: &spec.Responses{},
 		},
 	}, nil, 1)
 	assert.NoError(t, err)
@@ -362,6 +367,7 @@ func TestParameterSchemaItemsWithoutRef(t *testing.T) {
 					},
 				},
 			},
+			Responses: &spec.Responses{},
 		},
 	}, nil, 1)
 	assert.NoError(t, err)

@@ -1,6 +1,7 @@
 package excel
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -28,9 +29,7 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 
 	responses := operation.Responses
 	if responses == nil {
-		// TODO: nil check
-		// return errors.New("[spec.Responses] is empty")
-		return nil
+		return errors.New("response is empty")
 	}
 
 	if responses.Default != nil {
@@ -72,8 +71,7 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 			xl.setCellWithSchema(headerKey, "header", header.Type, header.Description)
 		}
 
-		if response.Schema == nil /*|| &response.Ref == nil*/ {
-			// TODO: write test code
+		if response.Schema == nil {
 			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), response.Description)
 			xl.Context.row++
 			continue

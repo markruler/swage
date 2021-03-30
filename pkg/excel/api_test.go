@@ -16,7 +16,7 @@ func TestCreateAPISheet(t *testing.T) {
 	assert.Error(t, err)
 
 	err = xl.createAPISheet("", "", &spec.Operation{}, nil, 1)
-	assert.NoError(t, err)
+	assert.Error(t, err)
 
 	err = xl.createAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
@@ -27,6 +27,7 @@ func TestCreateAPISheet(t *testing.T) {
 					},
 				},
 			},
+			Responses: &spec.Responses{},
 		},
 	}, nil, 1)
 	assert.NoError(t, err)
