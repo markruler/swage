@@ -11,17 +11,17 @@ func TestParseSpecV2(t *testing.T) {
 	var err error
 	var parser Parser
 
-	fakePath := "../../examples/testdata/json/fake.js"
+	fakePath := "../testdata/json/fake.js"
 	parser = *New(fakePath)
 	_, err = parser.Parse()
 	assert.Error(t, err)
 
-	fakeJSON := "../../examples/testdata/json/fake.json"
+	fakeJSON := "../testdata/json/fake.json"
 	parser = *New(fakeJSON)
 	_, err = parser.Parse()
 	assert.Error(t, err)
 
-	realJSONPath := "../../examples/testdata/json/dev.json"
+	realJSONPath := "../testdata/json/dev.json"
 	parser = *New(realJSONPath)
 	api, err := parser.Parse()
 	assert.NoError(t, err)

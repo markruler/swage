@@ -1,4 +1,4 @@
-package excel
+package simple
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 
 func (xl *Excel) createAPISheet(path, method string, operation *spec.Operation, definitions spec.Definitions, sheetName int) (err error) {
 	if operation == nil {
-		return errors.New("Operation should not be empty")
+		return errors.New("operation should not be empty")
 	}
 	xl.Context.worksheetName = strconv.Itoa(sheetName)
 	xl.File.NewSheet(xl.Context.worksheetName)

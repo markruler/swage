@@ -26,13 +26,13 @@ swage gen <path>
 
 ```bash
 # file path
-swage gen examples/testdata/yaml/docker.v1.41.yaml
+swage gen testdata/yaml/docker.v1.41.yaml
 ```
 
 ```bash
 # URL path
 swage gen https://docs.docker.com/engine/api/v1.41.yaml
-swage gen https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/swagger.json
+swage gen https://raw.githubusercontent.com/kubernetes/kubernetes/v1.20.5/api/openapi-spec/swagger.json
 ```
 
 ## Background
@@ -85,6 +85,6 @@ swage gen https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/ope
 | 1.1       | 2012-08-22 | Release of Swagger 1.1                            |
 | 1.0       | 2011-08-10 | First release of the Swagger Specification        |
 
-![OAS Version](./oas-version.jpg)
+![OAS Version](docs/images/oas-version.jpg)
 
 _[A Guide to What’s New in OpenAPI 3.0](https://swagger.io/blog/news/whats-new-in-openapi-3-0/) - Ryan Pinkham_

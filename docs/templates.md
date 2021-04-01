@@ -1,6 +1,6 @@
 # Templates
 
-## default template ([pkg/excel](https://github.com/markruler/swage/tree/main/pkg/excel))
+## `simple` template
 
 - Index worksheet
 
@@ -10,6 +10,6 @@
 
 ![template1-api](images/template1-api.png)
 
-## template 2
+## template to `print`
 
-- TODO: make a formal template
+- TODO:

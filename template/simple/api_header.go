@@ -1,4 +1,4 @@
-package excel
+package simple
 
 import (
 	"fmt"

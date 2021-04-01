@@ -1,10 +1,10 @@
-package excel
+package simple
 
 import (
 	"testing"
 
 	"github.com/go-openapi/spec"
-	"github.com/markruler/swage/pkg/parser"
+	"github.com/markruler/swage/parser"
 	"github.com/stretchr/testify/assert"
 )
 

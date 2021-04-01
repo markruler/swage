@@ -4,14 +4,15 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/markruler/swage/pkg/excel"
-	"github.com/markruler/swage/pkg/parser"
+	"github.com/markruler/swage/parser"
+	"github.com/markruler/swage/template"
+	"github.com/markruler/swage/template/simple"
 	"github.com/spf13/cobra"
 )
 
 var (
-	outputPath string
-	template   string
+	outputPath   string
+	templateName string
 )
 
 var genCmd = &cobra.Command{
@@ -26,7 +27,7 @@ ex) swage gen aio/example/example.json -o $HOME/swage.xlsx
 
 func init() {
 	genCmd.Flags().StringVarP(&outputPath, "output", "o", "swage.xlsx", "set a path to save a Excel file")
-	genCmd.Flags().StringVarP(&template, "template", "t", "default", "set a Excel template [default]")
+	genCmd.Flags().StringVarP(&templateName, "template", "t", template.Simple, "set a Excel template [simple]")
 	genCmd.Flags().BoolP("verbose", "v", false, "verbose print")
 }
 
@@ -47,9 +48,9 @@ func genRun(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	xl := excel.New()
+	xl := simple.New()
 
-	if err = xl.Generate(swaggerAPI, template); err != nil {
+	if err = xl.Generate(swaggerAPI, templateName); err != nil {
 		return err
 	}
 
