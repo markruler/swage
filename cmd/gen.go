@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/markruler/swage/parser"
 	"github.com/markruler/swage/template"
@@ -46,13 +47,23 @@ func genRun(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	xl := simple.New()
+	var tmpl template.Template
 
-	if err = xl.Generate(swaggerAPI, templateName); err != nil {
+	switch strings.TrimSpace(templateName) {
+	case template.Simple:
+		tmpl = simple.New()
+	// TODO:
+	// case "print":
+	// 	template = print.New()
+	default:
+		return errors.New("the template not found")
+	}
+
+	if err = tmpl.Generate(swaggerAPI); err != nil {
 		return err
 	}
 
-	if err := xl.File.SaveAs(outputPath); err != nil {
+	if err := tmpl.GetExcel().File.SaveAs(outputPath); err != nil {
 		return err
 	}
 

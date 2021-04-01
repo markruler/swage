@@ -9,16 +9,17 @@ import (
 )
 
 func TestCreateAPISheet(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
 
-	err = xl.createAPISheet("", "", nil, nil, 1)
+	err = simple.CreateAPISheet("", "", nil, nil, 1)
 	assert.Error(t, err)
 
-	err = xl.createAPISheet("", "", &spec.Operation{}, nil, 1)
+	err = simple.CreateAPISheet("", "", &spec.Operation{}, nil, 1)
 	assert.Error(t, err)
 
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{
@@ -34,5 +35,5 @@ func TestCreateAPISheet(t *testing.T) {
 
 	p := parser.New("../../aio/testdata/json/dev.json")
 	xl.SwaggerSpec, _ = p.Parse()
-	xl.createAPISheet("", "", nil, nil, 1)
+	simple.CreateAPISheet("", "", nil, nil, 1)
 }

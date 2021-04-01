@@ -7,57 +7,58 @@ import (
 	"github.com/go-openapi/spec"
 )
 
-func (xl *Excel) setAPISheetHeader(path, method string, operation *spec.Operation) {
-	xl.File.SetColWidth(xl.Context.worksheetName, "A", "A", 12.0)
-	xl.File.SetColWidth(xl.Context.worksheetName, "B", "B", 33.0)
-	xl.File.SetColWidth(xl.Context.worksheetName, "C", "C", 12.0)
-	xl.File.SetColWidth(xl.Context.worksheetName, "D", "D", 12.0)
-	xl.File.SetColWidth(xl.Context.worksheetName, "E", "E", 20.0)
-	xl.File.SetColWidth(xl.Context.worksheetName, "F", "F", 40.0)
-	xl.File.SetColWidth(xl.Context.worksheetName, "G", "G", 90.0)
-	// xl.File.SetColStyle(xl.Context.worksheetName, "A:G", xl.Style.Line)
+func (simple *Simple) setAPISheetHeader(path, method string, operation *spec.Operation) {
+	xl := simple.xl
+	xl.File.SetColWidth(xl.WorkSheetName, "A", "A", 12.0)
+	xl.File.SetColWidth(xl.WorkSheetName, "B", "B", 33.0)
+	xl.File.SetColWidth(xl.WorkSheetName, "C", "C", 12.0)
+	xl.File.SetColWidth(xl.WorkSheetName, "D", "D", 12.0)
+	xl.File.SetColWidth(xl.WorkSheetName, "E", "E", 20.0)
+	xl.File.SetColWidth(xl.WorkSheetName, "F", "F", 40.0)
+	xl.File.SetColWidth(xl.WorkSheetName, "G", "G", 90.0)
+	// xl.File.SetColStyle(xl.WorkSheetName, "A:G", xl.Style.Line)
 
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "A", xl.Context.row), xl.Style.Button)
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Back to Index")
-	xl.File.SetCellHyperLink(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "INDEX!A1", "Location")
-	xl.Context.row++
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Tag")
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
+	xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "A", xl.Context.Row), xl.Style.Button)
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "Back to Index")
+	xl.File.SetCellHyperLink(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "INDEX!A1", "Location")
+	xl.Context.Row++
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "Tag")
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
 	if len(operation.Tags) > 0 {
-		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.Tags[0])
+		xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), operation.Tags[0])
 	}
-	xl.Context.row++
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "ID")
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.ID)
-	xl.Context.row++
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Path")
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), path)
-	xl.Context.row++
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Method")
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), method)
-	xl.Context.row++
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Consumes")
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), strings.Join(operation.Consumes, ", "))
-	xl.Context.row++
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Produces")
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), strings.Join(operation.Produces, ", "))
-	xl.Context.row++
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Summary")
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.Summary)
-	xl.Context.row++
+	xl.Context.Row++
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "ID")
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), operation.ID)
+	xl.Context.Row++
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "Path")
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), path)
+	xl.Context.Row++
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "Method")
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), method)
+	xl.Context.Row++
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "Consumes")
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), strings.Join(operation.Consumes, ", "))
+	xl.Context.Row++
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "Produces")
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), strings.Join(operation.Produces, ", "))
+	xl.Context.Row++
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "Summary")
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), operation.Summary)
+	xl.Context.Row++
 	// https://github.com/360EntSecGroup-Skylar/excelize/issues/573
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "Description")
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), operation.Description)
-	xl.Context.row++
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "Description")
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), operation.Description)
+	xl.Context.Row++
 
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", 2), fmt.Sprintf("%s%d", "A", xl.Context.row-1), xl.Style.Column)
-	xl.Context.row++
+	xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", 2), fmt.Sprintf("%s%d", "A", xl.Context.Row-1), xl.Style.Column)
+	xl.Context.Row++
 }

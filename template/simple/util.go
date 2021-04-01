@@ -9,56 +9,67 @@ import (
 	"github.com/go-openapi/spec"
 )
 
-func (xl *Excel) parameterFromRef(ref spec.Ref) *spec.Parameter {
+func (simple *Simple) parameterFromRef(ref spec.Ref) *spec.Parameter {
+	xl := simple.xl
+
 	url := ref.GetURL()
 	if url == nil || url.String() == "" {
 		return nil
 	}
+
 	lastIndex := strings.LastIndex(url.Fragment, "/")
 	parameterName := url.Fragment[lastIndex+1:]
 	if xl.SwaggerSpec == nil || len(xl.SwaggerSpec.Parameters) == 0 {
 		return nil
 	}
+
 	param := xl.SwaggerSpec.Parameters[parameterName]
 	return &param
 }
 
-func (xl *Excel) definitionFromRef(ref spec.Ref) (definitionName string, definition *spec.Schema) {
+func (simple *Simple) definitionFromRef(ref spec.Ref) (definitionName string, definition *spec.Schema) {
+	xl := simple.xl
+
 	url := ref.GetURL()
 	if url == nil || url.String() == "" {
 		return "", nil
 	}
+
 	lastIndex := strings.LastIndex(url.Fragment, "/")
 	defName := url.Fragment[lastIndex+1:]
 	if xl.SwaggerSpec == nil || len(xl.SwaggerSpec.Definitions) == 0 {
 		return "", nil
 	}
+
 	def := xl.SwaggerSpec.Definitions[defName]
 	return defName, &def
 }
 
-func (xl *Excel) setCellWithSchema(schemaName, paramType, dataType, description string) {
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), schemaName)
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), paramType)
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), dataType)
+func (simple *Simple) setCellWithSchema(schemaName, paramType, dataType, description string) {
+	xl := simple.xl
+
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), schemaName)
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "C", xl.Context.Row), paramType)
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "D", xl.Context.Row), dataType)
 	// FIXME: converting example
-	// xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "F", xl.Context.row), example)
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), description)
+	// xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), example)
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "G", xl.Context.Row), description)
 }
 
-func (xl *Excel) parameterSchema(param spec.Parameter) error {
+func (simple *Simple) parameterSchema(param spec.Parameter) error {
+	xl := simple.xl
 	// FIXME: converting items
 	// if param.Schema.Items != nil {
 	// 	if param.Schema.Items.Schema != nil {
-	// 		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ","))
+	// 		xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "D", xl.Context.Row), strings.Join(param.Schema.Type, ","))
 	// 	}
 	// 	if param.Schema.Items.Schemas != nil {
-	// 		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ","))
+	// 		xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "D", xl.Context.Row), strings.Join(param.Schema.Type, ","))
 	// 	}
 	// }
 
 	if !reflect.DeepEqual(spec.Ref{}, param.Schema.Ref) {
-		if err := xl.parameterSchemaRef(param); err != nil {
+		if err := simple.parameterSchemaRef(param); err != nil {
 			return err
 		}
 		// continue
@@ -67,125 +78,128 @@ func (xl *Excel) parameterSchema(param spec.Parameter) error {
 
 	if param.Schema.Properties != nil {
 		for k, v := range param.Schema.Properties {
-			xl.setCellWithSchema(k, param.In, strings.Join(v.Type, ","), "")
+			simple.setCellWithSchema(k, param.In, strings.Join(v.Type, ","), "")
 		}
 		return nil
 	}
 
 	if param.Schema.Type != nil {
-		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(param.Schema.Type, ","))
+		xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "D", xl.Context.Row), strings.Join(param.Schema.Type, ","))
 	}
 
 	if param.Schema.Description != "" {
-		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), param.Schema.Description)
+		xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "G", xl.Context.Row), param.Schema.Description)
 	}
 
 	return nil
 }
 
-func (xl *Excel) parameterSchemaRef(param spec.Parameter) error {
+func (simple *Simple) parameterSchemaRef(param spec.Parameter) error {
 	if strings.Contains(param.Schema.Ref.GetPointer().String(), "definitions") {
-		schema, err := spec.ResolveRef(xl.SwaggerSpec, &param.Schema.Ref)
+		schema, err := spec.ResolveRef(simple.xl.SwaggerSpec, &param.Schema.Ref)
 		if err != nil {
 			return err
 		}
-		xl.checkRequired(param.Required)
+		simple.checkRequired(param.Required)
 
-		schemaName, _ := xl.definitionFromRef(param.Schema.Ref)
-		xl.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ","), param.Description)
+		schemaName, _ := simple.definitionFromRef(param.Schema.Ref)
+		simple.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ","), param.Description)
 		return nil
 	}
 
 	if strings.Contains(param.Schema.Ref.GetPointer().String(), "parameters") {
-		schema, err := spec.ResolveParameter(xl.SwaggerSpec, param.Schema.Ref)
+		schema, err := spec.ResolveParameter(simple.xl.SwaggerSpec, param.Schema.Ref)
 		if err != nil {
 			return err
 		}
-		xl.checkRequired(schema.Required)
+		simple.checkRequired(schema.Required)
 
-		xl.setCellWithSchema(schema.Name, schema.In, schema.Type, schema.Description)
+		simple.setCellWithSchema(schema.Name, schema.In, schema.Type, schema.Description)
 	}
 	return nil
 }
 
-func (xl *Excel) responseSchema(response spec.Response) error {
+func (simple *Simple) responseSchema(response spec.Response) error {
+	xl := simple.xl
 	if response.Schema.Title != "" {
-		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), response.Schema.Title)
+		simple.xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), response.Schema.Title)
 	}
 
 	if response.Schema.Type != nil {
-		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "body")
-		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), strings.Join(response.Schema.Type, ","))
+		simple.xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "C", xl.Context.Row), "body")
+		simple.xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "D", xl.Context.Row), strings.Join(response.Schema.Type, ","))
 	}
 
 	if response.Schema.Type.Contains("array") {
-		if err := xl.arrayDefinitionFromSchemaRef(response); err != nil {
+		if err := simple.arrayDefinitionFromSchemaRef(response); err != nil {
 			return err
 		}
 	}
 
 	if response.Schema.Title != "" {
-		xl.setCellWithSchema(response.Schema.Title, "body", "object", response.Description)
-		xl.Context.row++
+		simple.setCellWithSchema(response.Schema.Title, "body", "object", response.Description)
+		xl.Context.Row++
 		return nil
 	}
 
 	if response.Schema.Properties != nil {
-		if err := xl.propDefinitionFromSchemaRef(response); err != nil {
+		if err := simple.propDefinitionFromSchemaRef(response); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (xl *Excel) arrayDefinitionFromSchemaRef(response spec.Response) error {
+func (simple *Simple) arrayDefinitionFromSchemaRef(response spec.Response) error {
 	items := response.Schema.Items
 	if items.Schema != nil {
 		schema := items.Schema
-		xl.setCellWithSchema(schema.Title, "body", strings.Join(response.Schema.Type, ","), response.Description)
+		simple.setCellWithSchema(schema.Title, "body", strings.Join(response.Schema.Type, ","), response.Description)
 		return nil
 	}
 	for _, schema := range items.Schemas {
 		if !reflect.DeepEqual(spec.Ref{}, schema.Ref) {
-			definitionName, definition := xl.definitionFromRef(items.Schemas[0].Ref)
+			definitionName, definition := simple.definitionFromRef(items.Schemas[0].Ref)
 			if definition == nil {
 				return errors.New("not found definition")
 			}
-			xl.setCellWithSchema(definitionName, "body", "array", response.Description)
+			simple.setCellWithSchema(definitionName, "body", "array", response.Description)
 			return nil
 		}
 	}
 	return nil
 }
 
-func (xl *Excel) propDefinitionFromSchemaRef(response spec.Response) error {
+func (simple *Simple) propDefinitionFromSchemaRef(response spec.Response) error {
 	if reflect.DeepEqual(spec.Response{}, response) {
 		return errors.New("response is empty")
 	}
+
+	xl := simple.xl
 	for propertyName, propertySchema := range response.Schema.Properties {
 		if !reflect.DeepEqual(spec.Ref{}, propertySchema.Ref) {
-			definitionName, definition := xl.definitionFromRef(propertySchema.Ref)
+			definitionName, definition := simple.definitionFromRef(propertySchema.Ref)
 			if definition == nil {
 				return errors.New("not found definition")
 			}
 			if propertySchema.Items != nil {
-				definitionName, definition = xl.definitionFromRef(propertySchema.Items.Schema.Ref)
+				definitionName, definition = simple.definitionFromRef(propertySchema.Items.Schema.Ref)
 				if definition == nil {
 					return errors.New("not found definition")
 				}
 			}
-			xl.setCellWithSchema(definitionName, "body", propertyName, propertySchema.Description)
-			xl.Context.row++
+			simple.setCellWithSchema(definitionName, "body", propertyName, propertySchema.Description)
+			xl.Context.Row++
 			return nil
 		}
-		xl.setCellWithSchema(propertyName, "body", strings.Join(response.Schema.Type, ","), response.Description)
-		xl.Context.row++
+		simple.setCellWithSchema(propertyName, "body", strings.Join(response.Schema.Type, ","), response.Description)
+		xl.Context.Row++
 	}
 	return nil
 }
 
-func (xl *Excel) responseSchemaRef(response spec.Response) error {
-	schema, err := spec.ResolveRef(*xl.SwaggerSpec, &response.Schema.Ref)
+func (simple *Simple) responseSchemaRef(response spec.Response) error {
+	schema, err := spec.ResolveRef(*simple.xl.SwaggerSpec, &response.Schema.Ref)
 	if err != nil {
 		return err
 	}
@@ -193,16 +207,16 @@ func (xl *Excel) responseSchemaRef(response spec.Response) error {
 		return errors.New("not found response.Schema.Ref definition")
 	}
 
-	schemaName, _ := xl.definitionFromRef(response.Schema.Ref)
-	xl.setCellWithSchema(schemaName, "body", "object", response.Description)
-	xl.Context.row++
+	schemaName, _ := simple.definitionFromRef(response.Schema.Ref)
+	simple.setCellWithSchema(schemaName, "body", "object", response.Description)
+	simple.xl.Context.Row++
 	return nil
 }
 
-func (xl *Excel) checkRequired(required bool) {
+func (simple *Simple) checkRequired(required bool) {
 	if required {
-		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "O")
+		simple.xl.File.SetCellStr(simple.xl.WorkSheetName, fmt.Sprintf("%s%d", "A", simple.xl.Context.Row), "O")
 	} else {
-		xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "X")
+		simple.xl.File.SetCellStr(simple.xl.WorkSheetName, fmt.Sprintf("%s%d", "A", simple.xl.Context.Row), "X")
 	}
 }

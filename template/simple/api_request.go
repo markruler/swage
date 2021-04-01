@@ -8,47 +8,48 @@ import (
 	"github.com/markruler/swage/parser"
 )
 
-func (xl *Excel) setAPISheetRequest(operation *spec.Operation) {
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "REQUEST")
-	xl.File.MergeCell(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row))
-	xl.File.SetRowHeight(xl.Context.worksheetName, xl.Context.row, 20.0)
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Title)
-	xl.Context.row++
+func (simple *Simple) setAPISheetRequest(operation *spec.Operation) {
+	xl := simple.xl
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "REQUEST")
+	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
+	xl.File.SetRowHeight(xl.WorkSheetName, xl.Context.Row, 20.0)
+	xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row), xl.Style.Title)
+	xl.Context.Row++
 
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), "required")
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "B", xl.Context.row), "schema")
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "C", xl.Context.row), "param-type")
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "D", xl.Context.row), "data-type")
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), "enum")
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "F", xl.Context.row), "example")
-	xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), "description")
-	xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Column)
-	xl.Context.row++
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "required")
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), "schema")
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "C", xl.Context.Row), "param-type")
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "D", xl.Context.Row), "data-type")
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "E", xl.Context.Row), "enum")
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), "example")
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "G", xl.Context.Row), "description")
+	xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row), xl.Style.Column)
+	xl.Context.Row++
 
 	for _, param := range operation.Parameters {
-		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "F", xl.Context.Row), xl.Style.Center)
 
 		if !reflect.DeepEqual(param.Ref, spec.Ref{}) {
-			param = *xl.parameterFromRef(param.Ref)
+			param = *simple.parameterFromRef(param.Ref)
 		}
 
-		xl.checkRequired(param.Required)
+		simple.checkRequired(param.Required)
 
-		xl.setCellWithSchema(param.Name, param.In, param.Type, param.Description)
+		simple.setCellWithSchema(param.Name, param.In, param.Type, param.Description)
 
 		if param.Items != nil && param.Items.Enum != nil {
-			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), parser.Enum2string(param.Items.Enum...))
+			xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "E", xl.Context.Row), parser.Enum2string(param.Items.Enum...))
 		}
 
 		if param.Enum != nil {
-			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), parser.Enum2string(param.Enum...))
+			xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "E", xl.Context.Row), parser.Enum2string(param.Enum...))
 		}
 
 		if param.Schema != nil {
-			xl.parameterSchema(param)
+			simple.parameterSchema(param)
 		}
 
-		xl.Context.row++
+		xl.Context.Row++
 	}
-	xl.Context.row++
+	xl.Context.Row++
 }

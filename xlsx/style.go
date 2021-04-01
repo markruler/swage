@@ -1,4 +1,4 @@
-package simple
+package xlsx
 
 import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"

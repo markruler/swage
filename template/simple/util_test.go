@@ -7,27 +7,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// func init() {
-// 	xl = New()
-// }
-
 func TestGetParameterSchema(t *testing.T) {
-	xl := New()
-	// composite literal uses unkeyed fields
-	// type Ref struct {
-	// 	jsonreference.Ref
-	// }
-	// param := xl.parameterFromRef(spec.Ref{
-	// 	jsonreference.MustCreateRef("#/re/re"),
-	// })
+	simple := New()
+	xl := simple.GetExcel()
 
-	param := xl.parameterFromRef(spec.Ref{})
+	param := simple.parameterFromRef(spec.Ref{})
 	assert.Nil(t, param)
 
-	param = xl.parameterFromRef(spec.MustCreateRef(""))
+	param = simple.parameterFromRef(spec.MustCreateRef(""))
 	assert.Nil(t, param)
 
-	param = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
+	param = simple.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Nil(t, param)
 
 	xl.SwaggerSpec = &spec.Swagger{
@@ -35,7 +25,7 @@ func TestGetParameterSchema(t *testing.T) {
 			Swagger: "2.0",
 		},
 	}
-	param = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
+	param = simple.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Nil(t, param)
 
 	xl.SwaggerSpec = &spec.Swagger{
@@ -49,30 +39,31 @@ func TestGetParameterSchema(t *testing.T) {
 			},
 		},
 	}
-	param = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
+	param = simple.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Equal(t, xl.SwaggerSpec.Parameters["qwe"], *param)
 	assert.Equal(t, xl.SwaggerSpec.Parameters["qwe"].Name, "test name")
 }
 
 func TestGetDefinitionSchema(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 
-	_, def := xl.definitionFromRef(spec.Ref{})
+	_, def := simple.definitionFromRef(spec.Ref{})
 	assert.Nil(t, def)
 
-	_, def = xl.definitionFromRef(spec.MustCreateRef(""))
+	_, def = simple.definitionFromRef(spec.MustCreateRef(""))
 	assert.Nil(t, def)
 
 	// FIXME: converting undefined references
-	// _, def = xl.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
+	// _, def = simple.parameterFromRef(spec.MustCreateRef("#/asd/qwe"))
 	// assert.Nil(t, def)
 
-	xl.SwaggerSpec = &spec.Swagger{
+	simple.GetExcel().SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Swagger: "2.0",
 		},
 	}
-	_, def = xl.definitionFromRef(spec.MustCreateRef("#/asd/qwe"))
+	_, def = simple.definitionFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Nil(t, def)
 
 	xl.SwaggerSpec = &spec.Swagger{
@@ -86,7 +77,7 @@ func TestGetDefinitionSchema(t *testing.T) {
 			},
 		},
 	}
-	_, def = xl.definitionFromRef(spec.MustCreateRef("#/asd/qwe"))
+	_, def = simple.definitionFromRef(spec.MustCreateRef("#/asd/qwe"))
 	assert.Equal(t, xl.SwaggerSpec.Definitions["qwe"], *def)
 	assert.Equal(t, xl.SwaggerSpec.Definitions["qwe"].ID, "test id")
 }

@@ -11,8 +11,9 @@ import (
 // @method GET
 // @path /containers/json
 func TestParameterWithoutSchema(t *testing.T) {
-	xl := New()
-	err := xl.createAPISheet("", "", &spec.Operation{
+	simple := New()
+	xl := simple.GetExcel()
+	err := simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{
@@ -42,7 +43,8 @@ func TestParameterWithoutSchema(t *testing.T) {
 }
 
 func TestParameterSchemaWithRef(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			// @source zoom.us.json
@@ -91,7 +93,7 @@ func TestParameterSchemaWithRef(t *testing.T) {
 			},
 		},
 	}
-	err := xl.createAPISheet("", "", &spec.Operation{
+	err := simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{
@@ -191,12 +193,13 @@ func TestParameterSchemaWithRef(t *testing.T) {
 }
 
 func TestParameterSchemaWithoutRef(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var row [][]string
 	// @source docker.v1.41.json
 	// @method POST
 	// @path /build
-	err := xl.createAPISheet("", "", &spec.Operation{
+	err := simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{
@@ -232,7 +235,7 @@ func TestParameterSchemaWithoutRef(t *testing.T) {
 	// @source zoom.us.json
 	// @method POST
 	// @path /groups
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{
@@ -266,7 +269,8 @@ func TestParameterSchemaWithoutRef(t *testing.T) {
 // @method POST
 // @path /user/createWithList
 func TestParameterSchemaItemsWithRef(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Definitions: spec.Definitions{
@@ -293,7 +297,7 @@ func TestParameterSchemaItemsWithRef(t *testing.T) {
 			},
 		},
 	}
-	err := xl.createAPISheet("", "", &spec.Operation{
+	err := simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Tags:    []string{"user"},
 			Summary: "Creates list of users with given input array",
@@ -337,8 +341,9 @@ func TestParameterSchemaItemsWithRef(t *testing.T) {
 // @method GET
 // @path /pet/findByStatus
 func TestParameterSchemaItemsWithoutRef(t *testing.T) {
-	xl := New()
-	err := xl.createAPISheet("", "", &spec.Operation{
+	simple := New()
+	xl := simple.GetExcel()
+	err := simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{

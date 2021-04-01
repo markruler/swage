@@ -1,4 +1,4 @@
-package simple
+package xlsx
 
 import (
 	"testing"

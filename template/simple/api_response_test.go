@@ -11,9 +11,10 @@ import (
 // @method head
 // @path /containers/{id}/archive
 func TestResponseHeaders(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			ID: "ContainerArchiveInfo",
 			Responses: &spec.Responses{
@@ -52,9 +53,10 @@ func TestResponseHeaders(t *testing.T) {
 
 // @source docker.v1.41.json
 func TestResponseWithoutSchema(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			ID: "ContainerInspect",
 			Responses: &spec.Responses{
@@ -112,7 +114,8 @@ func TestResponseWithoutSchema(t *testing.T) {
 // @method DELETE
 // @path /containers/{id}
 func TestResponseSchemaWithRef(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
@@ -138,7 +141,7 @@ func TestResponseSchemaWithRef(t *testing.T) {
 			},
 		},
 	}
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Responses: &spec.Responses{
 				ResponsesProps: spec.ResponsesProps{
@@ -242,10 +245,12 @@ func TestResponseSchemaWithRef(t *testing.T) {
 // @method POST
 // @path /devices/{serial}/camera/generateSnapshot
 func TestResponseSchemaWithoutRef(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
+
 	xl.SwaggerSpec = &spec.Swagger{}
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Responses: &spec.Responses{
 				ResponsesProps: spec.ResponsesProps{
@@ -287,8 +292,10 @@ func TestResponseSchemaWithoutRef(t *testing.T) {
 // @method get
 // @path /albums
 func TestResponseSchemaItemsWithRef(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
+
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Definitions: spec.Definitions{
@@ -303,7 +310,7 @@ func TestResponseSchemaItemsWithRef(t *testing.T) {
 			},
 		},
 	}
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Responses: &spec.Responses{
 				ResponsesProps: spec.ResponsesProps{
@@ -345,12 +352,14 @@ func TestResponseSchemaItemsWithRef(t *testing.T) {
 }
 
 func TestResponseSchemaItemsWithoutRef(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
+
 	// @source docker.v1.41.json
 	// @method POST
 	// @path /containers/prune
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Responses: &spec.Responses{
 				ResponsesProps: spec.ResponsesProps{
@@ -399,7 +408,7 @@ func TestResponseSchemaItemsWithoutRef(t *testing.T) {
 	// @method GET
 	// @path /images/search
 	// @path /images/{name}/history
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Responses: &spec.Responses{
 				ResponsesProps: spec.ResponsesProps{
@@ -477,8 +486,10 @@ func TestResponseSchemaItemsWithoutRef(t *testing.T) {
 // @method GET
 // @path /broadcasts/latest
 func TestResponseDefault(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
+
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Definitions: spec.Definitions{
@@ -494,7 +505,8 @@ func TestResponseDefault(t *testing.T) {
 			},
 		},
 	}
-	err = xl.createAPISheet("", "", &spec.Operation{
+
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Responses: &spec.Responses{
 				ResponsesProps: spec.ResponsesProps{
@@ -551,8 +563,10 @@ func TestPropDefinitionFromSchemaRef(t *testing.T) {
 // @path /accounts
 // @path /groups
 func TestAllOfDefinitionWithRef(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
+
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Definitions: spec.Definitions{
@@ -628,7 +642,7 @@ func TestAllOfDefinitionWithRef(t *testing.T) {
 			},
 		},
 	}
-	err = xl.createAPISheet("", "", &spec.Operation{
+	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Responses: &spec.Responses{
 				ResponsesProps: spec.ResponsesProps{

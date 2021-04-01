@@ -8,7 +8,8 @@ import (
 )
 
 func TestCreateIndexSheet(t *testing.T) {
-	xl := New()
+	simple := New()
+	xl := simple.GetExcel()
 	var err error
 
 	xl.SwaggerSpec = &spec.Swagger{
@@ -58,15 +59,12 @@ func TestCreateIndexSheet(t *testing.T) {
 			},
 		},
 	}
-	err = xl.createIndexSheet()
-	assert.NoError(t, err)
+	err = simple.CreateIndexSheet()
+	assert.Error(t, err)
+
 	prop, err := xl.File.GetDocProps()
 	assert.NoError(t, err)
 	assert.Equal(t, "OpenAPI", prop.Category)
 	assert.Equal(t, "Swage", prop.Creator)
 	assert.Equal(t, "xlsx", prop.Identifier)
-
-	// xl.SwaggerSpec = &spec.Swagger{}
-	// err = xl.createIndexSheet()
-	// assert.Error(t, err)
 }
