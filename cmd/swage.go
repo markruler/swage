@@ -10,7 +10,6 @@ var swageCmd = &cobra.Command{
 	Long: `
 Swage convert OpenAPI Schema to XLSX
 `,
-	Version:      swageVersion,
 	SilenceUsage: false,
 }
 

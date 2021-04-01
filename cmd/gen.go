@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/markruler/swage/parser"
-	"github.com/markruler/swage/template"
-	"github.com/markruler/swage/template/simple"
+	"github.com/markruler/swage/xlsx"
+	"github.com/markruler/swage/xlsx/simple"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +26,7 @@ Generate an XLSX file locally
 
 func init() {
 	genCmd.Flags().StringVarP(&outputPath, "output", "o", "swage.xlsx", "set a path to save a Excel file")
-	genCmd.Flags().StringVarP(&templateName, "template", "t", template.Simple, "set a Excel template [simple]")
+	genCmd.Flags().StringVarP(&templateName, "template", "t", xlsx.Simple, "set a Excel template [simple]")
 	genCmd.Flags().BoolP("verbose", "v", false, "verbose print")
 }
 
@@ -47,13 +47,13 @@ func genRun(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	var tmpl template.Template
+	var tmpl xlsx.Template
 
 	switch strings.TrimSpace(templateName) {
-	case template.Simple:
+	case xlsx.Simple:
 		tmpl = simple.New()
 	// TODO:
-	// case "print":
+	// case xlsx.Print:
 	// 	template = print.New()
 	default:
 		return errors.New("the template not found")

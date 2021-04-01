@@ -1,4 +1,4 @@
-package template
+package xlsx
 
 const (
 	Simple = "simple"

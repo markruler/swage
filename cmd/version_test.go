@@ -10,5 +10,5 @@ import (
 func TestSnapshotVersion(t *testing.T) {
 	out, err := executeCommand(swageCmd.Root(), versionCmd.Use)
 	assert.NoError(t, err)
-	assert.Equal(t, fmt.Sprintf("swage version %s\n", swageVersion), string(out))
+	assert.Equal(t, fmt.Sprintf("swage %s\n", swageVersion), string(out))
 }

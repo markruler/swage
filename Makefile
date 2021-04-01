@@ -13,7 +13,7 @@ VERSION := $(file < ./VERSION)
 .DEFAULT_GOAL := all
 MAKEFLAGS += --warn-undefined-variables
 # go tool link (https://golang.org/cmd/link/)
-LDFLAGS := -s -w -extldflags='-static' -X 'github.com/markruler/swage/pkg/cmd.swageVersion=${VERSION}'
+LDFLAGS := -s -w -extldflags='-static' -X 'github.com/markruler/swage/cmd.swageVersion=$(VERSION)'
 
 all: version deps test cover build
 .PHONY: all
@@ -75,14 +75,14 @@ clean:
 .PHONY: clean
 
 build: test
-	GO111MODULE=on GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o $(BIN_DIR)/$(NAME) -v -ldflags="${LDFLAGS}" main.go
+	GO111MODULE=on GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o $(BUILD_DIR)/$(NAME) -v -ldflags="${LDFLAGS}" main.go
 .PHONY: build
 
 docker:
 	scripts/docker.sh
 .PHONY: docker
 
-release-snapshot:
+release-test:
 	rm -rf dist
 	goreleaser --snapshot --skip-publish
 .PHONY: release

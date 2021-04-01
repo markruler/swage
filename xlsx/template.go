@@ -1,13 +1,12 @@
-package template
+package xlsx
 
 import (
 	"github.com/go-openapi/spec"
-	"github.com/markruler/swage/xlsx"
 )
 
 type Template interface {
 	// GetExcel returns Excel that the template has
-	GetExcel() *xlsx.Excel
+	GetExcel() *Excel
 	// Generate generates Excel from Open API
 	Generate(*spec.Swagger) error
 	// CreateIndexSheet generates index sheet
