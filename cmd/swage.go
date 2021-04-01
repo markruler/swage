@@ -6,13 +6,12 @@ import (
 
 var swageCmd = &cobra.Command{
 	Use:   "swage",
-	Short: "Swage is a swagger docs converter to excel format",
-	Long: `Swage is a swagger docs converter
-(to Excel format)
-
-ex) swage gen aio/example/example.json -o $HOME/swage.xlsx
+	Short: "Swage convert OpenAPI Schema to XLSX",
+	Long: `
+Swage convert OpenAPI Schema to XLSX
 `,
-	SilenceUsage: true,
+	Version:      swageVersion,
+	SilenceUsage: false,
 }
 
 func init() {

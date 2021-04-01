@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -10,11 +8,11 @@ var swageVersion = "SNAPSHOT"
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version number of Swage",
-	Long:  `All software has versions. This is Swage's`,
+	Short: "Show the Swage version information",
+	Long:  `Show the Swage version information`,
 	Run:   versionRun,
 }
 
 func versionRun(cmd *cobra.Command, args []string) {
-	fmt.Printf("swage %s\n", swageVersion)
+	cmd.Printf("swage version %s\n", swageVersion)
 }

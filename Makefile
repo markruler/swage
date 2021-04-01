@@ -45,6 +45,11 @@ test: fmt
 	go test ./... --cover
 .PHONY: test
 
+# make test-unit package=./cmd unit=TestSnapshotVersion
+test-unit: fmt
+	go test ${package} -v -run ${unit}
+.PHONY: test
+
 testv: fmt
 	go test ./... -v
 .PHONY: testv

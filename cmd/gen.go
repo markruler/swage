@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/markruler/swage/parser"
 	"github.com/markruler/swage/template"
@@ -16,11 +15,10 @@ var (
 )
 
 var genCmd = &cobra.Command{
-	Use:   "gen [PATH]",
-	Short: "Generate a Excel file",
-	Long: `Generate a Excel file
-		
-ex) swage gen aio/example/example.json -o $HOME/swage.xlsx
+	Use:   "gen PATH",
+	Short: "Generate an XLSX file locally",
+	Long: `
+Generate an XLSX file locally
 `,
 	RunE: genRun,
 }
@@ -37,7 +35,7 @@ func genRun(cmd *cobra.Command, args []string) error {
 		return errors.New("PATH is required")
 	}
 	if verbose {
-		fmt.Printf(">>> INPUT %s\n", args[0])
+		cmd.Printf(">>> INPUT %s\n", args[0])
 	}
 
 	p := parser.New(args[0])
@@ -59,7 +57,7 @@ func genRun(cmd *cobra.Command, args []string) error {
 	}
 
 	if verbose {
-		fmt.Printf("OUTPUT >>> %s\n", outputPath)
+		cmd.Printf("OUTPUT >>> %s\n", outputPath)
 	}
 	return nil
 }
