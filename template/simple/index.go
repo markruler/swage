@@ -1,4 +1,4 @@
-package excel
+package simple
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/go-openapi/spec"
+	"github.com/markruler/swage/parser"
 )
 
 func (xl *Excel) createIndexSheet() error {
@@ -56,7 +57,7 @@ func (xl *Excel) createIndexSheet() error {
 	xl.File.SetCellStr(xl.indexSheetName, "E1", "summary")
 
 	// Set Data
-	paths := sortMap(xl.SwaggerSpec.Paths.Paths)
+	paths := parser.SortMap(xl.SwaggerSpec.Paths.Paths)
 	row := 1
 	for _, path := range paths {
 		operations := xl.SwaggerSpec.Paths.Paths[path]

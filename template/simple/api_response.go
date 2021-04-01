@@ -1,4 +1,4 @@
-package excel
+package simple
 
 import (
 	"errors"
@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-openapi/spec"
+	"github.com/markruler/swage/parser"
 )
 
 func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
@@ -49,7 +50,7 @@ func (xl *Excel) setAPISheetResponse(operation *spec.Operation) (err error) {
 		xl.Context.row++
 	}
 
-	codes := sortMap(responses.StatusCodeResponses)
+	codes := parser.SortMap(responses.StatusCodeResponses)
 	for _, code := range codes {
 		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "A", xl.Context.row), fmt.Sprintf("%s%d", "F", xl.Context.row), xl.Style.Center)
 		xl.File.SetCellStyle(xl.Context.worksheetName, fmt.Sprintf("%s%d", "G", xl.Context.row), fmt.Sprintf("%s%d", "G", xl.Context.row), xl.Style.Left)

@@ -1,4 +1,4 @@
-package excel
+package simple
 
 import (
 	"testing"
@@ -54,7 +54,7 @@ func TestGenerate(t *testing.T) {
 				},
 			},
 		},
-	}, "default")
+	}, "simple")
 	assert.NoError(t, err)
 
 	err = xl.Generate(&spec.Swagger{
@@ -74,6 +74,6 @@ func TestGenerate(t *testing.T) {
 				},
 			},
 		},
-	}, "default")
+	}, "simple")
 	assert.NoError(t, err)
 }

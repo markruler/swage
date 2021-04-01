@@ -1,4 +1,4 @@
-package excel
+package simple
 
 import (
 	"testing"
@@ -10,11 +10,6 @@ import (
 // func init() {
 // 	xl = New()
 // }
-
-func TestSortMap(t *testing.T) {
-	arr := sortMap("")
-	assert.Nil(t, arr)
-}
 
 func TestGetParameterSchema(t *testing.T) {
 	xl := New()

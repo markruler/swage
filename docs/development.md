@@ -44,4 +44,4 @@ aio/scripts/docker.ps1
 
 ```
 
-> output >> examples/testdata/docker-swage.xlsx
+> output >> testdata/docker-swage.xlsx

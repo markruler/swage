@@ -1,10 +1,11 @@
-package excel
+package simple
 
 import (
 	"fmt"
 	"reflect"
 
 	"github.com/go-openapi/spec"
+	"github.com/markruler/swage/parser"
 )
 
 func (xl *Excel) setAPISheetRequest(operation *spec.Operation) {
@@ -36,11 +37,11 @@ func (xl *Excel) setAPISheetRequest(operation *spec.Operation) {
 		xl.setCellWithSchema(param.Name, param.In, param.Type, param.Description)
 
 		if param.Items != nil && param.Items.Enum != nil {
-			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), enum2string(param.Items.Enum...))
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), parser.Enum2string(param.Items.Enum...))
 		}
 
 		if param.Enum != nil {
-			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), enum2string(param.Enum...))
+			xl.File.SetCellStr(xl.Context.worksheetName, fmt.Sprintf("%s%d", "E", xl.Context.row), parser.Enum2string(param.Enum...))
 		}
 
 		if param.Schema != nil {

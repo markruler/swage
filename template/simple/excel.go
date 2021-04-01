@@ -1,4 +1,4 @@
-package excel
+package simple
 
 import (
 	"errors"
@@ -46,18 +46,18 @@ func (xl *Excel) Generate(swaggerAPI *spec.Swagger, template string) error {
 		return errors.New("OpenAPI version should not be empty")
 	}
 	if swaggerAPI.Paths == nil {
-		return errors.New("Path sould not be empty")
+		return errors.New("path sould not be empty")
 	}
 	xl.SwaggerSpec = swaggerAPI
 
 	switch strings.TrimSpace(template) {
-	case "default":
+	case "simple": // FIXME: template.Simple
 		if err := xl.createIndexSheet(); err != nil {
 			return err
 		}
-	// TODO: make a formal template
-	// case "custom":
-	// if err := xl.createMyCustomSheet(); err != nil {
+	// TODO: make a template
+	// case "print":
+	// if err := xl.createSheetToPrint(); err != nil {
 	// 	return err
 	// }
 	default:
