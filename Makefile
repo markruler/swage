@@ -91,10 +91,10 @@ release-snapshot:
 # - [x] repo_deployment
 # - [x] public_repo
 release-publish:
-	rm -rf dist
 	# Update README.md
 	# Update VERSION
 	# git commit
+	rm -rf dist
 	git tag $(VERSION)
 	goreleaser release --rm-dist
 	# git push origin main
