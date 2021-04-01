@@ -99,3 +99,8 @@ release-publish:
 	goreleaser release --rm-dist
 	# git push origin main
 .PHONY: release-publish
+
+tag-remove:
+	git push --delete origin $(VERSION)
+	git tag -d $(VERSION)
+.PHONY: tag-remove
