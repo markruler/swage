@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
+# MUST: `git config core.hooksPath .githooks`
 make test
