@@ -8,9 +8,9 @@
 
 ```bash
 cd /tmp
-# curl -LO https://github.com/markruler/swage/releases/download/v0.1.1/swage_v0.1.1_$(uname -s)_$(uname -p).tar.gz
-wget https://github.com/markruler/swage/releases/download/v0.1.1/swage_v0.1.1_$(uname -s)_$(uname -p).tar.gz
-tar zxvf swage_v0.1.1_$(uname -s)_$(uname -p).tar.gz
+# curl -LO https://github.com/markruler/swage/releases/download/v0.1.2/swage_v0.1.2_$(uname -s)_$(uname -p).tar.gz
+wget https://github.com/markruler/swage/releases/download/v0.1.2/swage_v0.1.2_$(uname -s)_$(uname -p).tar.gz
+tar zxvf swage_v0.1.2_$(uname -s)_$(uname -p).tar.gz
 sudo mv swage /usr/local/bin/swage
 ```
 
