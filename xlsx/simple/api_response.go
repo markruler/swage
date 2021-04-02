@@ -1,6 +1,7 @@
 package simple
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -44,9 +45,9 @@ func (simple *Simple) setAPISheetResponse(operation *spec.Operation) (err error)
 				return err
 			}
 			schemaName, _ := simple.definitionFromRef(responses.Default.Schema.Ref)
-			simple.setCellWithSchema(schemaName, "body", strings.Join(schema.Type, ","), responses.Default.Description)
+			simple.setCellWithSchema(schemaName, "body", strings.Join(schema.Type, ","), "", responses.Default.Description)
 		} else {
-			simple.setCellWithSchema("", "body", "string", responses.Default.Description)
+			simple.setCellWithSchema("", "body", "string", "", responses.Default.Description)
 		}
 		xl.Context.Row++
 	}
@@ -70,7 +71,11 @@ func (simple *Simple) setAPISheetResponse(operation *spec.Operation) (err error)
 		}
 
 		for headerKey, header := range response.Headers {
-			simple.setCellWithSchema(headerKey, "header", header.Type, header.Description)
+			b, err := json.Marshal(header.Example)
+			if err != nil {
+				return err
+			}
+			simple.setCellWithSchema(headerKey, "header", header.Type, string(b), header.Description)
 		}
 
 		if response.Schema == nil {

@@ -1,6 +1,7 @@
 package simple
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -45,14 +46,16 @@ func (simple *Simple) definitionFromRef(ref spec.Ref) (definitionName string, de
 	return defName, &def
 }
 
-func (simple *Simple) setCellWithSchema(schemaName, paramType, dataType, description string) {
+func (simple *Simple) setCellWithSchema(schemaName, paramType, dataType, example, description string) {
 	xl := simple.xl
+	if example == "null" {
+		example = ""
+	}
 
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), schemaName)
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "C", xl.Context.Row), paramType)
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "D", xl.Context.Row), dataType)
-	// FIXME: converting example
-	// xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), example)
+	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), example)
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "G", xl.Context.Row), description)
 }
 
@@ -78,7 +81,7 @@ func (simple *Simple) parameterSchema(param spec.Parameter) error {
 
 	if param.Schema.Properties != nil {
 		for k, v := range param.Schema.Properties {
-			simple.setCellWithSchema(k, param.In, strings.Join(v.Type, ","), "")
+			simple.setCellWithSchema(k, param.In, strings.Join(v.Type, ","), "", "")
 		}
 		return nil
 	}
@@ -103,7 +106,7 @@ func (simple *Simple) parameterSchemaRef(param spec.Parameter) error {
 		simple.checkRequired(param.Required)
 
 		schemaName, _ := simple.definitionFromRef(param.Schema.Ref)
-		simple.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ","), param.Description)
+		simple.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ","), "", param.Description)
 		return nil
 	}
 
@@ -114,7 +117,7 @@ func (simple *Simple) parameterSchemaRef(param spec.Parameter) error {
 		}
 		simple.checkRequired(schema.Required)
 
-		simple.setCellWithSchema(schema.Name, schema.In, schema.Type, schema.Description)
+		simple.setCellWithSchema(schema.Name, schema.In, schema.Type, "", schema.Description)
 	}
 	return nil
 }
@@ -137,7 +140,11 @@ func (simple *Simple) responseSchema(response spec.Response) error {
 	}
 
 	if response.Schema.Title != "" {
-		simple.setCellWithSchema(response.Schema.Title, "body", "object", response.Description)
+		b, err := json.Marshal(response.Schema.Example)
+		if err != nil {
+			return err
+		}
+		simple.setCellWithSchema(response.Schema.Title, "body", "object", string(b), response.Description)
 		xl.Context.Row++
 		return nil
 	}
@@ -154,7 +161,7 @@ func (simple *Simple) arrayDefinitionFromSchemaRef(response spec.Response) error
 	items := response.Schema.Items
 	if items.Schema != nil {
 		schema := items.Schema
-		simple.setCellWithSchema(schema.Title, "body", strings.Join(response.Schema.Type, ","), response.Description)
+		simple.setCellWithSchema(schema.Title, "body", strings.Join(response.Schema.Type, ","), "", response.Description)
 		return nil
 	}
 	for _, schema := range items.Schemas {
@@ -163,7 +170,11 @@ func (simple *Simple) arrayDefinitionFromSchemaRef(response spec.Response) error
 			if definition == nil {
 				return errors.New("not found definition")
 			}
-			simple.setCellWithSchema(definitionName, "body", "array", response.Description)
+			b, err := json.Marshal(response.Schema.Example)
+			if err != nil {
+				return err
+			}
+			simple.setCellWithSchema(definitionName, "body", "array", string(b), response.Description)
 			return nil
 		}
 	}
@@ -188,11 +199,11 @@ func (simple *Simple) propDefinitionFromSchemaRef(response spec.Response) error 
 					return errors.New("not found definition")
 				}
 			}
-			simple.setCellWithSchema(definitionName, "body", propertyName, propertySchema.Description)
+			simple.setCellWithSchema(definitionName, "body", propertyName, "", propertySchema.Description)
 			xl.Context.Row++
 			return nil
 		}
-		simple.setCellWithSchema(propertyName, "body", strings.Join(response.Schema.Type, ","), response.Description)
+		simple.setCellWithSchema(propertyName, "body", strings.Join(response.Schema.Type, ","), "", response.Description)
 		xl.Context.Row++
 	}
 	return nil
@@ -208,7 +219,12 @@ func (simple *Simple) responseSchemaRef(response spec.Response) error {
 	}
 
 	schemaName, _ := simple.definitionFromRef(response.Schema.Ref)
-	simple.setCellWithSchema(schemaName, "body", "object", response.Description)
+
+	b, err := json.Marshal(schema.Example)
+	if err != nil {
+		return err
+	}
+	simple.setCellWithSchema(schemaName, "body", "object", string(b), response.Description)
 	simple.xl.Context.Row++
 	return nil
 }
