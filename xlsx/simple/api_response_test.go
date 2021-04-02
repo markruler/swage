@@ -116,7 +116,7 @@ func TestResponseWithoutSchema(t *testing.T) {
 func TestResponseSchemaWithRef(t *testing.T) {
 	simple := New()
 	xl := simple.GetExcel()
-	var err error
+
 	xl.SwaggerSpec = &spec.Swagger{
 		SwaggerProps: spec.SwaggerProps{
 			Definitions: spec.Definitions{
@@ -137,10 +137,16 @@ func TestResponseSchemaWithRef(t *testing.T) {
 							},
 						},
 					},
+					SwaggerSchemaProps: spec.SwaggerSchemaProps{
+						Example: map[string]interface{}{
+							"message": "Something went wrong.",
+						},
+					},
 				},
 			},
 		},
 	}
+	var err error
 	err = simple.CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Responses: &spec.Responses{
@@ -181,10 +187,11 @@ func TestResponseSchemaWithRef(t *testing.T) {
 						},
 						409: {
 							ResponseProps: spec.ResponseProps{
-								Description: "conflict",
+								Description: "indicates a request conflict with current state of the target resource.",
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										Ref: spec.MustCreateRef("#/definitions/ErrorResponse"),
+										Title: "Conflict",
+										Type:  spec.StringOrArray{"body"},
 									},
 									SwaggerSchemaProps: spec.SwaggerSchemaProps{
 										Example: map[string]map[string]interface{}{
@@ -214,30 +221,45 @@ func TestResponseSchemaWithRef(t *testing.T) {
 	assert.NoError(t, err)
 	row, err := xl.File.GetRows("1")
 	assert.NoError(t, err)
+
 	assert.Equal(t, "204", row[15][0])
 	assert.Equal(t, "", row[15][1])
 	assert.Equal(t, "", row[15][2])
 	assert.Equal(t, "", row[15][3])
+	assert.Equal(t, "", row[15][4])
+	assert.Equal(t, "", row[15][5])
 	assert.Equal(t, "no error", row[15][6])
+
 	assert.Equal(t, "400", row[16][0])
 	assert.Equal(t, "ErrorResponse", row[16][1])
 	assert.Equal(t, "body", row[16][2])
 	assert.Equal(t, "object", row[16][3])
+	assert.Equal(t, "", row[16][4])
+	assert.Equal(t, "{\n    \"message\": \"Something went wrong.\"\n}", row[16][5])
 	assert.Equal(t, "bad parameter", row[16][6])
+
 	assert.Equal(t, "404", row[17][0])
 	assert.Equal(t, "ErrorResponse", row[17][1])
 	assert.Equal(t, "body", row[17][2])
 	assert.Equal(t, "object", row[17][3])
+	assert.Equal(t, "", row[17][4])
+	assert.Equal(t, "{\n    \"message\": \"Something went wrong.\"\n}", row[17][5])
 	assert.Equal(t, "bad parameter", row[17][6])
+
 	assert.Equal(t, "409", row[18][0])
-	assert.Equal(t, "ErrorResponse", row[18][1])
+	assert.Equal(t, "Conflict", row[18][1])
 	assert.Equal(t, "body", row[18][2])
 	assert.Equal(t, "object", row[18][3])
-	assert.Equal(t, "conflict", row[18][6])
+	assert.Equal(t, "", row[18][4])
+	assert.Equal(t, "{\n    \"application/json\": {\n        \"message\": \"You cannot remove a running container: c2ada9df5af8. Stop the\\ncontainer before attempting removal or force remove\\n\"\n    }\n}", row[18][5])
+	assert.Equal(t, "indicates a request conflict with current state of the target resource.", row[18][6])
+
 	assert.Equal(t, "500", row[19][0])
 	assert.Equal(t, "ErrorResponse", row[19][1])
 	assert.Equal(t, "body", row[19][2])
 	assert.Equal(t, "object", row[19][3])
+	assert.Equal(t, "", row[19][4])
+	assert.Equal(t, "{\n    \"message\": \"Something went wrong.\"\n}", row[19][5])
 	assert.Equal(t, "server error", row[19][6])
 }
 

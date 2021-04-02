@@ -384,3 +384,94 @@ func TestParameterSchemaItemsWithoutRef(t *testing.T) {
 	assert.Equal(t, "array", row[12][3])
 	assert.Equal(t, "Status values that need to be considered for filter", row[12][6])
 }
+
+// docker.v1.41.json
+func TestRequestDefinitionExample(t *testing.T) {
+	simple := New()
+	xl := simple.GetExcel()
+	xl.SwaggerSpec = &spec.Swagger{
+		SwaggerProps: spec.SwaggerProps{
+			Definitions: spec.Definitions{
+				"Port": {
+					SchemaProps: spec.SchemaProps{
+						Type:        spec.StringOrArray{"object"},
+						Description: "An open port on a container",
+						Required:    []string{"PrivatePort", "Type"},
+						Properties: spec.SchemaProperties{
+							"IP": {
+								SchemaProps: spec.SchemaProps{
+									Type:        []string{"string"},
+									Format:      "ip-address",
+									Description: "Host IP address that the container's port is mapped to",
+								},
+							},
+							"PrivatePort": {
+								SchemaProps: spec.SchemaProps{
+									Type:        []string{"integer"},
+									Format:      "uint16",
+									Description: "Port on the container",
+								},
+							},
+							"PublicPort": {
+								SchemaProps: spec.SchemaProps{
+									Type:        spec.StringOrArray{"integer"},
+									Format:      "uint16",
+									Description: "Port exposed on the host",
+								},
+							},
+							"Type": {
+								SchemaProps: spec.SchemaProps{
+									Type: spec.StringOrArray{"string"},
+									Enum: []interface{}{"tcp", "udp", "sctp"},
+								},
+							},
+						},
+					},
+					SwaggerSchemaProps: spec.SwaggerSchemaProps{
+						Example: map[string]interface{}{
+							"PrivatePort": 8080,
+							"PublicPort":  80,
+							"Type":        "tcp",
+						},
+					},
+				},
+			},
+		},
+	}
+	err := simple.CreateAPISheet("/containers/json", "get", &spec.Operation{
+		OperationProps: spec.OperationProps{
+			Tags:        []string{"Container"},
+			Summary:     "List containers",
+			Description: "Returns a list of containers. For details on the format, see the\n[inspect endpoint](#operation/ContainerInspect).\n\nNote that it uses a different, smaller representation of a container\nthan inspecting a single container. For example, the list of linked\ncontainers is not propagated .\n",
+			ID:          "ContainerList",
+			Produces:    []string{"application/json"},
+			Parameters: []spec.Parameter{
+				{
+					ParamProps: spec.ParamProps{
+						Name:        "port",
+						In:          "body",
+						Description: "Container port",
+						Required:    true,
+						Schema: &spec.Schema{
+							SchemaProps: spec.SchemaProps{
+								Ref: spec.MustCreateRef("#/definitions/Port"),
+							},
+						},
+					},
+				},
+			},
+			Responses: &spec.Responses{},
+		},
+	}, nil, 1)
+	assert.NoError(t, err)
+	row, err := xl.File.GetRows("1")
+	assert.NoError(t, err)
+
+	assert.Equal(t, "O", row[12][0])
+	assert.Equal(t, "Port", row[12][1])
+	assert.Equal(t, "body", row[12][2])
+	assert.Equal(t, "object", row[12][3])
+	assert.Equal(t, "", row[12][4])
+	assert.Equal(t, "{\n    \"PrivatePort\": 8080,\n    \"PublicPort\": 80,\n    \"Type\": \"tcp\"\n}", row[12][5])
+	assert.Equal(t, "Container port", row[12][6])
+}

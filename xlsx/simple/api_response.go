@@ -1,6 +1,7 @@
 package simple
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -44,17 +45,17 @@ func (simple *Simple) setAPISheetResponse(operation *spec.Operation) (err error)
 				return err
 			}
 			schemaName, _ := simple.definitionFromRef(responses.Default.Schema.Ref)
-			simple.setCellWithSchema(schemaName, "body", strings.Join(schema.Type, ","), responses.Default.Description)
+			simple.setCellWithSchema(schemaName, "body", strings.Join(schema.Type, ","), "", responses.Default.Description)
 		} else {
-			simple.setCellWithSchema("", "body", "string", responses.Default.Description)
+			simple.setCellWithSchema("", "body", "string", "", responses.Default.Description)
 		}
 		xl.Context.Row++
 	}
 
 	codes := parser.SortMap(responses.StatusCodeResponses)
 	for _, code := range codes {
-		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "F", xl.Context.Row), xl.Style.Center)
-		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "G", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row), xl.Style.Left)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "E", xl.Context.Row), xl.Style.Center)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row), xl.Style.Left)
 
 		icode, err := strconv.Atoi(code)
 		if err != nil {
@@ -70,7 +71,11 @@ func (simple *Simple) setAPISheetResponse(operation *spec.Operation) (err error)
 		}
 
 		for headerKey, header := range response.Headers {
-			simple.setCellWithSchema(headerKey, "header", header.Type, header.Description)
+			b, err := json.MarshalIndent(header.Example, "", "    ")
+			if err != nil {
+				return err
+			}
+			simple.setCellWithSchema(headerKey, "header", header.Type, string(b), header.Description)
 		}
 
 		if response.Schema == nil {

@@ -82,9 +82,8 @@ func title(xl *excelize.File) int {
 			Vertical:   "center",
 		},
 		Fill: excelize.Fill{
-			Type:  "gradient",
-			Color: []string{"#9CDC9D", "#3E9487"},
-			// Color:   []string{"#beff32", "#6ba543"},
+			Type:    "gradient",
+			Color:   []string{"#9CDC9D", "#3E9487"},
 			Shading: 2,
 		},
 	})
