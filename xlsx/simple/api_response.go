@@ -54,8 +54,8 @@ func (simple *Simple) setAPISheetResponse(operation *spec.Operation) (err error)
 
 	codes := parser.SortMap(responses.StatusCodeResponses)
 	for _, code := range codes {
-		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "F", xl.Context.Row), xl.Style.Center)
-		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "G", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row), xl.Style.Left)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "E", xl.Context.Row), xl.Style.Center)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row), xl.Style.Left)
 
 		icode, err := strconv.Atoi(code)
 		if err != nil {
@@ -71,7 +71,7 @@ func (simple *Simple) setAPISheetResponse(operation *spec.Operation) (err error)
 		}
 
 		for headerKey, header := range response.Headers {
-			b, err := json.Marshal(header.Example)
+			b, err := json.MarshalIndent(header.Example, "", "    ")
 			if err != nil {
 				return err
 			}

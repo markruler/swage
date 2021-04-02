@@ -16,7 +16,7 @@ func (simple *Simple) CreateAPISheet(path, method string, operation *spec.Operat
 	xl.File.NewSheet(xl.WorkSheetName)
 
 	xl.Context.Row = 1
-	
+
 	simple.setAPISheetHeader(path, method, operation)
 
 	if err = simple.setAPISheetRequest(operation); err != nil {

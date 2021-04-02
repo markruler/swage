@@ -191,7 +191,7 @@ func TestResponseSchemaWithRef(t *testing.T) {
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
 										Title: "Conflict",
-										Type: spec.StringOrArray{"body"},
+										Type:  spec.StringOrArray{"body"},
 									},
 									SwaggerSchemaProps: spec.SwaggerSchemaProps{
 										Example: map[string]map[string]interface{}{
@@ -235,7 +235,7 @@ func TestResponseSchemaWithRef(t *testing.T) {
 	assert.Equal(t, "body", row[16][2])
 	assert.Equal(t, "object", row[16][3])
 	assert.Equal(t, "", row[16][4])
-	assert.Equal(t, "{\"message\":\"Something went wrong.\"}", row[16][5])
+	assert.Equal(t, "{\n    \"message\": \"Something went wrong.\"\n}", row[16][5])
 	assert.Equal(t, "bad parameter", row[16][6])
 
 	assert.Equal(t, "404", row[17][0])
@@ -243,7 +243,7 @@ func TestResponseSchemaWithRef(t *testing.T) {
 	assert.Equal(t, "body", row[17][2])
 	assert.Equal(t, "object", row[17][3])
 	assert.Equal(t, "", row[17][4])
-	assert.Equal(t, "{\"message\":\"Something went wrong.\"}", row[17][5])
+	assert.Equal(t, "{\n    \"message\": \"Something went wrong.\"\n}", row[17][5])
 	assert.Equal(t, "bad parameter", row[17][6])
 
 	assert.Equal(t, "409", row[18][0])
@@ -251,7 +251,7 @@ func TestResponseSchemaWithRef(t *testing.T) {
 	assert.Equal(t, "body", row[18][2])
 	assert.Equal(t, "object", row[18][3])
 	assert.Equal(t, "", row[18][4])
-	assert.Equal(t, "{\"application/json\":{\"message\":\"You cannot remove a running container: c2ada9df5af8. Stop the\\ncontainer before attempting removal or force remove\\n\"}}", row[18][5])
+	assert.Equal(t, "{\n    \"application/json\": {\n        \"message\": \"You cannot remove a running container: c2ada9df5af8. Stop the\\ncontainer before attempting removal or force remove\\n\"\n    }\n}", row[18][5])
 	assert.Equal(t, "indicates a request conflict with current state of the target resource.", row[18][6])
 
 	assert.Equal(t, "500", row[19][0])
@@ -259,7 +259,7 @@ func TestResponseSchemaWithRef(t *testing.T) {
 	assert.Equal(t, "body", row[19][2])
 	assert.Equal(t, "object", row[19][3])
 	assert.Equal(t, "", row[19][4])
-	assert.Equal(t, "{\"message\":\"Something went wrong.\"}", row[19][5])
+	assert.Equal(t, "{\n    \"message\": \"Something went wrong.\"\n}", row[19][5])
 	assert.Equal(t, "server error", row[19][6])
 }
 

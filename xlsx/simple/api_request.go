@@ -28,7 +28,8 @@ func (simple *Simple) setAPISheetRequest(operation *spec.Operation) error {
 	xl.Context.Row++
 
 	for _, param := range operation.Parameters {
-		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "F", xl.Context.Row), xl.Style.Center)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "E", xl.Context.Row), xl.Style.Center)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), fmt.Sprintf("%s%d", "F", xl.Context.Row), xl.Style.Left)
 
 		if !reflect.DeepEqual(param.Ref, spec.Ref{}) {
 			param = *simple.parameterFromRef(param.Ref)
@@ -36,7 +37,7 @@ func (simple *Simple) setAPISheetRequest(operation *spec.Operation) error {
 
 		simple.checkRequired(param.Required)
 
-		b, err := json.Marshal(param.Example)
+		b, err := json.MarshalIndent(param.Example, "", "    ")
 		if err != nil {
 			return err
 		}
