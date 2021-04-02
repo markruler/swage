@@ -91,8 +91,8 @@ release-test:
 # - [x] repo_deployment
 # - [x] public_repo
 release-publish:
-	# Update README.md
 	# Update VERSION
+	# Update README.md
 	# git commit
 	rm -rf dist
 	git tag $(VERSION)
