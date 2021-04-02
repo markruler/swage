@@ -90,6 +90,14 @@ func (simple *Simple) parameterSchema(param spec.Parameter) error {
 		xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "D", xl.Context.Row), strings.Join(param.Schema.Type, ","))
 	}
 
+	if param.Schema.Example != nil {
+		b, err := json.MarshalIndent(param.Schema.Example, "", "    ")
+		if err != nil {
+			return err
+		}
+		xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), string(b))
+	}
+
 	if param.Schema.Description != "" {
 		xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "G", xl.Context.Row), param.Schema.Description)
 	}
@@ -106,7 +114,12 @@ func (simple *Simple) parameterSchemaRef(param spec.Parameter) error {
 		simple.checkRequired(param.Required)
 
 		schemaName, _ := simple.definitionFromRef(param.Schema.Ref)
-		simple.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ","), "", param.Description)
+
+		b, err := json.MarshalIndent(schema.Example, "", "    ")
+		if err != nil {
+			return err
+		}
+		simple.setCellWithSchema(schemaName, param.In, strings.Join(schema.Type, ","), string(b), param.Description)
 		return nil
 	}
 
@@ -117,7 +130,11 @@ func (simple *Simple) parameterSchemaRef(param spec.Parameter) error {
 		}
 		simple.checkRequired(schema.Required)
 
-		simple.setCellWithSchema(schema.Name, schema.In, schema.Type, "", schema.Description)
+		b, err := json.MarshalIndent(schema.Example, "", "    ")
+		if err != nil {
+			return err
+		}
+		simple.setCellWithSchema(schema.Name, schema.In, schema.Type, string(b), schema.Description)
 	}
 	return nil
 }
@@ -140,7 +157,7 @@ func (simple *Simple) responseSchema(response spec.Response) error {
 	}
 
 	if response.Schema.Title != "" {
-		b, err := json.Marshal(response.Schema.Example)
+		b, err := json.MarshalIndent(response.Schema.Example, "", "    ")
 		if err != nil {
 			return err
 		}
@@ -170,7 +187,7 @@ func (simple *Simple) arrayDefinitionFromSchemaRef(response spec.Response) error
 			if definition == nil {
 				return errors.New("not found definition")
 			}
-			b, err := json.Marshal(response.Schema.Example)
+			b, err := json.MarshalIndent(response.Schema.Example, "", "    ")
 			if err != nil {
 				return err
 			}
@@ -220,7 +237,7 @@ func (simple *Simple) responseSchemaRef(response spec.Response) error {
 
 	schemaName, _ := simple.definitionFromRef(response.Schema.Ref)
 
-	b, err := json.Marshal(schema.Example)
+	b, err := json.MarshalIndent(schema.Example, "", "    ")
 	if err != nil {
 		return err
 	}
