@@ -25,7 +25,7 @@ func SortMap(hashmap interface{}) []string {
 func Enum2string(enums ...interface{}) string {
 	var enumSlice []string
 	for _, enum := range enums {
-		enumSlice = append(enumSlice, enum.(string))
+		enumSlice = append(enumSlice, fmt.Sprintf("%v", enum))
 	}
 	enumString := strings.Join(enumSlice, ",")
 	return enumString
