@@ -6,36 +6,38 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCommandGen(t *testing.T) {
-	var output string
-	var err error
-
-	output, err = executeCommand(genCmd, "../testdata/json/dev.json", "--output", "swage.xlsx")
-	assert.NoError(t, err)
-	assert.Empty(t, output)
-
-	output, err = executeCommand(genCmd, "../testdata/json/dev.json")
-	assert.NoError(t, err)
-	assert.Empty(t, output)
-
-	output, err = executeCommand(genCmd, "--help")
+func TestCommandGen_NoFlag(t *testing.T) {
+	output, err := executeCommand(genCmd, "../testdata/json/sample.pet.json")
 	assert.NoError(t, err)
 	assert.Empty(t, output)
 }
 
-func TestGenRun(t *testing.T) {
-	var err error
+func TestCommandGen_FlagOutput(t *testing.T) {
+	output, err := executeCommand(genCmd, "../testdata/json/sample.pet.json", "--output", "swage.xlsx")
+	assert.NoError(t, err)
+	assert.Empty(t, output)
+}
 
-	err = genRun(genCmd, []string{})
+func TestCommandGen_Help(t *testing.T) {
+	output, err := executeCommand(genCmd, "--help")
+	assert.NoError(t, err)
+	assert.Empty(t, output)
+}
+
+func TestCommandGen_EmptyPath(t *testing.T) {
+	err := genRun(genCmd, []string{})
+	assert.Error(t, err, "PATH is required")
+}
+
+func TestCommandGen_FileNotFound(t *testing.T) {
+	err := genRun(genCmd, []string{"../testdata/json/dev.js"})
 	assert.Error(t, err)
+}
 
-	err = genRun(genCmd, []string{"../testdata/json/dev.js"})
-	assert.Error(t, err)
-
-	err = genRun(genCmd, []string{"../testdata/json/dev.json"})
+func TestCommandGen_NormalSpec(t *testing.T) {
+	err := genRun(genCmd, []string{"../testdata/json/sample.pet.json"})
 	if err := genCmd.Flags().Set("verbose", "true"); err != nil {
 		t.Error(err)
 	}
-
 	assert.NoError(t, err)
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSnapshotVersion(t *testing.T) {
+func TestCommandVersion_Snapshot(t *testing.T) {
 	out, err := executeCommand(swageCmd.Root(), versionCmd.Use)
 	assert.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("swage %s\n", swageVersion), string(out))

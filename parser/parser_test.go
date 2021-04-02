@@ -21,7 +21,7 @@ func TestParseSpecV2(t *testing.T) {
 	_, err = parser.Parse()
 	assert.Error(t, err)
 
-	realJSONPath := "../testdata/json/dev.json"
+	realJSONPath := "../testdata/json/sample.pet.json"
 	parser = *New(realJSONPath)
 	api, err := parser.Parse()
 	assert.NoError(t, err)

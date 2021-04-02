@@ -4,22 +4,21 @@ import (
 	"testing"
 
 	"github.com/go-openapi/spec"
-	"github.com/markruler/swage/parser"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateAPISheet(t *testing.T) {
-	simple := New()
-	xl := simple.GetExcel()
-	var err error
+func TestCreateAPISheet_EmptyResponse(t *testing.T) {
+	err := New().CreateAPISheet("", "", &spec.Operation{}, nil, 1)
+	assert.Error(t, err, "response should not be empty")
+}
 
-	err = simple.CreateAPISheet("", "", nil, nil, 1)
-	assert.Error(t, err)
+func TestCreateAPISheet_EmptyOperation(t *testing.T) {
+	err := New().CreateAPISheet("", "", nil, nil, 1)
+	assert.Error(t, err, "operation should not be empty")
+}
 
-	err = simple.CreateAPISheet("", "", &spec.Operation{}, nil, 1)
-	assert.Error(t, err)
-
-	err = simple.CreateAPISheet("", "", &spec.Operation{
+func TestCreateAPISheet_NormalSpec(t *testing.T) {
+	err := New().CreateAPISheet("", "", &spec.Operation{
 		OperationProps: spec.OperationProps{
 			Parameters: []spec.Parameter{
 				{
@@ -32,8 +31,4 @@ func TestCreateAPISheet(t *testing.T) {
 		},
 	}, nil, 1)
 	assert.NoError(t, err)
-
-	p := parser.New("../../aio/testdata/json/dev.json")
-	xl.SwaggerSpec, _ = p.Parse()
-	simple.CreateAPISheet("", "", nil, nil, 1)
 }

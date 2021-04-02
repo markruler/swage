@@ -13,7 +13,7 @@ func TestCommandSwage(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestExecuteCommand(t *testing.T) {
+func TestCommandExecute(t *testing.T) {
 	err := Execute()
 	assert.NoError(t, err)
 }
