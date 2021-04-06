@@ -6,8 +6,8 @@ type SwageSpec struct {
 
 type SwageAPI struct {
 	Header   APIHeader
-	Request  APIRequest
-	Response APIResponse
+	Request  []APIRequest
+	Response []APIResponse
 }
 
 type APIHeader struct {

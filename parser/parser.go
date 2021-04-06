@@ -1,15 +1,14 @@
 package parser
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/go-openapi/loads"
-	"github.com/go-openapi/spec"
+	oas "github.com/go-openapi/spec"
 )
 
 // Parse `JSON`, `YAML` to Go struct
-func Parse(sourcePath string) (*spec.Swagger, error) {
+func Parse(sourcePath string) (*oas.Swagger, error) {
 	doc, err := loads.Spec(sourcePath)
 	if err != nil {
 		return nil, err
@@ -18,39 +17,48 @@ func Parse(sourcePath string) (*spec.Swagger, error) {
 }
 
 // Convert Open API Spec to Swage Spec
-func Convert(swagger *spec.Swagger) (*SwageSpec, error) {
-	spec := &SwageSpec{}
-
+func Convert(swagger *oas.Swagger) (*SwageSpec, error) {
+	swageSpec := &SwageSpec{}
 	paths := SortMap(swagger.Paths.Paths)
 	for _, path := range paths {
 		// xlsx/simple/index.go
+		// TODO: support all methods
 		operations := swagger.Paths.Paths[path]
 		if operations.PathItemProps.Get != nil {
-			spec.API = append(spec.API, SwageAPI{
-				// xlsx/simple/api_header.go
-				Header: APIHeader{
-					Tag:         strings.Join(operations.Get.Tags, ","),
-					ID:          operations.Get.ID,
-					Path:        path,
-					Method:      "GET",
-					Consumes:    strings.Join(operations.Get.Consumes, ", "),
-					Produces:    strings.Join(operations.Get.Produces, ", "),
-					Summary:     operations.Get.Summary,
-					Description: operations.Get.Description,
-				},
-				// xlsx/simple/api_request.go
-				Request: APIRequest{
-					// Required: operations.Get.Parameters[0].Required,
-				},
-				// xlsx/simple/api_response.go
-				Response: APIResponse{
-					// StatusCode: operations.Get.Responses,
-				},
-			})
+			swageAPI, err := extractOperation(swagger, path, "GET", operations.PathItemProps.Get)
+			if err != nil {
+				return nil, err
+			}
+			swageSpec.API = append(swageSpec.API, *swageAPI)
 		}
 	}
-	for _, api := range spec.API {
-		fmt.Printf("%v\n", api)
+	return swageSpec, nil
+}
+
+func extractOperation(swagger *oas.Swagger, path, method string, operation *oas.Operation) (api *SwageAPI, err error) {
+	var requests []APIRequest
+	if requests, err = extractRequests(swagger, operation); err != nil {
+		return nil, err
 	}
-	return spec, nil
+
+	var responses []APIResponse
+	if responses, err = extractResponses(swagger, operation); err != nil {
+		return nil, err
+	}
+
+	// xlsx/simple/api_header.go
+	return &SwageAPI{
+		Header: APIHeader{
+			Tag:         strings.Join(operation.Tags, ","),
+			ID:          operation.ID,
+			Path:        path,
+			Method:      method,
+			Consumes:    strings.Join(operation.Consumes, ", "),
+			Produces:    strings.Join(operation.Produces, ", "),
+			Summary:     operation.Summary,
+			Description: operation.Description,
+		},
+		Request:  requests,
+		Response: responses,
+	}, nil
 }

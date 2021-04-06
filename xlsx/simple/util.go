@@ -126,9 +126,6 @@ func (simple *Simple) parameterSchemaRef(param spec.Parameter) error {
 
 func (simple *Simple) responseSchema(response spec.Response) error {
 	xl := simple.xl
-	if response.Schema.Title != "" {
-		simple.xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), response.Schema.Title)
-	}
 
 	if response.Schema.Type != nil {
 		simple.xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "C", xl.Context.Row), "body")
