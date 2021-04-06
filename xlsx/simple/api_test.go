@@ -57,7 +57,7 @@ func TestCreateSimpleAPISheet_Request(t *testing.T) {
 	assert.Equal(t, "Return all containers. By default, only running containers are shown.\n", row[12][6])
 }
 
-func TestResponseHeaders(t *testing.T) {
+func TestCreateSimpleAPISheet_HeaderTypeResponse(t *testing.T) {
 	simple := New()
 	xl := simple.GetExcel()
 	xl.SwageSpec = &parser.SwageSpec{
@@ -74,6 +74,13 @@ func TestResponseHeaders(t *testing.T) {
 						DataType:     "string",
 						Description:  "A base64 - encoded JSON object with some filesystem header\ninformation about the path\n",
 					},
+					{
+						StatusCode:   "400",
+						Schema:       "ErrorResponse",
+						ResponseType: "body",
+						DataType:     "object",
+						Description:  "error",
+					},
 				},
 			},
 		},
@@ -89,5 +96,15 @@ func TestResponseHeaders(t *testing.T) {
 	assert.Equal(t, "X-Docker-Container-Path-Stat", row[15][1])
 	assert.Equal(t, "header", row[15][2])
 	assert.Equal(t, "string", row[15][3])
+	assert.Equal(t, "", row[15][4])
+	assert.Equal(t, "", row[15][5])
 	assert.Equal(t, "A base64 - encoded JSON object with some filesystem header\ninformation about the path\n", row[15][6])
+
+	assert.Equal(t, "400", row[16][0])
+	assert.Equal(t, "ErrorResponse", row[16][1])
+	assert.Equal(t, "body", row[16][2])
+	assert.Equal(t, "object", row[16][3])
+	assert.Equal(t, "", row[16][4])
+	assert.Equal(t, "", row[16][5])
+	assert.Equal(t, "error", row[16][6])
 }

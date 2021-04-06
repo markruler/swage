@@ -100,7 +100,7 @@ func (simple *Simple) setAPISheetRequest(parameters []parser.APIRequest) {
 
 	for _, param := range parameters {
 		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "E", xl.Context.Row), xl.Style.Center)
-		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), fmt.Sprintf("%s%d", "F", xl.Context.Row), xl.Style.Left)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row), xl.Style.Left)
 		simple.setCellWithOneRequest(param)
 		xl.Context.Row++
 	}
@@ -127,9 +127,10 @@ func (simple *Simple) setAPISheetResponse(responses []parser.APIResponse) {
 	xl.Context.Row++
 
 	for _, response := range responses {
-		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "F", xl.Context.Row), xl.Style.Center)
-		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "G", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row), xl.Style.Left)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "E", xl.Context.Row), xl.Style.Center)
+		xl.File.SetCellStyle(xl.WorkSheetName, fmt.Sprintf("%s%d", "F", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row), xl.Style.Left)
 		simple.setCellWithOneResponse(response)
+		xl.Context.Row++
 	}
 }
 
