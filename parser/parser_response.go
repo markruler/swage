@@ -14,6 +14,9 @@ func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResp
 	// xlsx/simple/api_response.go
 	swageResponses = []APIResponse{}
 	oas_responses := operation.Responses
+	if oas_responses == nil {
+		return nil, errors.New("response is empty")
+	}
 	if oas_responses.Default != nil {
 		if oas_responses.Default.Schema != nil && !reflect.DeepEqual(oas.Ref{}, oas_responses.Default.Schema.Ref) {
 			schema, err := oas.ResolveRef(swagger, &oas_responses.Default.Schema.Ref)
