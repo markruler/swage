@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+
+	"github.com/go-openapi/spec"
 )
 
 func SortMap(hashmap interface{}) []string {
@@ -29,4 +31,13 @@ func Enum2string(enums ...interface{}) string {
 	}
 	enumString := strings.Join(enumSlice, ",")
 	return enumString
+}
+
+func DefinitionNameFromRef(ref spec.Ref) string {
+	url := ref.GetURL()
+	if url == nil || url.String() == "" {
+		return ""
+	}
+	lastIndex := strings.LastIndex(url.Fragment, "/")
+	return url.Fragment[lastIndex+1:]
 }

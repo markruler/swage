@@ -35,17 +35,17 @@ func genRun(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
 		return errors.New("PATH is required")
 	}
+	sourcePath := args[0]
 	if verbose {
-		cmd.Printf(">>> INPUT %s\n", args[0])
+		cmd.Printf(">>> INPUT %s\n", sourcePath)
 	}
 
-	p := parser.New(args[0])
-	var err error
-
-	swaggerAPI, err := p.Parse()
+	swaggerAPI, err := parser.Parse(sourcePath)
 	if err != nil {
 		return err
 	}
+	// TEST
+	parser.Convert(swaggerAPI)
 
 	var tmpl xlsx.Template
 
@@ -54,7 +54,7 @@ func genRun(cmd *cobra.Command, args []string) error {
 		tmpl = simple.New()
 	// TODO:
 	// case xlsx.Print:
-	// 	template = print.New()
+	// 	tmpl = print.New()
 	default:
 		return errors.New("the template not found")
 	}

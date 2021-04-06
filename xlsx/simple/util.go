@@ -8,42 +8,27 @@ import (
 	"strings"
 
 	"github.com/go-openapi/spec"
+	"github.com/markruler/swage/parser"
 )
 
 func (simple *Simple) parameterFromRef(ref spec.Ref) *spec.Parameter {
 	xl := simple.xl
-
-	url := ref.GetURL()
-	if url == nil || url.String() == "" {
-		return nil
-	}
-
-	lastIndex := strings.LastIndex(url.Fragment, "/")
-	parameterName := url.Fragment[lastIndex+1:]
 	if xl.SwaggerSpec == nil || len(xl.SwaggerSpec.Parameters) == 0 {
 		return nil
 	}
-
-	param := xl.SwaggerSpec.Parameters[parameterName]
+	name := parser.DefinitionNameFromRef(ref)
+	param := xl.SwaggerSpec.Parameters[name]
 	return &param
 }
 
 func (simple *Simple) definitionFromRef(ref spec.Ref) (definitionName string, definition *spec.Schema) {
 	xl := simple.xl
-
-	url := ref.GetURL()
-	if url == nil || url.String() == "" {
-		return "", nil
-	}
-
-	lastIndex := strings.LastIndex(url.Fragment, "/")
-	defName := url.Fragment[lastIndex+1:]
 	if xl.SwaggerSpec == nil || len(xl.SwaggerSpec.Definitions) == 0 {
 		return "", nil
 	}
-
-	def := xl.SwaggerSpec.Definitions[defName]
-	return defName, &def
+	name := parser.DefinitionNameFromRef(ref)
+	def := xl.SwaggerSpec.Definitions[name]
+	return name, &def
 }
 
 func (simple *Simple) setCellWithSchema(schemaName, paramType, dataType, example, description string) {

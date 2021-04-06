@@ -9,21 +9,14 @@ import (
 
 func TestParseSpecV2(t *testing.T) {
 	var err error
-	var parser Parser
 
-	fakePath := "../testdata/json/fake.js"
-	parser = *New(fakePath)
-	_, err = parser.Parse()
+	_, err = Parse("../testdata/json/fake.js")
 	assert.Error(t, err)
 
-	fakeJSON := "../testdata/json/fake.json"
-	parser = *New(fakeJSON)
-	_, err = parser.Parse()
+	_, err = Parse("../testdata/json/fake.json")
 	assert.Error(t, err)
 
-	realJSONPath := "../testdata/json/sample.pet.json"
-	parser = *New(realJSONPath)
-	api, err := parser.Parse()
+	api, err := Parse("../testdata/json/sample.pet.json")
 	assert.NoError(t, err)
 
 	assert.Equal(t, "Swagger Sample App", api.Info.InfoProps.Title)
