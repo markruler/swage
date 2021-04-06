@@ -1,10 +1,14 @@
 package parser
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 	"sort"
 	"strings"
+
+	oas "github.com/go-openapi/spec"
 )
 
 func SortMap(hashmap interface{}) []string {
@@ -29,4 +33,33 @@ func Enum2string(enums ...interface{}) string {
 	}
 	enumString := strings.Join(enumSlice, ",")
 	return enumString
+}
+
+func DefinitionNameFromRef(ref oas.Ref) (string, string) {
+	url := ref.GetURL()
+	if url == nil || url.String() == "" {
+		return "", ""
+	}
+	// lastIndex := strings.LastIndex(url.Fragment, "/")
+	// return url.Fragment[lastIndex+1:]
+	fragments := strings.Split(url.Fragment, "/")
+	return fragments[len(fragments)-2], fragments[len(fragments)-1]
+}
+
+func checkRequired(required bool) string {
+	if required {
+		return "O"
+	}
+	return "X"
+}
+
+func extractExample(example interface{}) (string, error) {
+	if example == nil {
+		return "", errors.New("example is empty")
+	}
+	b, err := json.MarshalIndent(example, "", "    ")
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
 }
