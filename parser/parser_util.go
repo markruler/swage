@@ -35,13 +35,15 @@ func Enum2string(enums ...interface{}) string {
 	return enumString
 }
 
-func DefinitionNameFromRef(ref oas.Ref) string {
+func DefinitionNameFromRef(ref oas.Ref) (string, string) {
 	url := ref.GetURL()
 	if url == nil || url.String() == "" {
-		return ""
+		return "", ""
 	}
-	lastIndex := strings.LastIndex(url.Fragment, "/")
-	return url.Fragment[lastIndex+1:]
+	// lastIndex := strings.LastIndex(url.Fragment, "/")
+	// return url.Fragment[lastIndex+1:]
+	fragments := strings.Split(url.Fragment, "/")
+	return fragments[len(fragments)-2], fragments[len(fragments)-1]
 }
 
 func checkRequired(required bool) string {

@@ -3,64 +3,38 @@ package simple
 import (
 	"testing"
 
-	"github.com/go-openapi/spec"
+	"github.com/markruler/swage/parser"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateIndexSheet(t *testing.T) {
+func TestCreateIndexSheet_APINotExists(t *testing.T) {
 	simple := New()
 	xl := simple.GetExcel()
-	var err error
 
-	xl.SwaggerSpec = &spec.Swagger{
-		SwaggerProps: spec.SwaggerProps{
-			Paths: &spec.Paths{
-				Paths: map[string]spec.PathItem{
-					"/test": {
-						PathItemProps: spec.PathItemProps{
-							Get: &spec.Operation{
-								OperationProps: spec.OperationProps{
-									Deprecated: true,
-								},
-							},
-							Put: &spec.Operation{
-								OperationProps: spec.OperationProps{
-									Deprecated: true,
-								},
-							},
-							Post: &spec.Operation{
-								OperationProps: spec.OperationProps{
-									Deprecated: true,
-								},
-							},
-							Delete: &spec.Operation{
-								OperationProps: spec.OperationProps{
-									Deprecated: true,
-								},
-							},
-							Options: &spec.Operation{
-								OperationProps: spec.OperationProps{
-									Deprecated: true,
-								},
-							},
-							Head: &spec.Operation{
-								OperationProps: spec.OperationProps{
-									Deprecated: true,
-								},
-							},
-							Patch: &spec.Operation{
-								OperationProps: spec.OperationProps{
-									Deprecated: true,
-								},
-							},
-						},
-					},
+	xl.SwageSpec = &parser.SwageSpec{
+		API: []parser.SwageAPI{},
+	}
+
+	err := simple.CreateIndexSheet()
+	assert.Error(t, err)
+}
+
+func TestCreateIndexSheet_APIExists(t *testing.T) {
+	simple := New()
+	xl := simple.GetExcel()
+
+	xl.SwageSpec = &parser.SwageSpec{
+		API: []parser.SwageAPI{
+			{
+				Header: parser.APIHeader{
+					Tag: "test",
 				},
 			},
 		},
 	}
-	err = simple.CreateIndexSheet()
-	assert.Error(t, err)
+
+	err := simple.CreateIndexSheet()
+	assert.NoError(t, err)
 
 	prop, err := xl.File.GetDocProps()
 	assert.NoError(t, err)

@@ -37,9 +37,6 @@ func (simple *Simple) Generate(spec *spec.Swagger) error {
 		return errors.New("path sould not be empty")
 	}
 
-	// TODO: remove swagger spec
-	simple.xl.SwaggerSpec = spec
-
 	swage_spec, err := parser.Convert(spec)
 	if err != nil {
 		return err
@@ -49,9 +46,10 @@ func (simple *Simple) Generate(spec *spec.Swagger) error {
 	if err := simple.CreateIndexSheet(); err != nil {
 		return err
 	}
-	// FIXME: seperate from index sheet
-	// if err := simple.CreateAPISheet(); err != nil {
-	// 	return err
-	// }
+
+	if err := simple.CreateAPISheet(); err != nil {
+		return err
+	}
+
 	return nil
 }

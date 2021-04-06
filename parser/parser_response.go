@@ -11,7 +11,6 @@ import (
 )
 
 func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResponses []APIResponse, err error) {
-	// xlsx/simple/api_response.go
 	swageResponses = []APIResponse{}
 	oas_responses := operation.Responses
 	if oas_responses == nil {
@@ -23,9 +22,9 @@ func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResp
 			if err != nil {
 				return nil, err
 			}
-			schema_name := DefinitionNameFromRef(oas_responses.Default.Schema.Ref)
+			_, definition_name := DefinitionNameFromRef(oas_responses.Default.Schema.Ref)
 			swageResponses = append(swageResponses, APIResponse{
-				Schema:       schema_name,
+				Schema:       definition_name,
 				ResponseType: "body",
 				DataType:     strings.Join(schema.Type, ","),
 				Enum:         "",
@@ -140,7 +139,7 @@ func responseSchemaRef(swageResponse *APIResponse, ref oas.Ref, swagger *oas.Swa
 
 	example, _ := extractExample(schema.Example)
 
-	swageResponse.Schema = DefinitionNameFromRef(ref)
+	_, swageResponse.Schema = DefinitionNameFromRef(ref)
 	swageResponse.ResponseType = "body"
 	swageResponse.DataType = "object"
 	swageResponse.Example = example
@@ -160,8 +159,8 @@ func arrayDefinitionFromSchemaRef(swageResponse *APIResponse, schema oas.Schema,
 	}
 	for _, schema := range items.Schemas {
 		if !reflect.DeepEqual(oas.Ref{}, schema.Ref) {
-			name := DefinitionNameFromRef(items.Schemas[0].Ref)
-			definition := swagger.Definitions[name]
+			_, definition_name := DefinitionNameFromRef(items.Schemas[0].Ref)
+			definition := swagger.Definitions[definition_name]
 			if !reflect.DeepEqual(oas.Schema{}, definition) {
 				return nil, errors.New("not found definition")
 			}
@@ -169,7 +168,7 @@ func arrayDefinitionFromSchemaRef(swageResponse *APIResponse, schema oas.Schema,
 			if err != nil {
 				return nil, err
 			}
-			swageResponse.Schema = name
+			swageResponse.Schema = definition_name
 			swageResponse.ResponseType = "body"
 			swageResponse.DataType = "array"
 			swageResponse.Example = string(b)

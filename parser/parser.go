@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/go-openapi/loads"
@@ -21,11 +22,51 @@ func Convert(swagger *oas.Swagger) (*SwageSpec, error) {
 	swageSpec := &SwageSpec{}
 	paths := SortMap(swagger.Paths.Paths)
 	for _, path := range paths {
-		// xlsx/simple/index.go
-		// TODO: support all methods
 		operations := swagger.Paths.Paths[path]
 		if operations.PathItemProps.Get != nil {
-			swageAPI, err := extractOperation(swagger, path, "GET", operations.PathItemProps.Get)
+			swageAPI, err := extractOperation(swagger, path, http.MethodGet, operations.PathItemProps.Get)
+			if err != nil {
+				return nil, err
+			}
+			swageSpec.API = append(swageSpec.API, *swageAPI)
+		}
+		if operations.PathItemProps.Put != nil {
+			swageAPI, err := extractOperation(swagger, path, http.MethodPut, operations.PathItemProps.Put)
+			if err != nil {
+				return nil, err
+			}
+			swageSpec.API = append(swageSpec.API, *swageAPI)
+		}
+		if operations.PathItemProps.Post != nil {
+			swageAPI, err := extractOperation(swagger, path, http.MethodPost, operations.PathItemProps.Post)
+			if err != nil {
+				return nil, err
+			}
+			swageSpec.API = append(swageSpec.API, *swageAPI)
+		}
+		if operations.PathItemProps.Delete != nil {
+			swageAPI, err := extractOperation(swagger, path, http.MethodDelete, operations.PathItemProps.Delete)
+			if err != nil {
+				return nil, err
+			}
+			swageSpec.API = append(swageSpec.API, *swageAPI)
+		}
+		if operations.PathItemProps.Options != nil {
+			swageAPI, err := extractOperation(swagger, path, http.MethodOptions, operations.PathItemProps.Options)
+			if err != nil {
+				return nil, err
+			}
+			swageSpec.API = append(swageSpec.API, *swageAPI)
+		}
+		if operations.PathItemProps.Head != nil {
+			swageAPI, err := extractOperation(swagger, path, http.MethodHead, operations.PathItemProps.Head)
+			if err != nil {
+				return nil, err
+			}
+			swageSpec.API = append(swageSpec.API, *swageAPI)
+		}
+		if operations.PathItemProps.Patch != nil {
+			swageAPI, err := extractOperation(swagger, path, http.MethodPatch, operations.PathItemProps.Patch)
 			if err != nil {
 				return nil, err
 			}
@@ -46,7 +87,6 @@ func extractOperation(swagger *oas.Swagger, path, method string, operation *oas.
 		return nil, err
 	}
 
-	// xlsx/simple/api_header.go
 	return &SwageAPI{
 		Header: APIHeader{
 			Tag:         strings.Join(operation.Tags, ","),

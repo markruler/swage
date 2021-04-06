@@ -12,5 +12,5 @@ type Template interface {
 	// CreateIndexSheet generates index sheet
 	CreateIndexSheet() error
 	// CreateAPISheet generates an API sheet for each index
-	CreateAPISheet(path string, method string, operation *spec.Operation, definitions spec.Definitions, sheetName int) error
+	CreateAPISheet() error
 }

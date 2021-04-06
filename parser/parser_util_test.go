@@ -3,6 +3,7 @@ package parser
 import (
 	"testing"
 
+	oas "github.com/go-openapi/spec"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -33,4 +34,12 @@ func TestEnum2string_string(t *testing.T) {
 func TestEnum2string_float64(t *testing.T) {
 	str := Enum2string(2.4, 5)
 	assert.Equal(t, "2.4,5", str)
+}
+
+func TestDefinitionNameFromRef(t *testing.T) {
+	ref := oas.MustCreateRef("#/parameters/PageSize")
+	definition_type, definition_name := DefinitionNameFromRef(ref)
+	
+	assert.Equal(t, "parameters", definition_type)
+	assert.Equal(t, "PageSize", definition_name)
 }

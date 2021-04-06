@@ -1,18 +1,19 @@
 package simple
 
 import (
+	"errors"
 	"fmt"
-	"log"
-	"strings"
 	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/go-openapi/spec"
-	"github.com/markruler/swage/parser"
 )
 
 func (simple *Simple) CreateIndexSheet() error {
 	xl := simple.xl
+	if len(xl.SwageSpec.API) == 0 {
+		return errors.New("api is empty")
+	}
+
 	err := xl.File.SetDocProps(&excelize.DocProperties{
 		Category:    "OpenAPI",
 		Created:     time.Now().Format(time.RFC3339),
@@ -22,8 +23,9 @@ func (simple *Simple) CreateIndexSheet() error {
 		Identifier:  "xlsx",
 	})
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
+
 	xl.File.SetSheetName("Sheet1", xl.IndexSheetName)
 	xl.File.SetPanes(xl.IndexSheetName, `{
     "freeze": true,
@@ -58,69 +60,18 @@ func (simple *Simple) CreateIndexSheet() error {
 	xl.File.SetCellStr(xl.IndexSheetName, "E1", "summary")
 
 	row := 1
-	// FIXME: refactor
-	// log.Println(len(xl.SwageSpec.API))
-	// for _, api := range xl.SwageSpec.API {
-	// 	// log.Println(api)
-	// 	xl.File.SetCellInt(xl.IndexSheetName, fmt.Sprintf("%s%d", "A", row+1), row)
-	// 	xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "B", row+1), api.Header.Tag)
-	// 	xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "C", row+1), api.Header.Method)
-	// 	xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "D", row+1), api.Header.Path)
-	// 	xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "E", row+1), api.Header.Summary)
-	// 	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "A", row+1), fmt.Sprintf("%d!A1", row), "Location")
-	// 	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "B", row+1), fmt.Sprintf("%d!A1", row), "Location")
-	// 	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "C", row+1), fmt.Sprintf("%d!A1", row), "Location")
-	// 	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "D", row+1), fmt.Sprintf("%d!A1", row), "Location")
-	// 	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "E", row+1), fmt.Sprintf("%d!A1", row), "Location")
-	// 	row++
-	// }
-
-	// TODO: remove
-	paths := parser.SortMap(xl.SwaggerSpec.Paths.Paths)
-	for _, path := range paths {
-		operations := xl.SwaggerSpec.Paths.Paths[path]
-		if operations.PathItemProps.Get != nil {
-			row, err = simple.setOperation(row, path, "GET", operations.PathItemProps.Get, xl.SwaggerSpec.Definitions)
-			if err != nil {
-				return err
-			}
-		}
-		if operations.PathItemProps.Put != nil {
-			row, err = simple.setOperation(row, path, "PUT", operations.PathItemProps.Put, xl.SwaggerSpec.Definitions)
-			if err != nil {
-				return err
-			}
-		}
-		if operations.PathItemProps.Post != nil {
-			row, err = simple.setOperation(row, path, "POST", operations.PathItemProps.Post, xl.SwaggerSpec.Definitions)
-			if err != nil {
-				return err
-			}
-		}
-		if operations.PathItemProps.Delete != nil {
-			row, err = simple.setOperation(row, path, "DELETE", operations.PathItemProps.Delete, xl.SwaggerSpec.Definitions)
-			if err != nil {
-				return err
-			}
-		}
-		if operations.PathItemProps.Options != nil {
-			row, err = simple.setOperation(row, path, "OPTIONS", operations.PathItemProps.Options, xl.SwaggerSpec.Definitions)
-			if err != nil {
-				return err
-			}
-		}
-		if operations.PathItemProps.Head != nil {
-			row, err = simple.setOperation(row, path, "HEAD", operations.PathItemProps.Head, xl.SwaggerSpec.Definitions)
-			if err != nil {
-				return err
-			}
-		}
-		if operations.PathItemProps.Patch != nil {
-			row, err = simple.setOperation(row, path, "PATCH", operations.PathItemProps.Patch, xl.SwaggerSpec.Definitions)
-			if err != nil {
-				return err
-			}
-		}
+	for _, api := range xl.SwageSpec.API {
+		xl.File.SetCellInt(xl.IndexSheetName, fmt.Sprintf("%s%d", "A", row+1), row)
+		xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "B", row+1), api.Header.Tag)
+		xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "C", row+1), api.Header.Method)
+		xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "D", row+1), api.Header.Path)
+		xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "E", row+1), api.Header.Summary)
+		xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "A", row+1), fmt.Sprintf("%d!A1", row), "Location")
+		xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "B", row+1), fmt.Sprintf("%d!A1", row), "Location")
+		xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "C", row+1), fmt.Sprintf("%d!A1", row), "Location")
+		xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "D", row+1), fmt.Sprintf("%d!A1", row), "Location")
+		xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "E", row+1), fmt.Sprintf("%d!A1", row), "Location")
+		row++
 	}
 
 	err = xl.File.AddTable(xl.IndexSheetName, "A1", fmt.Sprintf("%s%d", "E", row), `{
@@ -132,27 +83,7 @@ func (simple *Simple) CreateIndexSheet() error {
     "show_column_stripes": false
 	}`)
 	if err != nil {
-		log.Fatalln(err)
 		return err
 	}
 	return nil
-}
-
-func (simple *Simple) setOperation(row int, path, method string, operation *spec.Operation, definitions spec.Definitions) (int, error) {
-	xl := simple.xl
-	xl.File.SetCellInt(xl.IndexSheetName, fmt.Sprintf("%s%d", "A", row+1), row)
-	xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "B", row+1), strings.Join(operation.Tags, ";"))
-	xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "C", row+1), method)
-	xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "D", row+1), path)
-	xl.File.SetCellStr(xl.IndexSheetName, fmt.Sprintf("%s%d", "E", row+1), operation.Summary)
-	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "A", row+1), fmt.Sprintf("%d!A1", row), "Location")
-	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "B", row+1), fmt.Sprintf("%d!A1", row), "Location")
-	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "C", row+1), fmt.Sprintf("%d!A1", row), "Location")
-	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "D", row+1), fmt.Sprintf("%d!A1", row), "Location")
-	xl.File.SetCellHyperLink(xl.IndexSheetName, fmt.Sprintf("%s%d", "E", row+1), fmt.Sprintf("%d!A1", row), "Location")
-
-	if err := simple.CreateAPISheet(path, method, operation, definitions, row); err != nil {
-		return 0, err
-	}
-	return row + 1, nil
 }
