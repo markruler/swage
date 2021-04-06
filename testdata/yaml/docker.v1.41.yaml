@@ -1253,7 +1253,6 @@ definitions:
       # does not support attaching to multiple networks, so the example request
       # would be confusing if it showed that multiple networks can be contained
       # in the EndpointsConfig.
-      # TODO remove once we support multiple networks on container create (see https://github.com/moby/moby/blob/07e6b843594e061f82baa5fa23c2ff7d536c2a05/daemon/create.go#L323)
       EndpointsConfig:
         isolated_nw:
           IPAMConfig:
@@ -1301,7 +1300,6 @@ definitions:
         type: "string"
         example: "/var/run/docker/netns/8ab54b426c38"
 
-      # TODO is SecondaryIPAddresses actually used?
       SecondaryIPAddresses:
         description: ""
         type: "array"
@@ -1309,7 +1307,6 @@ definitions:
           $ref: "#/definitions/Address"
         x-nullable: true
 
-      # TODO is SecondaryIPv6Addresses actually used?
       SecondaryIPv6Addresses:
         description: ""
         type: "array"
@@ -1317,7 +1314,6 @@ definitions:
           $ref: "#/definitions/Address"
         x-nullable: true
 
-      # TODO properties below are part of DefaultNetworkSettings, which is
       # marked as deprecated since Docker 1.9 and to be removed in Docker v17.12
       EndpointID:
         description: |

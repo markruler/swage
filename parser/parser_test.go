@@ -3,7 +3,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/go-openapi/spec"
+	oas "github.com/go-openapi/spec"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,28 +32,28 @@ func TestParseSpecV2(t *testing.T) {
 	assert.Equal(t, "/api/v1", api.BasePath)
 	assert.Equal(t, []string{"http", "https", "ws", "wss"}, api.Schemes)
 
-	tag := []spec.Tag{
+	tag := []oas.Tag{
 		{
-			TagProps: spec.TagProps{
+			TagProps: oas.TagProps{
 				Name:        "pet",
 				Description: "Everything about your Pets",
-				ExternalDocs: &spec.ExternalDocumentation{
+				ExternalDocs: &oas.ExternalDocumentation{
 					Description: "Find out more",
 					URL:         "http://swagger.io",
 				},
 			},
 		},
 		{
-			TagProps: spec.TagProps{
+			TagProps: oas.TagProps{
 				Name:        "store",
 				Description: "Access to Petstore orders",
 			},
 		},
 		{
-			TagProps: spec.TagProps{
+			TagProps: oas.TagProps{
 				Name:        "user",
 				Description: "Operations about user",
-				ExternalDocs: &spec.ExternalDocumentation{
+				ExternalDocs: &oas.ExternalDocumentation{
 					Description: "Find out more about our store",
 					URL:         "http://swagger.io",
 				},
@@ -85,14 +85,14 @@ func TestParseSpecV2(t *testing.T) {
 	assert.Equal(t, []string{"world"}, post.Post.Tags)
 	assert.Equal(t, "world summary!", post.Post.Summary)
 
-	postParameters := []spec.Parameter{
+	postParameters := []oas.Parameter{
 		{
-			SimpleSchema: spec.SimpleSchema{
+			SimpleSchema: oas.SimpleSchema{
 				Type:             "array",
-				Items:            spec.NewItems().Typed("string", ""),
+				Items:            oas.NewItems().Typed("string", ""),
 				CollectionFormat: "csv",
 			},
-			ParamProps: spec.ParamProps{
+			ParamProps: oas.ParamProps{
 				Name:        "id",
 				In:          "path",
 				Description: "ID of pet to use",
@@ -100,14 +100,14 @@ func TestParseSpecV2(t *testing.T) {
 			},
 		},
 		{
-			ParamProps: spec.ParamProps{
+			ParamProps: oas.ParamProps{
 				Name:        "pet",
 				In:          "body",
 				Description: "pet description!",
 				Required:    false,
-				Schema: &spec.Schema{
-					SchemaProps: spec.SchemaProps{
-						Ref: spec.MustCreateRef("definitions.json#/Pet"),
+				Schema: &oas.Schema{
+					SchemaProps: oas.SchemaProps{
+						Ref: oas.MustCreateRef("definitions.json#/Pet"),
 					},
 				},
 			},
@@ -115,32 +115,32 @@ func TestParseSpecV2(t *testing.T) {
 	}
 	assert.Equal(t, postParameters, post.Post.Parameters)
 
-	postResponses := &spec.Responses{
-		ResponsesProps: spec.ResponsesProps{
-			StatusCodeResponses: map[int]spec.Response{
+	postResponses := &oas.Responses{
+		ResponsesProps: oas.ResponsesProps{
+			StatusCodeResponses: map[int]oas.Response{
 				200: {
-					ResponseProps: spec.ResponseProps{
+					ResponseProps: oas.ResponseProps{
 						Description: "OK",
-						Schema: &spec.Schema{
-							SchemaProps: spec.SchemaProps{
-								Ref: spec.MustCreateRef("#/definitions/Pet"),
+						Schema: &oas.Schema{
+							SchemaProps: oas.SchemaProps{
+								Ref: oas.MustCreateRef("#/definitions/Pet"),
 							},
 						},
 					},
 				},
 				500: {
-					ResponseProps: spec.ResponseProps{
+					ResponseProps: oas.ResponseProps{
 						Description: "Internal Server Error",
-						Schema: &spec.Schema{
-							SchemaProps: spec.SchemaProps{
-								Type: spec.StringOrArray{
+						Schema: &oas.Schema{
+							SchemaProps: oas.SchemaProps{
+								Type: oas.StringOrArray{
 									"object",
 								},
-								AdditionalProperties: &spec.SchemaOrBool{
+								AdditionalProperties: &oas.SchemaOrBool{
 									Allows: true,
-									Schema: &spec.Schema{
-										SchemaProps: spec.SchemaProps{
-											Type: spec.StringOrArray{
+									Schema: &oas.Schema{
+										SchemaProps: oas.SchemaProps{
+											Type: oas.StringOrArray{
 												"integer",
 											},
 											Format: "int32",
@@ -170,24 +170,24 @@ func TestParseSpecV2(t *testing.T) {
 	assert.Equal(t, []string{"swage"}, get.Get.Tags)
 	assert.Equal(t, "swage summary!", get.Get.Summary)
 
-	getParameters := []spec.Parameter(nil)
+	getParameters := []oas.Parameter(nil)
 	assert.Equal(t, getParameters, get.Get.Parameters)
 
-	getResponses := &spec.Responses{
-		ResponsesProps: spec.ResponsesProps{
-			StatusCodeResponses: map[int]spec.Response{
+	getResponses := &oas.Responses{
+		ResponsesProps: oas.ResponsesProps{
+			StatusCodeResponses: map[int]oas.Response{
 				200: {
-					ResponseProps: spec.ResponseProps{
+					ResponseProps: oas.ResponseProps{
 						Description: "OK",
-						Schema: &spec.Schema{
-							SchemaProps: spec.SchemaProps{
-								Type: spec.StringOrArray{
+						Schema: &oas.Schema{
+							SchemaProps: oas.SchemaProps{
+								Type: oas.StringOrArray{
 									"array",
 								},
-								Items: &spec.SchemaOrArray{
-									Schema: &spec.Schema{
-										SchemaProps: spec.SchemaProps{
-											Ref: spec.MustCreateRef("#/definitions/ApiResponse"),
+								Items: &oas.SchemaOrArray{
+									Schema: &oas.Schema{
+										SchemaProps: oas.SchemaProps{
+											Ref: oas.MustCreateRef("#/definitions/ApiResponse"),
 										},
 									},
 								},
@@ -196,18 +196,18 @@ func TestParseSpecV2(t *testing.T) {
 					},
 				},
 				500: {
-					ResponseProps: spec.ResponseProps{
+					ResponseProps: oas.ResponseProps{
 						Description: "Internal Server Error",
-						Schema: &spec.Schema{
-							SchemaProps: spec.SchemaProps{
-								Type: spec.StringOrArray{
+						Schema: &oas.Schema{
+							SchemaProps: oas.SchemaProps{
+								Type: oas.StringOrArray{
 									"object",
 								},
-								AdditionalProperties: &spec.SchemaOrBool{
+								AdditionalProperties: &oas.SchemaOrBool{
 									Allows: true,
-									Schema: &spec.Schema{
-										SchemaProps: spec.SchemaProps{
-											Type: spec.StringOrArray{
+									Schema: &oas.Schema{
+										SchemaProps: oas.SchemaProps{
+											Type: oas.StringOrArray{
 												"integer",
 											},
 											Format: "int32",
@@ -230,91 +230,91 @@ func TestParseSpecV2(t *testing.T) {
 	}
 	assert.Equal(t, getSecurity, get.Get.Security)
 
-	allDefinition := spec.Definitions{
-		"Category": spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: spec.StringOrArray{
+	allDefinition := oas.Definitions{
+		"Category": oas.Schema{
+			SchemaProps: oas.SchemaProps{
+				Type: oas.StringOrArray{
 					"object",
 				},
-				Properties: spec.SchemaProperties{
+				Properties: oas.SchemaProperties{
 					"id": {
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"integer",
 							},
 							Format: "int64",
 						},
 					},
 					"name": {
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"string",
 							},
 						},
 					},
 				},
 			},
-			SwaggerSchemaProps: spec.SwaggerSchemaProps{
-				XML: &spec.XMLObject{
+			SwaggerSchemaProps: oas.SwaggerSchemaProps{
+				XML: &oas.XMLObject{
 					Name: "Category",
 				},
 			},
 		},
-		"Pet": spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: spec.StringOrArray{
+		"Pet": oas.Schema{
+			SchemaProps: oas.SchemaProps{
+				Type: oas.StringOrArray{
 					"object",
 				},
 				Required: []string{"name", "photoUrls"},
-				Properties: spec.SchemaProperties{
+				Properties: oas.SchemaProperties{
 					"id": {
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"integer",
 							},
 							Format: "int64",
 						},
 					},
 					"category": {
-						SchemaProps: spec.SchemaProps{
-							Ref: spec.MustCreateRef("#/definitions/Category"),
+						SchemaProps: oas.SchemaProps{
+							Ref: oas.MustCreateRef("#/definitions/Category"),
 						},
 					},
 					"name": {
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"string",
 							},
 						},
-						SwaggerSchemaProps: spec.SwaggerSchemaProps{
+						SwaggerSchemaProps: oas.SwaggerSchemaProps{
 							Example: "doggie",
 						},
 					},
 					"photoUrls": {
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"array",
 							},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Type: spec.StringOrArray{
+							Items: &oas.SchemaOrArray{
+								Schema: &oas.Schema{
+									SchemaProps: oas.SchemaProps{
+										Type: oas.StringOrArray{
 											"string",
 										},
 									},
 								},
 							},
 						},
-						SwaggerSchemaProps: spec.SwaggerSchemaProps{
-							XML: &spec.XMLObject{
+						SwaggerSchemaProps: oas.SwaggerSchemaProps{
+							XML: &oas.XMLObject{
 								Name:    "photoUrls",
 								Wrapped: true,
 							},
 						},
 					},
 					"age": {
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"integer",
 							},
 							Format:  "int32",
@@ -322,28 +322,28 @@ func TestParseSpecV2(t *testing.T) {
 						},
 					},
 					"tags": {
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"array",
 							},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Ref: spec.MustCreateRef("#/definitions/Tag"),
+							Items: &oas.SchemaOrArray{
+								Schema: &oas.Schema{
+									SchemaProps: oas.SchemaProps{
+										Ref: oas.MustCreateRef("#/definitions/Tag"),
 									},
 								},
 							},
 						},
-						SwaggerSchemaProps: spec.SwaggerSchemaProps{
-							XML: &spec.XMLObject{
+						SwaggerSchemaProps: oas.SwaggerSchemaProps{
+							XML: &oas.XMLObject{
 								Name:    "tags",
 								Wrapped: true,
 							},
 						},
 					},
 					"status": {
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"string",
 							},
 							Description: "pet status in the store",
@@ -356,21 +356,21 @@ func TestParseSpecV2(t *testing.T) {
 					},
 				},
 			},
-			SwaggerSchemaProps: spec.SwaggerSchemaProps{
-				XML: &spec.XMLObject{
+			SwaggerSchemaProps: oas.SwaggerSchemaProps{
+				XML: &oas.XMLObject{
 					Name: "Pet",
 				},
 			},
 		},
-		"ApiResponse": spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: spec.StringOrArray{
+		"ApiResponse": oas.Schema{
+			SchemaProps: oas.SchemaProps{
+				Type: oas.StringOrArray{
 					"object",
 				},
-				Properties: spec.SchemaProperties{
-					"code": spec.Schema{
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+				Properties: oas.SchemaProperties{
+					"code": oas.Schema{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"integer",
 							},
 							Format: "int32",
@@ -381,23 +381,23 @@ func TestParseSpecV2(t *testing.T) {
 							},
 						},
 					},
-					"type": spec.Schema{
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+					"type": oas.Schema{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"string",
 							},
 						},
-						SwaggerSchemaProps: spec.SwaggerSchemaProps{
+						SwaggerSchemaProps: oas.SwaggerSchemaProps{
 							Example: "test type",
 						},
 					},
-					"message": spec.Schema{
-						SchemaProps: spec.SchemaProps{
-							Type: spec.StringOrArray{
+					"message": oas.Schema{
+						SchemaProps: oas.SchemaProps{
+							Type: oas.StringOrArray{
 								"string",
 							},
 						},
-						SwaggerSchemaProps: spec.SwaggerSchemaProps{
+						SwaggerSchemaProps: oas.SwaggerSchemaProps{
 							Example: "test-msg",
 						},
 					},
@@ -408,8 +408,8 @@ func TestParseSpecV2(t *testing.T) {
 
 	assert.Equal(t, allDefinition, api.Definitions)
 
-	apiKey := &spec.SecurityScheme{
-		SecuritySchemeProps: spec.SecuritySchemeProps{
+	apiKey := &oas.SecurityScheme{
+		SecuritySchemeProps: oas.SecuritySchemeProps{
 			Type: "apiKey",
 			Name: "api_key",
 			In:   "header",
@@ -417,8 +417,8 @@ func TestParseSpecV2(t *testing.T) {
 	}
 	assert.Equal(t, apiKey, api.SecurityDefinitions["api_key"])
 
-	petstoreAuth := &spec.SecurityScheme{
-		SecuritySchemeProps: spec.SecuritySchemeProps{
+	petstoreAuth := &oas.SecurityScheme{
+		SecuritySchemeProps: oas.SecuritySchemeProps{
 			Type:             "oauth2",
 			AuthorizationURL: "http://petstore.swagger.io/oauth/dialog",
 			Flow:             "implicit",
@@ -430,9 +430,165 @@ func TestParseSpecV2(t *testing.T) {
 	}
 	assert.Equal(t, petstoreAuth, api.SecurityDefinitions["petstore_auth"])
 
-	externalDocs := &spec.ExternalDocumentation{
+	externalDocs := &oas.ExternalDocumentation{
 		Description: "Find out more about Swagger",
 		URL:         "http://swagger.io",
 	}
 	assert.Equal(t, externalDocs, api.ExternalDocs)
+}
+
+func TestExtractOperation(t *testing.T) {
+	test_operation := &oas.Operation{
+		OperationProps: oas.OperationProps{
+			Responses: &oas.Responses{
+				ResponsesProps: oas.ResponsesProps{
+					StatusCodeResponses: map[int]oas.Response{
+						204: {
+							ResponseProps: oas.ResponseProps{
+								Description: "no error",
+							},
+						},
+						400: {
+							ResponseProps: oas.ResponseProps{
+								Description: "bad parameter",
+								Schema: &oas.Schema{
+									SchemaProps: oas.SchemaProps{
+										Ref: oas.MustCreateRef("#/definitions/ErrorResponse"),
+									},
+								},
+							},
+						},
+						404: {
+							ResponseProps: oas.ResponseProps{
+								Description: "bad parameter",
+								Schema: &oas.Schema{
+									SchemaProps: oas.SchemaProps{
+										Description: "no such container",
+										Ref:         oas.MustCreateRef("#/definitions/ErrorResponse"),
+									},
+									SwaggerSchemaProps: oas.SwaggerSchemaProps{
+										Example: map[string]map[string]interface{}{
+											"application/json": {
+												"message": "No such container: c2ada9df5af8",
+											},
+										},
+									},
+								},
+							},
+						},
+						409: {
+							ResponseProps: oas.ResponseProps{
+								Description: "indicates a request conflict with current state of the target resource.",
+								Schema: &oas.Schema{
+									SchemaProps: oas.SchemaProps{
+										Title: "Conflict",
+										Type:  oas.StringOrArray{"body"},
+									},
+									SwaggerSchemaProps: oas.SwaggerSchemaProps{
+										Example: map[string]map[string]interface{}{
+											"application/json": {
+												"message": "You cannot remove a running container: c2ada9df5af8. Stop the\ncontainer before attempting removal or force remove\n",
+											},
+										},
+									},
+								},
+							},
+						},
+						500: {
+							ResponseProps: oas.ResponseProps{
+								Description: "server error",
+								Schema: &oas.Schema{
+									SchemaProps: oas.SchemaProps{
+										Ref: oas.MustCreateRef("#/definitions/ErrorResponse"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	oas_oas := &oas.Swagger{
+		SwaggerProps: oas.SwaggerProps{
+			Definitions: oas.Definitions{
+				"ErrorResponse": oas.Schema{
+					SchemaProps: oas.SchemaProps{
+						Description: "Account plan object",
+						Type: oas.StringOrArray{
+							"object",
+						},
+						Properties: oas.SchemaProperties{
+							"hosts": oas.Schema{
+								SchemaProps: oas.SchemaProps{
+									Description: "Account plan number of hosts",
+									Type: oas.StringOrArray{
+										"integer",
+									},
+								},
+							},
+						},
+					},
+					SwaggerSchemaProps: oas.SwaggerSchemaProps{
+						Example: map[string]interface{}{
+							"message": "Something went wrong.",
+						},
+					},
+				},
+			},
+			Paths: &oas.Paths{
+				Paths: map[string]oas.PathItem{
+					"/": {
+						PathItemProps: oas.PathItemProps{
+							Get: test_operation,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	api, err := extractOperation(oas_oas, "/", "GET", test_operation)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "204", api.Response[0].StatusCode)
+	assert.Equal(t, "", api.Response[0].Schema)
+	assert.Equal(t, "", api.Response[0].ResponseType)
+	assert.Equal(t, "", api.Response[0].DataType)
+	assert.Equal(t, "", api.Response[0].Enum)
+	assert.Equal(t, "", api.Response[0].Example)
+	assert.Equal(t, "no error", api.Response[0].Description)
+
+	assert.Equal(t, "400", api.Response[1].StatusCode)
+	assert.Equal(t, "ErrorResponse", api.Response[1].Schema)
+	assert.Equal(t, "body", api.Response[1].ResponseType)
+	assert.Equal(t, "object", api.Response[1].DataType)
+	assert.Equal(t, "", api.Response[1].Enum)
+	assert.Equal(t, "{\n    \"message\": \"Something went wrong.\"\n}", api.Response[1].Example)
+	assert.Equal(t, "Account plan object", api.Response[1].Description)
+
+	assert.Equal(t, "404", api.Response[2].StatusCode)
+	assert.Equal(t, "ErrorResponse", api.Response[2].Schema)
+	assert.Equal(t, "body", api.Response[2].ResponseType)
+	assert.Equal(t, "object", api.Response[2].DataType)
+	assert.Equal(t, "", api.Response[2].Enum)
+	assert.Equal(t, "{\n    \"message\": \"Something went wrong.\"\n}", api.Response[2].Example)
+	assert.Equal(t, "Account plan object", api.Response[2].Description)
+
+	assert.Equal(t, "409", api.Response[3].StatusCode)
+	assert.Equal(t, "Conflict", api.Response[3].Schema)
+	assert.Equal(t, "body", api.Response[3].ResponseType)
+	assert.Equal(t, "object", api.Response[3].DataType)
+	assert.Equal(t, "", api.Response[3].Enum)
+	assert.Equal(t, "{\n    \"application/json\": {\n        \"message\": \"You cannot remove a running container: c2ada9df5af8. Stop the\\ncontainer before attempting removal or force remove\\n\"\n    }\n}", api.Response[3].Example)
+	assert.Equal(t, "indicates a request conflict with current state of the target resource.", api.Response[3].Description)
+
+	assert.Equal(t, "500", api.Response[4].StatusCode)
+	assert.Equal(t, "ErrorResponse", api.Response[4].Schema)
+	assert.Equal(t, "body", api.Response[4].ResponseType)
+	assert.Equal(t, "object", api.Response[4].DataType)
+	assert.Equal(t, "", api.Response[4].Enum)
+	assert.Equal(t, "{\n    \"message\": \"Something went wrong.\"\n}", api.Response[4].Example)
+	assert.Equal(t, "Account plan object", api.Response[4].Description)
 }

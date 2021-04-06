@@ -39,7 +39,7 @@ func TestEnum2string_float64(t *testing.T) {
 func TestDefinitionNameFromRef(t *testing.T) {
 	ref := oas.MustCreateRef("#/parameters/PageSize")
 	definition_type, definition_name := DefinitionNameFromRef(ref)
-	
+
 	assert.Equal(t, "parameters", definition_type)
 	assert.Equal(t, "PageSize", definition_name)
 }

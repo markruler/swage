@@ -10,6 +10,7 @@ import (
 	oas "github.com/go-openapi/spec"
 )
 
+// FIXME: refactor
 func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResponses []APIResponse, err error) {
 	swageResponses = []APIResponse{}
 	oas_responses := operation.Responses
@@ -83,6 +84,7 @@ func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResp
 		}
 
 		if oasResponse.Schema != nil {
+			swageResponse.ResponseType = strings.Join(oasResponse.Schema.Type, ",")
 			swageResponse.Description = oasResponse.Description
 			swageResponse, err = responseSchema(swageResponse, *oasResponse.Schema, swagger)
 			if err != nil {
@@ -161,18 +163,22 @@ func arrayDefinitionFromSchemaRef(swageResponse *APIResponse, schema oas.Schema,
 		if !reflect.DeepEqual(oas.Ref{}, schema.Ref) {
 			_, definition_name := DefinitionNameFromRef(items.Schemas[0].Ref)
 			definition := swagger.Definitions[definition_name]
-			if !reflect.DeepEqual(oas.Schema{}, definition) {
+			if reflect.DeepEqual(oas.Schema{}, definition) {
 				return nil, errors.New("not found definition")
 			}
-			b, err := json.MarshalIndent(schema.Example, "", "    ")
-			if err != nil {
-				return nil, err
+			if schema.Example != nil {
+				b, err := json.MarshalIndent(schema.Example, "", "    ")
+				if err != nil {
+					return nil, err
+				}
+				swageResponse.Example = string(b)
 			}
 			swageResponse.Schema = definition_name
 			swageResponse.ResponseType = "body"
 			swageResponse.DataType = "array"
-			swageResponse.Example = string(b)
-			swageResponse.Description = schema.Description
+			if schema.Description != "" {
+				swageResponse.Description = schema.Description
+			}
 		}
 		// append
 	}
