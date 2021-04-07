@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/markruler/swage/parser"
+	"github.com/markruler/swage/spec"
 )
 
 func (simple *Simple) CreateAPISheet() (err error) {
@@ -27,7 +27,7 @@ func (simple *Simple) CreateAPISheet() (err error) {
 	return nil
 }
 
-func (simple *Simple) setAPISheetHeader(api parser.SwageAPI) {
+func (simple *Simple) setAPISheetHeader(api spec.SwageAPI) {
 	xl := simple.xl
 	xl.File.SetColWidth(xl.WorkSheetName, "A", "A", 12.0)
 	xl.File.SetColWidth(xl.WorkSheetName, "B", "B", 33.0)
@@ -80,7 +80,7 @@ func (simple *Simple) setAPISheetHeader(api parser.SwageAPI) {
 	xl.Context.Row++
 }
 
-func (simple *Simple) setAPISheetRequest(parameters []parser.APIRequest) {
+func (simple *Simple) setAPISheetRequest(parameters []spec.APIRequest) {
 	xl := simple.xl
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "REQUEST")
 	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
@@ -108,7 +108,7 @@ func (simple *Simple) setAPISheetRequest(parameters []parser.APIRequest) {
 	xl.Context.Row++
 }
 
-func (simple *Simple) setAPISheetResponse(responses []parser.APIResponse) {
+func (simple *Simple) setAPISheetResponse(responses []spec.APIResponse) {
 	xl := simple.xl
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), "RESPONSE")
 	xl.File.MergeCell(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), fmt.Sprintf("%s%d", "G", xl.Context.Row))
@@ -134,7 +134,7 @@ func (simple *Simple) setAPISheetResponse(responses []parser.APIResponse) {
 	}
 }
 
-func (simple *Simple) setCellWithOneRequest(param parser.APIRequest) {
+func (simple *Simple) setCellWithOneRequest(param spec.APIRequest) {
 	xl := simple.xl
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), param.Required)
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), param.Schema)
@@ -145,7 +145,7 @@ func (simple *Simple) setCellWithOneRequest(param parser.APIRequest) {
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "G", xl.Context.Row), param.Description)
 }
 
-func (simple *Simple) setCellWithOneResponse(response parser.APIResponse) {
+func (simple *Simple) setCellWithOneResponse(response spec.APIResponse) {
 	xl := simple.xl
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "A", xl.Context.Row), response.StatusCode)
 	xl.File.SetCellStr(xl.WorkSheetName, fmt.Sprintf("%s%d", "B", xl.Context.Row), response.Schema)

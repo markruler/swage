@@ -1,4 +1,4 @@
-package parser
+package spec
 
 type SwageSpec struct {
 	API []SwageAPI

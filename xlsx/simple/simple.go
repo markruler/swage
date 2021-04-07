@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/go-openapi/spec"
-	"github.com/markruler/swage/parser"
+	"github.com/markruler/swage/converter"
 	"github.com/markruler/swage/xlsx"
 )
 
@@ -37,7 +37,7 @@ func (simple *Simple) Generate(spec *spec.Swagger) error {
 		return errors.New("path sould not be empty")
 	}
 
-	swage_spec, err := parser.Convert(spec)
+	swage_spec, err := converter.Convert(spec)
 	if err != nil {
 		return err
 	}

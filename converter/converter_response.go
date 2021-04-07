@@ -1,4 +1,4 @@
-package parser
+package converter
 
 import (
 	"encoding/json"
@@ -8,11 +8,12 @@ import (
 	"strings"
 
 	oas "github.com/go-openapi/spec"
+	"github.com/markruler/swage/spec"
 )
 
 // FIXME: refactor
-func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResponses []APIResponse, err error) {
-	swageResponses = []APIResponse{}
+func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResponses []spec.APIResponse, err error) {
+	swageResponses = []spec.APIResponse{}
 	oas_responses := operation.Responses
 	if oas_responses == nil {
 		return nil, errors.New("response is empty")
@@ -24,7 +25,7 @@ func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResp
 				return nil, err
 			}
 			_, definition_name := DefinitionNameFromRef(oas_responses.Default.Schema.Ref)
-			swageResponses = append(swageResponses, APIResponse{
+			swageResponses = append(swageResponses, spec.APIResponse{
 				Schema:       definition_name,
 				ResponseType: "body",
 				DataType:     strings.Join(schema.Type, ","),
@@ -33,7 +34,7 @@ func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResp
 				Description:  oas_responses.Default.Description,
 			})
 		} else {
-			swageResponses = append(swageResponses, APIResponse{
+			swageResponses = append(swageResponses, spec.APIResponse{
 				Schema:       "",
 				ResponseType: "body",
 				DataType:     "string",
@@ -46,7 +47,7 @@ func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResp
 
 	codes := SortMap(oas_responses.StatusCodeResponses)
 	for _, code := range codes {
-		swageResponse := &APIResponse{
+		swageResponse := &spec.APIResponse{
 			StatusCode: code,
 		}
 		icode, err := strconv.Atoi(code)
@@ -107,7 +108,7 @@ func extractResponses(swagger *oas.Swagger, operation *oas.Operation) (swageResp
 	return swageResponses, nil
 }
 
-func responseSchema(swageResponse *APIResponse, schema oas.Schema, swagger *oas.Swagger) (*APIResponse, error) {
+func responseSchema(swageResponse *spec.APIResponse, schema oas.Schema, swagger *oas.Swagger) (*spec.APIResponse, error) {
 	if schema.Type != nil {
 		swageResponse.ResponseType = "body"
 		swageResponse.DataType = strings.Join(schema.Type, ",")
@@ -129,7 +130,7 @@ func responseSchema(swageResponse *APIResponse, schema oas.Schema, swagger *oas.
 	return swageResponse, nil
 }
 
-func responseSchemaRef(swageResponse *APIResponse, ref oas.Ref, swagger *oas.Swagger) (*APIResponse, error) {
+func responseSchemaRef(swageResponse *spec.APIResponse, ref oas.Ref, swagger *oas.Swagger) (*spec.APIResponse, error) {
 	schema, err := oas.ResolveRef(swagger, &ref)
 	if err != nil {
 		return nil, err
@@ -149,7 +150,7 @@ func responseSchemaRef(swageResponse *APIResponse, ref oas.Ref, swagger *oas.Swa
 	return swageResponse, nil
 }
 
-func arrayDefinitionFromSchemaRef(swageResponse *APIResponse, schema oas.Schema, swagger *oas.Swagger) (*APIResponse, error) {
+func arrayDefinitionFromSchemaRef(swageResponse *spec.APIResponse, schema oas.Schema, swagger *oas.Swagger) (*spec.APIResponse, error) {
 	items := schema.Items
 	if items.Schema != nil {
 		schema := items.Schema

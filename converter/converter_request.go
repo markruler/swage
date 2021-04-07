@@ -1,10 +1,11 @@
-package parser
+package converter
 
 import (
 	"reflect"
 	"strings"
 
 	oas "github.com/go-openapi/spec"
+	"github.com/markruler/swage/spec"
 )
 
 // TODO: convert "#/definitions/Def"
@@ -16,10 +17,10 @@ import (
 // @source docker.v1.41.json
 // @method POST
 // @path /containers/create
-func extractRequests(swagger *oas.Swagger, operation *oas.Operation) (requests []APIRequest, err error) {
-	requests = []APIRequest{}
+func extractRequests(swagger *oas.Swagger, operation *oas.Operation) (requests []spec.APIRequest, err error) {
+	requests = []spec.APIRequest{}
 	for _, param := range operation.Parameters {
-		request := APIRequest{}
+		request := spec.APIRequest{}
 		var definition_type, definition_name string
 		if param.Schema != nil && !reflect.DeepEqual(param.Schema.Ref, oas.Ref{}) {
 			definition_type, definition_name = DefinitionNameFromRef(param.Schema.Ref)

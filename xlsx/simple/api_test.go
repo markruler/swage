@@ -3,17 +3,17 @@ package simple
 import (
 	"testing"
 
-	"github.com/markruler/swage/parser"
+	"github.com/markruler/swage/spec"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateAPISheet_NormalSpec(t *testing.T) {
 	simple := New()
 	xl := simple.xl
-	xl.SwageSpec = &parser.SwageSpec{
-		API: []parser.SwageAPI{
+	xl.SwageSpec = &spec.SwageSpec{
+		API: []spec.SwageAPI{
 			{
-				Header: parser.APIHeader{
+				Header: spec.APIHeader{
 					Tag: "test",
 				},
 			},
@@ -26,13 +26,13 @@ func TestCreateAPISheet_NormalSpec(t *testing.T) {
 func TestCreateSimpleAPISheet_Request(t *testing.T) {
 	simple := New()
 	xl := simple.GetExcel()
-	xl.SwageSpec = &parser.SwageSpec{
-		API: []parser.SwageAPI{
+	xl.SwageSpec = &spec.SwageSpec{
+		API: []spec.SwageAPI{
 			{
-				Header: parser.APIHeader{
+				Header: spec.APIHeader{
 					ID: "ContainerArchiveInfo",
 				},
-				Request: []parser.APIRequest{
+				Request: []spec.APIRequest{
 					{
 						Required:      "O",
 						Schema:        "all",
@@ -60,13 +60,13 @@ func TestCreateSimpleAPISheet_Request(t *testing.T) {
 func TestCreateSimpleAPISheet_HeaderTypeResponse(t *testing.T) {
 	simple := New()
 	xl := simple.GetExcel()
-	xl.SwageSpec = &parser.SwageSpec{
-		API: []parser.SwageAPI{
+	xl.SwageSpec = &spec.SwageSpec{
+		API: []spec.SwageAPI{
 			{
-				Header: parser.APIHeader{
+				Header: spec.APIHeader{
 					ID: "ContainerArchiveInfo",
 				},
-				Response: []parser.APIResponse{
+				Response: []spec.APIResponse{
 					{
 						StatusCode:   "200",
 						Schema:       "X-Docker-Container-Path-Stat",

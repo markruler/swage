@@ -1,25 +1,16 @@
-package parser
+package converter
 
 import (
 	"net/http"
 	"strings"
 
-	"github.com/go-openapi/loads"
 	oas "github.com/go-openapi/spec"
+	"github.com/markruler/swage/spec"
 )
 
-// Parse `JSON`, `YAML` to Go struct
-func Parse(sourcePath string) (*oas.Swagger, error) {
-	doc, err := loads.Spec(sourcePath)
-	if err != nil {
-		return nil, err
-	}
-	return doc.Spec(), nil
-}
-
 // Convert Open API Spec to Swage Spec
-func Convert(swagger *oas.Swagger) (*SwageSpec, error) {
-	swageSpec := &SwageSpec{}
+func Convert(swagger *oas.Swagger) (*spec.SwageSpec, error) {
+	swageSpec := &spec.SwageSpec{}
 	paths := SortMap(swagger.Paths.Paths)
 	for _, path := range paths {
 		operations := swagger.Paths.Paths[path]
@@ -76,19 +67,19 @@ func Convert(swagger *oas.Swagger) (*SwageSpec, error) {
 	return swageSpec, nil
 }
 
-func extractOperation(swagger *oas.Swagger, path, method string, operation *oas.Operation) (api *SwageAPI, err error) {
-	var requests []APIRequest
+func extractOperation(swagger *oas.Swagger, path, method string, operation *oas.Operation) (api *spec.SwageAPI, err error) {
+	var requests []spec.APIRequest
 	if requests, err = extractRequests(swagger, operation); err != nil {
 		return nil, err
 	}
 
-	var responses []APIResponse
+	var responses []spec.APIResponse
 	if responses, err = extractResponses(swagger, operation); err != nil {
 		return nil, err
 	}
 
-	return &SwageAPI{
-		Header: APIHeader{
+	return &spec.SwageAPI{
+		Header: spec.APIHeader{
 			Tag:         strings.Join(operation.Tags, ","),
 			ID:          operation.ID,
 			Path:        path,

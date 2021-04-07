@@ -3,7 +3,7 @@ package simple
 import (
 	"testing"
 
-	"github.com/markruler/swage/parser"
+	"github.com/markruler/swage/spec"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -11,8 +11,8 @@ func TestCreateIndexSheet_APINotExists(t *testing.T) {
 	simple := New()
 	xl := simple.GetExcel()
 
-	xl.SwageSpec = &parser.SwageSpec{
-		API: []parser.SwageAPI{},
+	xl.SwageSpec = &spec.SwageSpec{
+		API: []spec.SwageAPI{},
 	}
 
 	err := simple.CreateIndexSheet()
@@ -23,10 +23,10 @@ func TestCreateIndexSheet_APIExists(t *testing.T) {
 	simple := New()
 	xl := simple.GetExcel()
 
-	xl.SwageSpec = &parser.SwageSpec{
-		API: []parser.SwageAPI{
+	xl.SwageSpec = &spec.SwageSpec{
+		API: []spec.SwageAPI{
 			{
-				Header: parser.APIHeader{
+				Header: spec.APIHeader{
 					Tag: "test",
 				},
 			},

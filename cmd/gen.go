@@ -4,7 +4,8 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/markruler/swage/parser"
+	"github.com/markruler/swage/converter"
+	"github.com/markruler/swage/spec"
 	"github.com/markruler/swage/xlsx"
 	"github.com/markruler/swage/xlsx/simple"
 	"github.com/spf13/cobra"
@@ -40,12 +41,12 @@ func genRun(cmd *cobra.Command, args []string) error {
 		cmd.Printf(">>> INPUT %s\n", sourcePath)
 	}
 
-	swaggerAPI, err := parser.Parse(sourcePath)
+	swaggerAPI, err := spec.Parse(sourcePath)
 	if err != nil {
 		return err
 	}
 	// TEST
-	parser.Convert(swaggerAPI)
+	converter.Convert(swaggerAPI)
 
 	var tmpl xlsx.Template
 
